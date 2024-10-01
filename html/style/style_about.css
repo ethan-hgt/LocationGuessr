@@ -1,0 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+header {
+    background-color: #222;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.left-header {
+    display: flex;
+    align-items: center;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.header-link {
+    font-size: 16px;
+    margin-right: 20px;
+    color: #c0c0c0;
+    text-decoration: none;
+    transition: transform 0.4s ease, color 0.4s ease;
+    padding: 5px;
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+}
+
+.header-link:hover {
+    transform: scale(1.2);
+    font-weight: bold;
+    color: #fff;
+}
+
+body {
+    padding-top: 60px;
+    background-color: #1b1b33;
+    height: 100%;
+    overflow: auto;
+}
+
+.hero-section {
+    height: 100vh;
+    background-image: url('/img/Background-Gradient-3.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.overlay {
+    text-align: center;
+}
+
+.characters-img {
+    width: 60%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+}
+
+.cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    background-color: #5cb85c;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #4cae4c;
+}
+
+.content {
+    padding: 50px;
+    color: white;
+    background-color: #181824;
+    min-height: 100vh;
+}

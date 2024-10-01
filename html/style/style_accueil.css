@@ -106,30 +106,84 @@ body {
     filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
 }
 
-.play {
-    position: absolute;
-    top: 72%;
-    left: 45%;
-    transform: translate(-50%, -50%); /* Centrer le bouton plus précisément */
-    
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
-    
-    background-color: #4CAF50; /* Vert plus vif */
-    padding: 20px 40px; /* Ajoute du padding pour agrandir le bouton */
-    border-radius: 50px; /* Forme ovale avec un grand arrondi */
-    
-    border: 5px solid #2E7D32; /* Contour vert foncé */
-    
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Ajoute une ombre subtile */
-    
-    transition: all 0.3s ease; /* Transition douce pour le hover */
+/* Conteneur parent pour assurer le positionnement */
+.button-container {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Utilise toute la hauteur de la fenêtre */
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: flex-start; /* Aligne en haut par défaut */
+    padding-top: 70vh; /* Pousse le bouton à 75% de la hauteur */
 }
 
-/* Effet au survol */
+/* Style moderne du bouton */
+.play {
+    color: white;
+    font-size: 25px;
+    font-weight: 600;
+    text-align: center;
+    padding: 15px 40px;
+    
+    background: linear-gradient(135deg, #29d22f, #2E7D32); /* Dégradé moderne */
+    border-radius: 50px;
+    border: none;
+    
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Légère ombre pour la profondeur */
+    cursor: pointer;
+    position: fixed;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Animation au survol */
 .play:hover {
-    background-color: #45a049; /* Couleur légèrement plus claire au survol */
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* L'ombre devient un peu plus intense */
+    background: linear-gradient(135deg, #27dc30, #0d9c14);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05); /* Légère agrandissement au survol */
+}
+
+/* Animation lors du clic */
+.play:active {
+    transform: scale(0.95); /* Légère réduction de la taille au clic */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Réduction de l'ombre pour simuler un appui */
+    transition: all 0.1s ease; /* Animation plus rapide lors du clic */
+}
+
+/* Footer styling */
+footer {
+    background-color: #222; /* Même couleur que le header */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.left-footer, .right-footer {
+    display: flex;
+    align-items: center;
+}
+
+.footer-link {
+    font-size: 16px;
+    margin-right: 20px;
+    color: #c0c0c0;
+    text-decoration: none;
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+
+.footer-link:hover {
+    color: #fff;
+    transform: scale(1.1); /* Agrandissement subtil au survol */
+    font-weight: bold;
+}
+
+.right-footer .footer-link {
+    margin-right: 0;
 }

@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.hidden {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
 * {
     margin: 0;
     padding: 0;
@@ -17,15 +32,33 @@ body {
     position: relative;
     text-align: center;
     width: 100%;    
+    height: 100vh; /* Ajuste la hauteur selon ton besoin */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 70%, rgba(34, 34, 34, 1) 100%), 
+                url('../img/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
+
+
+
 .background-section {
-    width: 100%;
+    width: 109%;
     height: auto;
     display: block;
     opacity: 0.85;
     position: relative;
+    animation: fadeInBackground 3s ease-in-out;
+}
 
+@keyframes fadeInBackground {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
 }
 
 .titre {
@@ -44,6 +77,17 @@ body {
     width: 1200px; 
     height: 240px;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    animation: fadeInBackground 3s ease-in-out;
+
+}
+
+@keyframes fadeInTitre {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
 }
 
 .carte {
@@ -53,8 +97,18 @@ body {
     width: 10%;
     height: auto;
     filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+    animation: fadeInBackground 3s ease-in-out;
+
 }
 
+@keyframes fadeInBackCarte {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
+}
 
 
 .play {
@@ -71,8 +125,19 @@ body {
     position: absolute;
     top: 75%;
     right: 46%;
-    z-index: 10000;
+    z-index:0;
     transition: all 0.3s ease;
+    animation: fadeInBackground 3s ease-in-out;
+
+}
+
+@keyframes fadeInBackPlay {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
 }
 
 
@@ -87,5 +152,191 @@ body {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.1s ease;
 }
+
+.explorer {
+    display: flex;
+    align-items: center;
+    padding: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.text-planet {
+    font-family: 'Poppins', sans-serif;
+    flex: 1;
+    width: 10%;
+    margin-left: 300px;
+}
+
+.text-planet h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.text-planet p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.image-planet {
+    flex: 1;
+    width: auto;
+    text-align: right;
+    margin-right: 150px;
+
+}
+
+.globe-image {
+    width: 400px;
+    height: auto;
+}
+
+.compete {
+    display: flex;
+    align-items: center;
+    padding: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    flex-direction: row-reverse;
+}
+
+.text-compete {
+    font-family: 'Poppins', sans-serif;
+    flex: 1;
+    width: 10%;
+    margin-right: 250px;
+    font-size: 25px;
+}
+
+.text-compete h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.text-compete p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.image-compete {
+    flex: 1;
+    width: auto;
+    text-align: left;
+    margin-left: 250px;
+}
+
+.compete-image {
+    width: 400px;
+    height: auto;
+}
+
+
+.custom-hr {
+    border: none;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    width: 60%;
+    margin: 10px auto;
+}
+
+.faq-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    margin: 20px 0;
+}
+
+.faq-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    margin-left: 20%;
+    margin-bottom: 50px;
+}
+
+.faq-line {
+    border: none;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    width: 48%;
+    margin-left: 20px;
+    margin-bottom: 50px;
+}
+
+.faq-container {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: 100px;
+}
+
+.faq-item {
+    background-color: #444;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.faq-question h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.faq-toggle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    transition: transform 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.faq-answer p {
+    margin: 10px 0;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+}
+
+.faq-item.active .faq-toggle {
+    transform: rotate(45deg);
+}
+
+
 
 

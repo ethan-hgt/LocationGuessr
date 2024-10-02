@@ -2,12 +2,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
 }
 
 body {
-    padding-top: 60px;
-    min-height: 100vh;
+    background-color: #121212;
+    background-image: url('/img/Background-Gradient-3.png');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    padding-top: 80px;
 }
 
 header {
@@ -15,6 +18,7 @@ header {
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
+    font-family: 'Istok Web', sans-serif;
     align-items: center;
     height: 60px;
     color: #fff;
@@ -42,113 +46,114 @@ header {
     color: #c0c0c0;
     text-decoration: none;
     transition: transform 0.4s ease, color 0.4s ease;
-    padding: 5px;
-    display: inline-block;
-    width: 100px;
-    text-align: center;
 }
 
-.header-link:hover {
-    transform: scale(1.2);
+.header-link:hover, .header-link.active {
+    transform: scale(1.1);
     font-weight: bold;
     color: #fff;
 }
 
 .leaderboard-container {
+    text-align: center;
+    margin: 0 auto;
+    padding: 40px 20px;
     max-width: 1000px;
-    margin: 40px auto;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+}
+
+.leaderboard-title {
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.leaderboard-content {
+    background-color: rgba(0, 0, 0, 0.15);
     border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-}
-
-
-
-.trophy-container {
-    position: absolute;
-    top: 20px;
-}
-
-.trophy-container.left {
-    left: 20px;
-}
-
-.trophy-container.right {
-    right: 20px;
-}
-
-.trophy {
-    width: 60px;
-    height: 60px;
-}
-
-h1 {
-    text-align: center;
-    color: white;
-    font-size: 36px;
-    margin-bottom: 30px;
-}
-
-.table-container {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.table-header {
-    display: flex;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 15px;
-    color: white;
-    font-weight: bold;
-}
-
-.table-body .row {
-    display: flex;
-    padding: 15px;
-    color: white;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.col {
-    flex: 1;
-}
-
-.col.rank {
-    flex: 0.5;
-    text-align: center;
-}
-
-.col.name {
-    flex: 2;
-}
-
-.medal {
-    width: 24px;
-    height: 24px;
-}
-
-.table-body {
-    max-height: 400px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    max-height: 70vh;
     overflow-y: auto;
 }
 
-.table-body::-webkit-scrollbar {
-    width: 8px;
+/* Header row reste fixe */
+.header-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
-.table-body::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+/* Conteneur pour les lignes de joueurs */
+.player-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    padding: 10px; /* Réduction de la taille */
+    background-color: rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    border-radius: 10px;
+    height: 60px; /* Hauteur réduite */
+    align-items: center;
+    position: relative;
 }
 
-.table-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+/* Stroke pour les médailles */
+.player-row.gold {
+    border: 1px solid gold;
+    animation: subtleGold 3s infinite;
 }
 
-.table-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
+.player-row.silver {
+    border: 1px solid silver;
+    animation: subtleSilver 3s infinite;
+}
+
+.player-row.bronze {
+    border: 1px solid #cd7f32;
+    animation: subtleBronze 3s infinite;
+}
+
+/* Animations subtiles */
+@keyframes subtleGold {
+    0% { box-shadow: 0 0 5px gold; }
+    50% { box-shadow: 0 0 10px gold; }
+    100% { box-shadow: 0 0 5px gold; }
+}
+
+@keyframes subtleSilver {
+    0% { box-shadow: 0 0 5px silver; }
+    50% { box-shadow: 0 0 10px silver; }
+    100% { box-shadow: 0 0 5px silver; }
+}
+
+@keyframes subtleBronze {
+    0% { box-shadow: 0 0 5px #cd7f32; }
+    50% { box-shadow: 0 0 10px #cd7f32; }
+    100% { box-shadow: 0 0 5px #cd7f32; }
+}
+
+/* Alignement du texte */
+.player-row div {
+    text-align: left;
+}
+
+.player-row:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.medal {
+    width: 40px;
+    height: 40px;
+    stroke: #ffffff;
+    stroke-width: 2px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.3));
 }

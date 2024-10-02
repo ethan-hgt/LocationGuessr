@@ -4,80 +4,65 @@
     box-sizing: border-box;
 }
 
-body {
+@font-face {
+    font-family: 'Inter';
+    src: url('../font/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
     background-color: #121212;
     background-image: url('/img/Background-Gradient-3.png');
     background-size: cover;
+    background-repeat: no-repeat;
     background-position: center;
     color: #ffffff;
-    padding-top: 80px;
-}
-
-header {
-    background-color: #222;
-    padding: 10px 20px;
     display: flex;
-    justify-content: space-between;
-    font-family: 'Istok Web', sans-serif;
+    justify-content: center;
     align-items: center;
-    height: 60px;
-    color: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.left-header {
-    display: flex;
-    align-items: center;
-}
-
-.header-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
-
-.header-link {
-    font-size: 16px;
-    margin-right: 20px;
-    color: #c0c0c0;
-    text-decoration: none;
-    transition: transform 0.4s ease, color 0.4s ease;
-}
-
-.header-link:hover, .header-link.active {
-    transform: scale(1.1);
-    font-weight: bold;
-    color: #fff;
+    padding: 0;
+    margin: 0;
 }
 
 .leaderboard-container {
     text-align: center;
     margin: 0 auto;
     padding: 40px 20px;
-    max-width: 1000px;
+    width: 100%;
+    max-width: 1200px; 
+    border-radius: 25px; 
+    border: 1px solid rgba(47, 47, 47, 1); 
+    background-color: rgba(80, 80, 80, 0.25); 
+    padding: 20px;
+}
+
+.leaderboard-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.rosette-icon {
+    width: 50px;
+    height: 50px;
 }
 
 .leaderboard-title {
     font-size: 48px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    text-shadow: 2px 2px 5px rgba(119, 119, 119, 0.7);
 }
 
 .leaderboard-content {
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 20px;
-    padding: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-    max-height: 70vh;
+    max-height: 500px;
+    width: 800px;
     overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0 auto;
 }
 
-/* Header row reste fixe */
 .header-row {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 1fr;
@@ -91,69 +76,69 @@ header {
     position: sticky;
     top: 0;
     z-index: 1;
+    width: 100%;
 }
 
-/* Conteneur pour les lignes de joueurs */
+.scrollable-rows {
+    max-height: 300px;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #a1a1a1 transparent;
+}
+
+.scrollable-rows::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollable-rows::-webkit-scrollbar-thumb {
+    background-color: #88888887;
+    border-radius: 6px;
+}
+
+.scrollable-rows::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
 .player-row {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 1fr;
-    padding: 10px; /* Réduction de la taille */
+    padding: 10px;
     background-color: rgba(255, 255, 255, 0.05);
     margin-bottom: 8px;
     border-radius: 10px;
-    height: 60px; /* Hauteur réduite */
+    height: 60px;
     align-items: center;
-    position: relative;
+    text-align: left;
 }
 
-/* Stroke pour les médailles */
 .player-row.gold {
     border: 1px solid gold;
-    animation: subtleGold 3s infinite;
 }
 
 .player-row.silver {
     border: 1px solid silver;
-    animation: subtleSilver 3s infinite;
 }
 
 .player-row.bronze {
     border: 1px solid #cd7f32;
-    animation: subtleBronze 3s infinite;
-}
-
-/* Animations subtiles */
-@keyframes subtleGold {
-    0% { box-shadow: 0 0 5px gold; }
-    50% { box-shadow: 0 0 10px gold; }
-    100% { box-shadow: 0 0 5px gold; }
-}
-
-@keyframes subtleSilver {
-    0% { box-shadow: 0 0 5px silver; }
-    50% { box-shadow: 0 0 10px silver; }
-    100% { box-shadow: 0 0 5px silver; }
-}
-
-@keyframes subtleBronze {
-    0% { box-shadow: 0 0 5px #cd7f32; }
-    50% { box-shadow: 0 0 10px #cd7f32; }
-    100% { box-shadow: 0 0 5px #cd7f32; }
-}
-
-/* Alignement du texte */
-.player-row div {
-    text-align: left;
-}
-
-.player-row:hover {
-    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .medal {
     width: 40px;
     height: 40px;
-    stroke: #ffffff;
-    stroke-width: 2px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.3));
+}
+
+@media (max-width: 768px) {
+    .leaderboard-container {
+        width: 95%;
+    }
+
+    .leaderboard-title {
+        font-size: 32px;
+    }
+
+    .header-row, .player-row {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        font-size: 16px;
+    }
 }

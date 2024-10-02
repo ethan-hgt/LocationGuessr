@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
-    <link rel="stylesheet" href="/html/style/style_leaderboard.css">
+    <link rel="stylesheet" href="./style/style_leaderboard.css">
+    <link rel="stylesheet" href="/html/style/style_header.css">
 </head>
 <body>
     <header>
@@ -22,7 +23,11 @@
     </header>
 
     <div class="leaderboard-container">
-        <h1 class="leaderboard-title">Leaderboard</h1>
+        <div class="leaderboard-title-container">
+            <img src="../img/Rosette.png" alt="Rosette" class="rosette-icon">
+            <h1 class="leaderboard-title">Leaderboard</h1>
+            <img src="../img/Rosette.png" alt="Rosette" class="rosette-icon">
+        </div>
         
         <div class="leaderboard-content">
             <div class="header-row">
@@ -31,47 +36,49 @@
                 <div class="matches">Match Played</div>
                 <div class="xp">XP</div>
             </div>
-            
-            <div class="player-row gold">
-                <div class="rank"><img src="../img/MedailGold.png" alt="Gold" class="medal"></div>
-                <div class="name">Player1</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
-            </div>
-            
-            <div class="player-row silver">
-                <div class="rank"><img src="../img/MedailSilver.png" alt="Silver" class="medal"></div>
-                <div class="name">Player2</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
-            </div>
-            
-            <div class="player-row bronze">
-                <div class="rank"><img src="../img/MedailBronze.png" alt="Bronze" class="medal"></div>
-                <div class="name">Player3</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
-            </div>
-            
-            <div class="player-row">
-                <div class="rank">#4</div>
-                <div class="name">Player4</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
-            </div>
-            
-            <div class="player-row">
-                <div class="rank">#5</div>
-                <div class="name">Player5</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
-            </div>
-            
-            <div class="player-row">
-                <div class="rank">#6</div>
-                <div class="name">Player6</div>
-                <div class="matches">32</div>
-                <div class="xp">72524</div>
+
+            <div class="scrollable-rows">
+                <div class="player-row gold">
+                    <div class="rank"><img src="../img/MedailGold.png" alt="Gold" class="medal"></div>
+                    <div class="name">Player1</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
+
+                <div class="player-row silver">
+                    <div class="rank"><img src="../img/MedailSilver.png" alt="Silver" class="medal"></div>
+                    <div class="name">Player2</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
+
+                <div class="player-row bronze">
+                    <div class="rank"><img src="../img/MedailBronze.png" alt="Bronze" class="medal"></div>
+                    <div class="name">Player3</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
+
+                <div class="player-row">
+                    <div class="rank">#4</div>
+                    <div class="name">Player4</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
+
+                <div class="player-row">
+                    <div class="rank">#5</div>
+                    <div class="name">Player5</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
+
+                <div class="player-row">
+                    <div class="rank">#6</div>
+                    <div class="name">Player6</div>
+                    <div class="matches">32</div>
+                    <div class="xp">72524</div>
+                </div>
             </div>
         </div>
     </div>

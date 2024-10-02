@@ -10,7 +10,7 @@
     <header>
         <div class="left-header">
             <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
             </a>
             <a href="play.html" class="header-link">Play</a>
             <a href="leaderboard.html" class="header-link">Leaderboard</a>
@@ -22,10 +22,11 @@
     </header>
 
     <div class="background-container">
-        <img src="../img/background.jpeg" alt="background" class="background-section">
+        <img src="../img/background.jpeg" alt="background" class="background-section" draggable="false">
         
         <div class="form-container">
             <div class="tab-container">
+                <div class="tab-slider"></div>
                 <button class="tab-button active" onclick="switchTab('inscription')">Inscription</button>
                 <button class="tab-button" onclick="switchTab('connexion')">Connexion</button>
             </div>
@@ -33,13 +34,17 @@
             <form id="inscription-form" class="auth-form">
                 <div class="name-fields">
                     <input type="text" placeholder="Prénom">
-                    <input type="text" placeholder="Nom">
+                    <input type="text" placeholder="Nom *">
                 </div>
-                <input type="email" placeholder="Mail">
-                <input type="password" placeholder="Mot de passe">
-                <input type="password" placeholder="Confirmez votre mot de passe">
+                <input type="email" placeholder="Mail *">
+                <input type="password" placeholder="Mot de passe *">
+                <input type="password" placeholder="Confirmez votre mot de passe *">
                 <div class="recaptcha-container">
-                    <div class="recaptcha-placeholder">reCAPTCHA</div>
+                    <div class="recaptcha-placeholder">
+                        <input type="checkbox" id="recaptcha1">
+                        <label for="recaptcha1">Je ne suis pas un robot</label>
+                        <img src="/img/RecaptchaLogo.png" alt="reCAPTCHA" draggable="false">
+                    </div>
                 </div>
                 <button type="submit" class="submit-button">S'inscrire</button>
                 <p class="switch-form-text">
@@ -48,12 +53,18 @@
             </form>
 
             <form id="connexion-form" class="auth-form" style="display: none;">
-                <input type="email" placeholder="Mail">
-                <input type="password" placeholder="Mot de passe">
+                <div class="spacer"></div>
+                <input type="email" placeholder="Mail *">
+                <input type="password" placeholder="Mot de passe *">
                 <div class="recaptcha-container">
-                    <div class="recaptcha-placeholder">reCAPTCHA</div>
+                    <div class="recaptcha-placeholder">
+                        <input type="checkbox" id="recaptcha2">
+                        <label for="recaptcha2">Je ne suis pas un robot</label>
+                        <img src="/img/RecaptchaLogo.png" alt="reCAPTCHA">
+                    </div>
                 </div>
                 <button type="submit" class="submit-button">Connexion</button>
+                <div class="spacer"></div>
             </form>
         </div>
     </div>
@@ -63,17 +74,20 @@
             const inscriptionForm = document.getElementById('inscription-form');
             const connexionForm = document.getElementById('connexion-form');
             const tabs = document.getElementsByClassName('tab-button');
+            const slider = document.querySelector('.tab-slider');
 
             if (tab === 'inscription') {
                 inscriptionForm.style.display = 'flex';
                 connexionForm.style.display = 'none';
                 tabs[0].classList.add('active');
                 tabs[1].classList.remove('active');
+                slider.style.left = '0';
             } else {
                 inscriptionForm.style.display = 'none';
                 connexionForm.style.display = 'flex';
                 tabs[0].classList.remove('active');
                 tabs[1].classList.add('active');
+                slider.style.left = '50%';
             }
         }
     </script>

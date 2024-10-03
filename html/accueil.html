@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style/style_accueil.css">
     <link rel="stylesheet" href="style/style_header.css">
     <link rel="stylesheet" href="style/style_footer.css">
-    
 </head>
 
 <body>
@@ -33,13 +32,11 @@
             <h1>Explore, Guess, and Master the Globe</h1>
         </div>
     </div>
-    
 
     <button class="play" id="playButton">Play</button>
 
-
     <div class="explorer hidden">
-        <div class="text-planet"> 
+        <div class="text-planet">
             <h1>Explorez le monde</h1>
             <p>On vous dépose partout : de la ville de Nevers aux magnifiques plages de Bali.</p>
         </div>
@@ -47,11 +44,11 @@
             <img src="/img/planet.png" alt="Globe" class="globe-image">
         </div>
     </div>
-    
+
     <hr class="custom-hr">
-    
+
     <div class="compete hidden">
-        <div class="text-compete"> 
+        <div class="text-compete">
             <h1>Défiez vous</h1>
             <p>Testez vos capacités contre plusieurs joueurs en local.</p>
         </div>
@@ -59,12 +56,12 @@
             <img src="/img/compete.png" alt="compete" class="compete-image">
         </div>
     </div>
-        
+
     <div class="faq-section">
         <h2 class="faq-title">FOIRE AUX QUESTIONS</h2>
         <hr class="faq-line">
     </div>
-    
+
     <div class="faq-container">
         <div class="faq-item">
             <div class="faq-question">
@@ -72,11 +69,10 @@
                 <span class="faq-toggle">+</span>
             </div>
             <div class="faq-answer">
-                <p>GeoGuessr est un jeu de géographie dans lequel vous êtes déposé quelque part dans le monde dans un panorama de rue, 
-                    et votre mission est de trouver des indices qui vous permettront de deviner votre position sur la carte du monde.</p>
+                <p>GeoGuessr est un jeu de géographie dans lequel vous êtes déposé quelque part dans le monde dans un panorama de rue, et votre mission est de trouver des indices qui vous permettront de deviner votre position sur la carte du monde.</p>
             </div>
         </div>
-    
+
         <div class="faq-item">
             <div class="faq-question">
                 <h3>Comment jouer ?</h3>
@@ -86,7 +82,7 @@
                 <p>Il vous suffit de créer un compte ou de vous connecter, puis de cliquer sur "Play".</p>
             </div>
         </div>
-    
+
         <div class="faq-item">
             <div class="faq-question">
                 <h3>Est-ce que ma progression est sauvegardée ?</h3>
@@ -97,12 +93,6 @@
             </div>
         </div>
     </div>
-    
-    
-    
-
-    
-
 
     <footer>
         <div class="left-footer">
@@ -120,11 +110,11 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('show'); 
+                    entry.target.classList.add('show');
                 }
             });
         });
-    
+
         const hiddenElements = document.querySelectorAll('.hidden');
         hiddenElements.forEach((el) => observer.observe(el));
     </script>

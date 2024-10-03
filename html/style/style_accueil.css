@@ -1,38 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-.hidden {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-
-    
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
     padding-top: 60px;
     background-color: #222;
-
 }
 
 .image-container {
     position: relative;
     text-align: center;
-    width: 100%;    
-    height: 100vh; /* Ajuste la hauteur selon ton besoin */
+    width: 100%;
+    height: 100vh;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 70%, rgba(34, 34, 34, 1) 100%), 
                 url('../img/background.jpeg');
     background-size: cover;
@@ -41,29 +25,26 @@ body {
 }
 
 
-
-
 .background-section {
-    width: 109%;
+    width: 100%;
     height: auto;
-    display: block;
     opacity: 0.85;
-    position: relative;
-    animation: fadeInBackground 3s ease-in-out;
+    animation: fadeInBackground 1.5s ease-in-out;
 }
 
 @keyframes fadeInBackground {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0.85;
-    }
+    0% { opacity: 0; }
+    100% { opacity: 0.85; }
+}
+
+@keyframes fadeInTitre {
+    0% { opacity: 0; }
+    100% { opacity: 0.85; }
 }
 
 .titre {
     position: absolute;
-    top: 40%;
+    top: 43%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
@@ -73,43 +54,26 @@ body {
     background-color: rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(5px);
     border-radius: 20px;
-    padding: 20px 40px;
-    width: 1200px; 
-    height: 240px;
+    padding: 15px 50px;
+    width: 80%;
+    max-width: 1200px;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-    animation: fadeInBackground 3s ease-in-out;
+    animation: fadeInBackground 1.5s ease-in-out;
 
-}
-
-@keyframes fadeInTitre {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0.85;
-    }
 }
 
 .carte {
     position: absolute;
     top: 8%;
-    left: 45%;
-    width: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12vw;
+    max-width: 180px;
     height: auto;
     filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
-    animation: fadeInBackground 3s ease-in-out;
+    animation: fadeInBackground 1.5s ease-in-out;
 
 }
-
-@keyframes fadeInBackCarte {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0.85;
-    }
-}
-
 
 .play {
     color: white;
@@ -124,33 +88,39 @@ body {
     cursor: pointer;
     position: absolute;
     top: 75%;
-    right: 46%;
-    z-index:0;
-    transition: all 0.3s ease;
-    animation: fadeInBackground 3s ease-in-out;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+    animation: fadeInBackground 1.5s ease-in-out;
 
 }
-
-@keyframes fadeInBackPlay {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0.85;
-    }
-}
-
 
 .play:hover {
     background: linear-gradient(135deg, #27dc30, #0d9c14);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-    transform: scale(1.05);
 }
 
 .play:active {
-    transform: scale(0.95);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.1s ease;
+    transform: translate(-50%, 0) scale(0.95);
+}
+
+.explorer, .compete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 5%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    min-height: 40vh;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .explorer {
@@ -244,7 +214,6 @@ body {
     height: auto;
 }
 
-
 .custom-hr {
     border: none;
     border-top: 2px solid rgba(255, 255, 255, 0.2);
@@ -254,27 +223,24 @@ body {
 
 .faq-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start; 
+    justify-content: center;
     margin: 20px 0;
 }
 
 .faq-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 15px;
+    font-size: 24px;
     font-weight: 600;
     color: #ffffff;
-    margin: 0;
-    margin-left: 20%;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 .faq-line {
     border: none;
     border-top: 2px solid rgba(255, 255, 255, 0.2);
-    width: 48%;
-    margin-left: 20px;
-    margin-bottom: 50px;
+    width: 50%;
+    margin-bottom: 20px;
 }
 
 .faq-container {
@@ -303,8 +269,6 @@ body {
     font-weight: 600;
     margin: 0;
     color: #ffffff;
-    font-family: 'Poppins', sans-serif;
-
 }
 
 .faq-toggle {
@@ -312,8 +276,6 @@ body {
     font-weight: bold;
     color: #ffffff;
     transition: transform 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-
 }
 
 .faq-answer {
@@ -321,8 +283,6 @@ body {
     overflow: hidden;
     transition: max-height 0.3s ease;
     color: #ffffff;
-    font-family: 'Poppins', sans-serif;
-
 }
 
 .faq-answer p {
@@ -336,7 +296,3 @@ body {
 .faq-item.active .faq-toggle {
     transform: rotate(45deg);
 }
-
-
-
-

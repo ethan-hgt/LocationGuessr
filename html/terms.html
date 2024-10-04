@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - LocationGuessr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style_header.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #222;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .left-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header-link {
+            font-size: 16px;
+            margin-right: 20px;
+            color: #c0c0c0;
+            text-decoration: none;
+            transition: transform 1s ease-out, color 0.4s ease;
+            background-color: transparent;
+            padding: 5px;
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+        }
+
+        .header-link.active, .header-link:hover {
+            transform: scale(1.2);
+            font-weight: bold;
+            color: #fff;
+            background-color: transparent;
+            transform-origin: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            opacity: 0; 
+            animation: fadeIn 1s ease-in forwards;
+        }
+
+        a {
+            color: #29d22f;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animation de fondu */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        footer {
+            background-color: #222;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            color: #fff;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .left-footer {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .footer-link {
+            font-size: 16px;
+            margin-right: 20px;
+            color: #c0c0c0;
+            text-decoration: none;
+            transition: transform 0.4s ease, color 0.4s ease;
+            background-color: transparent;
+            padding: 5px;
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .footer-link.active, .footer-link:hover {
+            transform: scale(1.2);
+            font-weight: bold;
+            color: #fff;
+            background-color: transparent;
+        }
+
+        .right-footer .footer-link {
+            margin-right: 0;
+            pointer-events: none;
+            transform: none;
+            transition: none;
+            font-weight: normal;
+            color: #c0c0c0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="left-header">
+            <a href="accueil.html">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+            </a>
+            <a href="play.html" class="header-link">Play</a>
+            <a href="/html/Leaderboard.html" class="header-link">Leaderboard</a>
+            <a href="/html/aboutUs.html" class="header-link">About us</a>
+        </div>
+        <div class="right-header">
+            <a href="login.html" class="header-link">Connexion</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Terms of Service</h1>
+        <p>Welcome to LocationGuessr! By accessing and using our website, you agree to the following terms and conditions:</p>
+        <p>1. You are responsible for any content you post on our platform. You agree not to post any offensive, illegal, or inappropriate material.</p>
+        <p>2. We reserve the right to modify or terminate our services at any time without prior notice.</p>
+        <p>3. By using our website, you agree not to engage in any activity that could harm or disrupt the services we provide.</p>
+        <p>If you have any questions about these terms, feel free to <a href="contact.html">contact us</a>.</p>
+    </div>
+
+    <footer>
+        <div class="left-footer">
+            <a href="privacy.html" class="footer-link">Privacy</a>
+            <a href="terms.html" class="footer-link">Terms</a>
+            <a href="contact.html" class="footer-link">Contact us</a>
+        </div>
+        <div class="right-footer">
+            <span class="footer-link">© 2024 LocationGuessr</span>
+        </div>
+    </footer>
+
+    <script src="/html/style/script_accueil.js"></script>
+</body>
+</html>

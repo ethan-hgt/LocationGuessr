@@ -44,4 +44,9 @@ footer {
 
 .right-footer .footer-link {
     margin-right: 0;
+    pointer-events: none;
+    transform: none;
+    transition: none;
+    font-weight: normal;
+    color: #c0c0c0;
 }

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - LocationGuessr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style_header.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #222;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .left-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header-link {
+            font-size: 16px;
+            margin-right: 20px;
+            color: #c0c0c0;
+            text-decoration: none;
+            transition: transform 1s ease-out, color 0.4s ease;
+            background-color: transparent;
+            padding: 5px;
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+        }
+
+        .header-link.active, .header-link:hover {
+            transform: scale(1.2);
+            font-weight: bold;
+            color: #fff;
+            background-color: transparent;
+            transform-origin: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-top: 80px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+
+        textarea {
+            resize: none;
+            height: 150px;
+        }
+
+        button {
+            background-color: #29d22f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        button:hover {
+            background-color: #27dc30;
+        }
+
+        footer {
+            background-color: #222;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            color: #fff;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .left-footer {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .footer-link {
+            font-size: 16px;
+            margin-right: 20px;
+            color: #c0c0c0;
+            text-decoration: none;
+            transition: transform 0.4s ease, color 0.4s ease;
+            background-color: transparent;
+            padding: 5px;
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .footer-link.active, .footer-link:hover {
+            transform: scale(1.2);
+            font-weight: bold;
+            color: #fff;
+            background-color: transparent;
+        }
+
+        .right-footer .footer-link {
+    margin-right: 0;
+    pointer-events: none;
+    transform: none;
+    transition: none;
+    font-weight: normal;
+    color: #c0c0c0;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="left-header">
+            <a href="accueil.html">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+            </a>
+            <a href="play.html" class="header-link">Play</a>
+            <a href="/html/Leaderboard.html" class="header-link">Leaderboard</a>
+            <a href="/html/aboutUs.html" class="header-link">About us</a>
+        </div>
+        <div class="right-header">
+            <a href="login.html" class="header-link">Connexion</a>
+        </div>
+    </header>
+
+    <h1>Contact Us</h1>
+    <form action="contact.php" method="POST">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your Email" required>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+
+        <button type="submit">Send Message</button>
+    </form>
+
+    <footer>
+        <div class="left-footer">
+            <a href="privacy.html" class="footer-link">Privacy</a>
+            <a href="terms.html" class="footer-link">Terms</a>
+            <a href="contact.html" class="footer-link">Contact us</a>
+        </div>
+        <div class="right-footer">
+            <span class="footer-link">© 2024 LocationGuessr</span>
+        </div>
+    </footer>
+
+    <script src="/html/style/script_accueil.js"></script> 
+</body>
+</html>

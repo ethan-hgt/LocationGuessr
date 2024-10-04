@@ -22,6 +22,11 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 
@@ -295,4 +300,24 @@ body {
 
 .faq-item.active .faq-toggle {
     transform: rotate(45deg);
+}
+
+@media (max-width: 768px) {
+    .titre {
+        font-size: 6vw;
+        padding: 2vw 5vw;
+    }
+
+    .play {
+        font-size: 4vw;
+        padding: 2vw 6vw;
+    }
+
+    .text-planet, .text-compete {
+        font-size: 4vw;
+    }
+
+    .image-planet, .image-compete {
+        width: 50vw;
+    }
 }

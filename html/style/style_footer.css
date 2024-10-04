@@ -6,16 +6,19 @@ footer {
     align-items: center;
     height: 60px;
     color: #fff;
+    width: 100%;
     position: relative;
     bottom: 0;
-    width: 100%;
+    left: 0;
     z-index: 1000;
-    bottom: 0%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.left-footer, .right-footer {
+.left-footer {
     display: flex;
     align-items: center;
+    white-space: nowrap;
 }
 
 .footer-link {
@@ -24,12 +27,19 @@ footer {
     color: #c0c0c0;
     text-decoration: none;
     transition: transform 0.4s ease, color 0.4s ease;
+    background-color: transparent;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+    text-align: center;
 }
 
-.footer-link:hover {
-    color: #fff;
-    transform: scale(1.1);
+.footer-link.active, .footer-link:hover {
+    transform: scale(1.2);
     font-weight: bold;
+    color: #fff;
+    background-color: transparent;
 }
 
 .right-footer .footer-link {

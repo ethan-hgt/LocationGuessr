@@ -49,6 +49,25 @@ body {
     100% { opacity: 0.85; }
 }
 
+@keyframes fadeInOpacity {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.carte {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12vw;
+    max-width: 180px;
+    height: auto;
+    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+    animation: fadeInOpacity 1.5s ease-in-out 0s;
+    opacity: 0; 
+    animation-fill-mode: forwards; 
+}
+
 .titre {
     position: absolute;
     top: 43%;
@@ -66,20 +85,9 @@ body {
     width: 80%;
     max-width: 1200px;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-    animation: fadeInBackground 1.5s ease-in-out;
-}
-
-
-.carte {
-    position: absolute;
-    top: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12vw;
-    max-width: 180px;
-    height: auto;
-    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
-    animation: fadeInBackground 1.5s ease-in-out;
+    animation: fadeInOpacity 1.5s ease-in-out 0.2s;
+    opacity: 0;
+    animation-fill-mode: forwards;
 }
 
 .play {
@@ -98,8 +106,12 @@ body {
     left: 50%;
     transform: translate(-50%, 0);
     transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
-    animation: fadeInBackground 1.5s ease-in-out;
+    animation: fadeInOpacity 1.5s ease-in-out 0.3s; 
+    opacity: 0; 
+    animation-fill-mode: forwards;
 }
+
+
 
 .play:hover {
     background: linear-gradient(135deg, #27dc30, #0d9c14);
@@ -253,6 +265,22 @@ body {
     max-width: 800px;
     margin: auto;
     margin-bottom: 100px;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.faq-container.hidden {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.faq-container.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .faq-item {

@@ -47,9 +47,16 @@ header {
     transform-origin: center;
 }
 
-
-
-
 .right-header .header-link {
     margin-right: 0;
+}
+
+a.logout-link {
+    color: rgb(214, 47, 47);      
+    font-weight: bold;  
+    text-decoration: none; 
+}
+
+a.logout-link:hover {
+    text-decoration: underline; 
 }

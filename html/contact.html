@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - LocationGuessr</title>
+    <title>Contact - LocationGuessr</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style/style_header.css">
     
     <style>
@@ -21,51 +22,11 @@
             padding: 20px;
         }
 
-        header {
-            background-color: #222;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .left-header {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .header-link {
-            font-size: 16px;
-            margin-right: 20px;
-            color: #c0c0c0;
-            text-decoration: none;
-            transition: transform 1s ease-out, color 0.4s ease;
-            background-color: transparent;
-            padding: 5px;
-            display: inline-block;
-            width: 100px;
-            text-align: center;
-        }
 
         .header-link.active, .header-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
+            transform: scale(1.05);
             color: #fff;
-            background-color: transparent;
-            transform-origin: center;
+            text-decoration: none; 
         }
 
         h1 {
@@ -147,7 +108,7 @@
             margin-right: 20px;
             color: #c0c0c0;
             text-decoration: none;
-            transition: transform 0.4s ease, color 0.4s ease;
+            transition: transform 0.3s ease, color 0.3s ease;
             background-color: transparent;
             padding: 5px;
             display: inline-block;
@@ -156,20 +117,21 @@
         }
 
         .footer-link.active, .footer-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
+            transform: scale(1.05);
             color: #fff;
             background-color: transparent;
+            text-decoration: none;
         }
 
         .right-footer .footer-link {
-    margin-right: 0;
-    pointer-events: none;
-    transform: none;
-    transition: none;
-    font-weight: normal;
-    color: #c0c0c0;
-}
+            margin-right: 0;
+            pointer-events: none;
+            transform: none;
+            transition: none;
+            font-weight: normal;
+            color: #c0c0c0;
+            text-decoration: none; 
+        }
     </style>
 </head>
 <body>
@@ -179,40 +141,49 @@
             <a href="accueil.html">
                 <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
             </a>
-            <a href="play.html" class="header-link">Play</a>
-            <a href="/html/Leaderboard.html" class="header-link">Leaderboard</a>
-            <a href="/html/aboutUs.html" class="header-link">About us</a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+            <a href="/html/aboutUs.html" class="header-link">À propos</a>
         </div>
         <div class="right-header">
             <a href="login.html" class="header-link">Connexion</a>
         </div>
     </header>
 
-    <h1>Contact Us</h1>
+    <h1>Nous contacter</h1>
     <form action="contact.php" method="POST">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <label for="name">Nom</label>
+        <input type="text" id="name" name="name" placeholder="Votre nom" required>
 
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Your Email" required>
+        <input type="email" id="email" name="email" placeholder="Votre email" required>
 
         <label for="message">Message</label>
-        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+        <textarea id="message" name="message" placeholder="Votre message" required></textarea>
 
-        <button type="submit">Send Message</button>
+        <button type="submit">Envoyer le message</button>
     </form>
 
     <footer>
         <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Privacy</a>
-            <a href="terms.html" class="footer-link">Terms</a>
-            <a href="contact.html" class="footer-link">Contact us</a>
+            <a href="privacy.html" class="footer-link">Confidentialité</a>
+            <a href="terms.html" class="footer-link">Conditions générales</a>
+            <a href="contact.html" class="footer-link">Nous contacter</a>
         </div>
         <div class="right-footer">
             <span class="footer-link">© 2024 LocationGuessr</span>
         </div>
     </footer>
 
-    <script src="/html/style/script_accueil.js"></script> 
+    <script>
+        const footerLinks = document.querySelectorAll('.footer-link');
+
+        footerLinks.forEach(link => {
+            const currentLocation = window.location.href;
+            if (link.href === currentLocation) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>

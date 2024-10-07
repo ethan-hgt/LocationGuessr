@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - LocationGuessr</title>
+    <title>Politique de confidentialité - LocationGuessr</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style/style_header.css"> 
 
     <style>
@@ -20,57 +21,11 @@
             color: #fff;
             padding: 20px;
             overflow-x: hidden;
+            min-height: 100vh;
             display: flex;
-            justify-content: center; 
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            height: 100vh; 
-        }
-
-        header {
-            background-color: #222;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .left-header {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .header-link {
-            font-size: 16px;
-            margin-right: 20px;
-            color: #c0c0c0;
-            text-decoration: none;
-            transition: transform 1s ease-out, color 0.4s ease;
-            background-color: transparent;
-            padding: 5px;
-            display: inline-block;
-            width: 100px;
-            text-align: center;
-        }
-
-        .header-link.active, .header-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
-            color: #fff;
-            background-color: transparent;
-            transform-origin: center;
         }
 
         h1 {
@@ -78,7 +33,6 @@
             font-size: 2.5rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-top: 20px; 
         }
 
         p {
@@ -124,18 +78,16 @@
             height: 60px;
             color: #fff;
             width: 100%;
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
-            z-index: 1000;
             box-sizing: border-box;
-            overflow: hidden;
         }
 
-        .left-footer {
+        .left-footer, .right-footer {
             display: flex;
             align-items: center;
-            white-space: nowrap;
+            justify-content: center;
         }
 
         .footer-link {
@@ -143,28 +95,23 @@
             margin-right: 20px;
             color: #c0c0c0;
             text-decoration: none;
-            transition: transform 0.4s ease, color 0.4s ease;
+            transition: transform 0.3s ease, color 0.3s ease, font-weight 0.3s ease;
             background-color: transparent;
             padding: 5px;
             display: inline-block;
             text-align: center;
-            min-width: 80px;
         }
 
         .footer-link.active, .footer-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
+            transform: scale(1.05);
             color: #fff;
-            background-color: transparent;
+            text-decoration: none; 
         }
 
-        .right-footer .footer-link {
-            margin-right: 0;
-            pointer-events: none;
-            transform: none;
-            transition: none;
-            font-weight: normal;
-            color: #c0c0c0;
+        .header-link.active, .header-link:hover {
+            transform: scale(1.05);
+            color: #fff;
+            text-decoration: none; 
         }
     </style>
 </head>
@@ -173,11 +120,11 @@
     <header>
         <div class="left-header">
             <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+                <img src="../img/plane.png" alt="icône" class="header-icon" draggable="false">
             </a>
-            <a href="play.html" class="header-link">Play</a>
-            <a href="/html/Leaderboard.html" class="header-link">Leaderboard</a>
-            <a href="/html/aboutUs.html" class="header-link">About us</a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+            <a href="/html/aboutUs.html" class="header-link">À propos</a>
         </div>
         <div class="right-header">
             <a href="login.html" class="header-link">Connexion</a>
@@ -185,24 +132,35 @@
     </header>
 
     <div class="container">
-        <h1>Privacy Policy</h1>
-        <p>Your privacy is important to us. At LocationGuessr, we respect your privacy and are committed to protecting any personal information you may provide us through the use of our website.</p>
-        <p>We only collect information when you voluntarily provide it to us. This may include your email address, username, or other details needed to improve your experience on our website.</p>
-        <p>We will never sell or share your personal data with third parties unless it is required by law. For more details, please refer to our full privacy policy.</p>
-        <p>If you have any questions or concerns about how we handle your personal information, feel free to <a href="contact.html">contact us</a>.</p>
+        <h1>Politique de confidentialité</h1>
+        <p>Votre vie privée est importante pour nous. Chez LocationGuessr, nous respectons votre vie privée et nous nous engageons à protéger les informations personnelles que vous pourriez nous fournir en utilisant notre site Web.</p>
+        <p>Nous ne collectons des informations que lorsque vous nous les fournissez volontairement. Cela peut inclure votre adresse e-mail, votre nom d'utilisateur ou d'autres détails nécessaires pour améliorer votre expérience sur notre site Web.</p>
+        <p>Nous ne vendrons jamais vos données personnelles à des tiers, sauf si la loi l'exige. Pour plus de détails, veuillez consulter notre politique de confidentialité complète.</p>
+        <p>Si vous avez des questions ou des préoccupations concernant la manière dont nous gérons vos informations personnelles, n'hésitez pas à <a href="contact.html">nous contacter</a>.</p>
     </div>
 
     <footer>
         <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Privacy</a>
-            <a href="terms.html" class="footer-link">Terms</a>
-            <a href="contact.html" class="footer-link">Contact us</a>
+            <a href="privacy.html" class="footer-link">Confidentialité</a>
+            <a href="terms.html" class="footer-link">Conditions générales</a>
+            <a href="contact.html" class="footer-link">Nous contacter</a>
         </div>
         <div class="right-footer">
             <span class="footer-link">© 2024 LocationGuessr</span>
         </div>
     </footer>
 
-    <script src="/html/style/script_accueil.js"></script>
+    <script>
+        const footerLinks = document.querySelectorAll('.footer-link');
+
+const currentLocation = window.location.href;
+
+footerLinks.forEach(link => {
+    if (link.href === currentLocation) {
+        link.classList.add('active');
+    }
+});
+
+    </script>
 </body>
 </html>

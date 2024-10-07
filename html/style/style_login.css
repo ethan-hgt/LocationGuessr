@@ -37,15 +37,17 @@ body {
     max-width: 500px;
     z-index: 10;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.257);
+    text-align: center;
 }
 
 .tab-container {
     display: flex;
     margin-bottom: 1.5rem;
-    position: relative;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    overflow: hidden;
+    position: relative;
+    height: 60px;
+    width: 100%;
 }
 
 .tab-slider {
@@ -75,7 +77,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    height: 450px;
+    min-height: 300px;
 }
 
 .name-fields {
@@ -84,16 +86,51 @@ body {
     gap: 1rem;
 }
 
+.input-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
 input {
-    padding: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 1rem 0.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.8); /* Bordure blanche épaisse */
     background-color: rgba(0, 0, 0, 0.4);
-    color: rgb(255, 255, 255);
+    color: #fff;
     border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold; /* Texte en gras */
+    width: 100%;
+    outline: none;
 }
 
 input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Placeholder gris-blanc */
+    font-weight: bold; /* Placeholder en gras */
+}
+
+input:focus {
+    border-color: #4CAF50; /* Couleur de la bordure en focus */
+}
+
+input:focus + label, /* Quand le champ est en focus */
+input:not(:placeholder-shown) + label {
+    transform: translateY(-1.5rem);
+    font-size: 0.85rem;
+    color: #4CAF50; /* Couleur du label flottant */
+}
+
+label {
+    position: absolute;
+    top: 1rem;
+    left: 0.5rem;
+    font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+input:not(:placeholder-shown) {
+    padding-top: 1.5rem; /* Ajuster l'espace pour le texte flottant */
 }
 
 .recaptcha-container {
@@ -134,6 +171,7 @@ input::placeholder {
     flex: 1;
 }
 
+/* Style pour les messages d'erreur */
 .error-message {
     color: rgb(255, 0, 0);
     font-size: 0.875rem;
@@ -141,5 +179,5 @@ input::placeholder {
 }
 
 .error {
-    border: 2px solid rgb(255, 0, 0);
+    border: 2px solid rgb(199, 3, 3);
 }

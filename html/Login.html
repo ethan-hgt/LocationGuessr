@@ -32,31 +32,50 @@
             </div>
 
             <form id="connexionForm" class="auth-form">
-                <div class="spacer"></div>
-                <input type="email" id="emailConnexion" placeholder="Email" required>
-                <input type="password" id="passwordConnexion" placeholder="Mot de passe" required>
-
+                <div class="input-container">
+                    <input type="email" id="emailConnexion" required>
+                    <label for="emailConnexion">Email</label>
+                </div>
+                <div class="input-container">
+                    <input type="password" id="passwordConnexion" required>
+                    <label for="passwordConnexion">Mot de passe</label>
+                </div>
                 <div class="recaptcha-container">
                     <div class="g-recaptcha" data-sitekey="6LdK8lkqAAAAAKUypflbv4oFttFs7pmqEETedKJ3"></div>
                 </div>
-
                 <button type="submit" class="submit-button">Connexion</button>
-                <div class="spacer"></div>
+                <p class="switch-form-text">
+                    Vous n'avez pas de compte ? 
+                    <a href="#" onclick="switchTab('inscription'); return false;">Inscription</a>
+                </p>
             </form>
 
             <form id="inscriptionForm" class="auth-form" style="display: none;">
                 <div class="name-fields">
-                    <input type="text" id="prenom" placeholder="Prénom" required>
-                    <input type="text" id="nom" placeholder="Nom" required>
+                    <div class="input-container">
+                        <input type="text" id="prenom" required>
+                        <label for="prenom">Prénom</label>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" id="nom" required>
+                        <label for="nom">Nom</label>
+                    </div>
                 </div>
-                <input type="email" id="emailInscription" placeholder="Email" required>
-                <input type="password" id="passwordInscription" placeholder="Mot de passe" required>
-                <input type="password" id="confirmPasswordInscription" placeholder="Confirmer le mot de passe" required>
-
+                <div class="input-container">
+                    <input type="email" id="emailInscription" required>
+                    <label for="emailInscription">Email</label>
+                </div>
+                <div class="input-container">
+                    <input type="password" id="passwordInscription" required>
+                    <label for="passwordInscription">Mot de passe</label>
+                </div>
+                <div class="input-container">
+                    <input type="password" id="confirmPasswordInscription" required>
+                    <label for="confirmPasswordInscription">Confirmer le mot de passe</label>
+                </div>
                 <div class="recaptcha-container">
                     <div class="g-recaptcha" data-sitekey="6LdK8lkqAAAAAKUypflbv4oFttFs7pmqEETedKJ3"></div>
                 </div>
-
                 <button type="submit" class="submit-button">S'inscrire</button>
                 <p class="switch-form-text">
                     Vous avez déjà un compte ? 

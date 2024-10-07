@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - LocationGuessr</title>
+    <title>Conditions Générales - LocationGuessr</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style/style_header.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/html/script/script_login.js"></script>
@@ -27,51 +28,11 @@
             height: 100vh;
         }
 
-        header {
-            background-color: #222;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .left-header {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .header-link {
-            font-size: 16px;
-            margin-right: 20px;
-            color: #c0c0c0;
-            text-decoration: none;
-            transition: transform 1s ease-out, color 0.4s ease;
-            background-color: transparent;
-            padding: 5px;
-            display: inline-block;
-            width: 100px;
-            text-align: center;
-        }
 
         .header-link.active, .header-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
+            transform: scale(1.05);
             color: #fff;
-            background-color: transparent;
-            transform-origin: center;
+            text-decoration: none; 
         }
 
         h1 {
@@ -154,10 +115,10 @@
         }
 
         .footer-link.active, .footer-link:hover {
-            transform: scale(1.2);
-            font-weight: bold;
+            transform: scale(1.05);
             color: #fff;
             background-color: transparent;
+            text-decoration: none; 
         }
 
         .right-footer .footer-link {
@@ -167,6 +128,7 @@
             transition: none;
             font-weight: normal;
             color: #c0c0c0;
+            text-decoration: none; 
         }
     </style>
 </head>
@@ -175,11 +137,11 @@
     <header>
         <div class="left-header">
             <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+                <img src="../img/plane.png" alt="icône" class="header-icon" draggable="false">
             </a>
-            <a href="play.html" class="header-link">Play</a>
-            <a href="/html/Leaderboard.html" class="header-link">Leaderboard</a>
-            <a href="/html/aboutUs.html" class="header-link">About us</a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+            <a href="/html/aboutUs.html" class="header-link">À propos</a>
         </div>
         <div class="right-header">
             <a href="login.html" class="header-link">Connexion</a>
@@ -187,25 +149,34 @@
     </header>
 
     <div class="container">
-        <h1>Terms of Service</h1>
-        <p>Welcome to LocationGuessr! By accessing and using our website, you agree to the following terms and conditions:</p>
-        <p>1. You are responsible for any content you post on our platform. You agree not to post any offensive, illegal, or inappropriate material.</p>
-        <p>2. We reserve the right to modify or terminate our services at any time without prior notice.</p>
-        <p>3. By using our website, you agree not to engage in any activity that could harm or disrupt the services we provide.</p>
-        <p>If you have any questions about these terms, feel free to <a href="contact.html">contact us</a>.</p>
+        <h1>Conditions Générales</h1>
+        <p>Bienvenue sur LocationGuessr ! En accédant et en utilisant notre site Web, vous acceptez les termes et conditions suivants :</p>
+        <p>1. Vous êtes responsable de tout contenu que vous publiez sur notre plateforme. Vous vous engagez à ne pas publier de contenu offensant, illégal ou inapproprié.</p>
+        <p>2. Nous nous réservons le droit de modifier ou de résilier nos services à tout moment sans préavis.</p>
+        <p>3. En utilisant notre site Web, vous vous engagez à ne pas participer à des activités qui pourraient nuire ou perturber les services que nous fournissons.</p>
+        <p>Si vous avez des questions concernant ces termes, n'hésitez pas à <a href="contact.html">nous contacter</a>.</p>
     </div>
 
     <footer>
         <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Privacy</a>
-            <a href="terms.html" class="footer-link">Terms</a>
-            <a href="contact.html" class="footer-link">Contact us</a>
+            <a href="privacy.html" class="footer-link">Confidentialité</a>
+            <a href="terms.html" class="footer-link">Conditions générales</a>
+            <a href="contact.html" class="footer-link">Nous contacter</a>
         </div>
         <div class="right-footer">
             <span class="footer-link">© 2024 LocationGuessr</span>
         </div>
     </footer>
 
-    <script src="/html/style/script_accueil.js"></script>
+    <script>
+        const footerLinks = document.querySelectorAll('.footer-link');
+
+        footerLinks.forEach(link => {
+            const currentLocation = window.location.href;
+            if (link.href === currentLocation) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>

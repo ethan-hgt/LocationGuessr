@@ -93,30 +93,30 @@ body {
 
 input {
     padding: 1rem 0.5rem;
-    border: 2px solid rgba(255, 255, 255, 0.8); /* Bordure blanche épaisse */
+    border: 2px solid rgba(214, 214, 214, 0.8);
     background-color: rgba(0, 0, 0, 0.4);
     color: #fff;
     border-radius: 10px;
     font-size: 1rem;
-    font-weight: bold; /* Texte en gras */
+    font-weight: bold; 
     width: 100%;
     outline: none;
 }
 
 input::placeholder {
-    color: rgba(255, 255, 255, 0.7); /* Placeholder gris-blanc */
-    font-weight: bold; /* Placeholder en gras */
+    color: rgba(255, 255, 255, 0.7); 
+    font-weight: bold; 
 }
 
 input:focus {
-    border-color: #4CAF50; /* Couleur de la bordure en focus */
+    border-color: #4CAF50; 
 }
 
-input:focus + label, /* Quand le champ est en focus */
+input:focus + label,
 input:not(:placeholder-shown) + label {
     transform: translateY(-1.5rem);
-    font-size: 0.85rem;
-    color: #4CAF50; /* Couleur du label flottant */
+    font-size: 0.90rem;
+    color: #ffffff; 
 }
 
 label {
@@ -130,7 +130,7 @@ label {
 }
 
 input:not(:placeholder-shown) {
-    padding-top: 1.5rem; /* Ajuster l'espace pour le texte flottant */
+    padding-top: 1.5rem; 
 }
 
 .recaptcha-container {
@@ -171,7 +171,6 @@ input:not(:placeholder-shown) {
     flex: 1;
 }
 
-/* Style pour les messages d'erreur */
 .error-message {
     color: rgb(255, 0, 0);
     font-size: 0.875rem;

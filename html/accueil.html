@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="style/style_footer.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/html/script/script_login.js"></script>
+    <script src="/html/style/script_accueil.js"></script>
 </head>
 
 <body>
@@ -97,6 +98,16 @@
             </div>
         </div>
     </div>
+    
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span id="closePopup" class="close">&times;</span>
+            <h2>Vous devez vous connecter</h2>
+            <p>Créez un compte ou connectez-vous pour jouer.</p>
+            <button id="loginBtn">Connexion</button>
+        </div>
+    </div>
+
     <script src="/html/style/script_footer.js"></script>
     <footer>
         <div class="left-footer">
@@ -108,20 +119,5 @@
             <span class="footer-link">© 2024 LocationGuessr</span>
         </div>
     </footer>
-    
-
-    <script src="/html/style/script_accueil.js"></script>
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        });
-
-        const hiddenElements = document.querySelectorAll('.hidden');
-        hiddenElements.forEach((el) => observer.observe(el));
-    </script>
 </body>
 </html>

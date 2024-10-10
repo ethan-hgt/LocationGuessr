@@ -78,7 +78,6 @@ function handleInscriptionSubmit(event) {
 function handleConnexionSubmit(event) {
     event.preventDefault();
     
-    // Réinitialise les messages d'erreur et les styles
     resetErrorStyles();
 
     const email = document.getElementById('emailConnexion').value;

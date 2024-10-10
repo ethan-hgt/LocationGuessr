@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocationGuessr</title>
-    <link rel="stylesheet" href="style/style_play.css">
+    <title>LocationGuessr - Accueil</title>
+    <link rel="stylesheet" href="style/style_accueil.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="play.html" class="header-link">Jouer</a>
+        </nav>
+    </header>
 
+    <main>
+        <button id="playButton" class="play">Jouer</button>
 
-    <div class="background-section">
-    </div>
-    <script src="style_play.js"></script>
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <span id="closePopup" class="close">&times;</span>
+                <h2>Vous devez vous connecter</h2>
+                <p>Créez un compte ou connectez-vous pour jouer.</p>
+                <button id="loginBtn">Connexion</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script/script_accueil.js"></script>
 </body>
 </html>

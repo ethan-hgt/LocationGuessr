@@ -44,11 +44,6 @@ body {
     100% { opacity: 0.85; }
 }
 
-@keyframes fadeInTitre {
-    0% { opacity: 0; }
-    100% { opacity: 0.85; }
-}
-
 @keyframes fadeInOpacity {
     0% { opacity: 0; }
     100% { opacity: 1; }
@@ -111,8 +106,6 @@ body {
     animation-fill-mode: forwards;
 }
 
-
-
 .play:hover {
     background: linear-gradient(135deg, #27dc30, #0d9c14);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
@@ -139,15 +132,6 @@ body {
 .show {
     opacity: 1;
     transform: translateY(0);
-}
-
-.explorer {
-    display: flex;
-    align-items: center;
-    padding: 50px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: white;
 }
 
 .text-planet {
@@ -278,11 +262,6 @@ body {
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-.faq-container.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .faq-item {
     background-color: #444;
     border-radius: 10px;
@@ -358,11 +337,6 @@ body {
     transform: scale(1.2);
 }
 
-.header-link.active {
-    color: #ff5722;
-    font-weight: bold;
-}
-
 .popup {
     display: none;
     position: fixed;
@@ -374,41 +348,65 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out; 
+}
+
+.popup.show {
+    display: flex;
+    opacity: 1; 
 }
 
 .popup-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2.5rem;
+    border-radius: 15px;
+    max-width: 450px;
+    width: 100%;
     text-align: center;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    position: relative;
+    transition: transform 0.3s ease-in-out;
 }
 
 .popup-content h2 {
     margin-bottom: 10px;
+    color: #fff;
+    font-size: 1.5rem;
 }
 
 .popup-content p {
     margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .close {
     position: absolute;
     top: 10px;
-    right: 20px;
-    font-size: 30px;
+    right: 15px;
+    font-size: 24px;
+    color: #fff;
     cursor: pointer;
 }
 
 button#loginBtn {
-    background-color: #3085d6;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 1rem;
+    border-radius: 30px;
+    font-size: 1.2rem;
     cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    max-width: 300px;
+    align-self: center;
 }
 
 button#loginBtn:hover {
-    background-color: #007bff;
+    background-color: #3e8e41;
 }
+

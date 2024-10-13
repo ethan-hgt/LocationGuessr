@@ -27,8 +27,6 @@
             <a href="login.html" class="header-link">Connexion</a>
         </div>
     </header>
-    
-    
 
     <div class="image-container">
         <img src="../img/background.jpeg" class="background-section" draggable="false">
@@ -54,7 +52,7 @@
 
     <div class="compete hidden">
         <div class="text-compete">
-            <h1>Défiez vous</h1>
+            <h1>Défiez-vous</h1>
             <p>Testez vos capacités contre plusieurs joueurs en local.</p>
         </div>
         <div class="image-compete">
@@ -98,13 +96,21 @@
             </div>
         </div>
     </div>
+
+    <div id="customPopup" class="custom-popup">
+        <div class="popup-content">
+            <box-icon id="popupIcon" name="check-circle" class="popup-icon success"></box-icon>
+            <h2 id="popupTitle" class="popup-title"></h2>
+            <p id="popupMessage" class="popup-message"></p>
+        </div>
+    </div>
     
     <div id="popup" class="popup">
         <div class="popup-content">
             <span id="closePopup" class="close">&times;</span>
             <h2>Vous devez vous connecter</h2>
             <p>Créez un compte ou connectez-vous pour jouer.</p>
-            <button id="loginBtn">Connexion</button>
+            <button id="loginBtn" class="submit-button">Connexion</button>
         </div>
     </div>
 

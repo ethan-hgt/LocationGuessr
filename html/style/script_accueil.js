@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const faqItems = document.querySelectorAll('.faq-item');
+    const popup = document.getElementById('popup');
+    const closePopup = document.getElementById('closePopup');
+    const loginBtn = document.getElementById('loginBtn');
 
     faqItems.forEach(item => {
         const faqToggle = item.querySelector('.faq-toggle');
@@ -22,15 +25,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (userFirstName) {
             window.location.href = 'play.html';
         } else {
-            document.getElementById('popup').style.display = 'flex';
+            popup.classList.add('show'); 
         }
     });
 
-    document.getElementById('closePopup').addEventListener('click', function() {
-        document.getElementById('popup').style.display = 'none';
+    closePopup.addEventListener('click', function() {
+        popup.classList.remove('show');
     });
 
-    document.getElementById('loginBtn').addEventListener('click', function() {
+    loginBtn.addEventListener('click', function() {
         window.location.href = 'login.html';
     });
 

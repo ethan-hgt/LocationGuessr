@@ -39,15 +39,15 @@ header {
     color: #c0c0c0;
     text-decoration: none;
     transition: transform 0.4s ease, color 0.4s ease;
-    background-color: transparent; /* Pas de fond autour du texte */
-    padding: 5px; /* Supprime le padding */
+    background-color: transparent; 
+    padding: 5px; 
 }
 
 .header-link:hover {
     transform: scale(1.2);
     font-weight: bold;
     color: #fff;
-    background-color: transparent; /* Reste transparent au survol */
+    background-color: transparent; 
 }
 
 .right-header .header-link {
@@ -56,7 +56,7 @@ header {
 }
 
 body {
-    padding-top: 60px; /* Ajoute de l'espace équivalent à la hauteur du header */
+    padding-top: 60px; 
 }
 
 .background-section {

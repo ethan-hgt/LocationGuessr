@@ -4,6 +4,95 @@ $(document).ready(function() {
     $('#connexionForm').on('submit', handleConnexionSubmit);
 });
 
+function showPopup(title, message, type = 'success', redirect = true) {
+    const popup = document.getElementById('customPopup');
+    const popupIcon = document.getElementById('popupIcon');
+
+    document.getElementById('popupTitle').innerText = title;
+    document.getElementById('popupMessage').innerText = message;
+
+    if (type === 'error') {
+        popupIcon.setAttribute('name', 'x-circle');
+        popupIcon.classList.remove('success');
+        popupIcon.setAttribute('color', '#e74c3c');
+        popupIcon.classList.add('error');
+    } else {
+        popupIcon.setAttribute('name', 'check-circle');
+        popupIcon.classList.remove('error');
+        popupIcon.setAttribute('color', '#4CAF50');
+        popupIcon.classList.add('success');
+    }
+
+    popup.classList.add('show');
+
+    const timeout = type === 'error' ? 2000 : 1500;
+
+    if (redirect && type !== 'error') {
+        setTimeout(() => {
+            closePopup();
+            window.location.href = 'accueil.html';
+        }, timeout);
+    } else {
+        setTimeout(() => {
+            closePopup();
+        }, timeout);
+    }
+}
+
+function closePopup() {
+    const popup = document.getElementById('customPopup');
+    popup.classList.remove('show');
+}
+
+function handleInscriptionSubmit(event) {
+    event.preventDefault();
+    const username = document.getElementById('usernameInscription').value;
+    const email = document.getElementById('emailInscription').value;
+    const password = document.getElementById('passwordInscription').value;
+    const confirmPassword = document.getElementById('confirmPasswordInscription').value;
+
+    if (password !== confirmPassword) {
+        showPopup('Erreur', 'Les mots de passe ne correspondent pas.', 'error', false);
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const userExists = users.some(user => user.email === email || user.username === username);
+    if (userExists) {
+        showPopup('Erreur', 'Cet email ou nom d\'utilisateur est déjà utilisé.', 'error', false);
+        return;
+    }
+
+    const newUser = { username, email, password };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('userFirstName', username);
+    showPopup('Succès', 'Inscription réussie ! Vous êtes maintenant connecté.');
+    updateHeader();
+}
+
+function handleConnexionSubmit(event) {
+    event.preventDefault();
+    resetErrorStyles();
+    const username = document.getElementById('usernameConnexion').value;
+    const password = document.getElementById('passwordConnexion').value;
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(user => user.username === username);
+
+    if (!user) {
+        showPopup('Erreur', 'Nom d\'utilisateur invalide.', 'error', false);
+        return;
+    } else if (user.password !== password) {
+        showPopup('Erreur', 'Mot de passe incorrect.', 'error', false);
+        return;
+    } else {
+        localStorage.setItem('userFirstName', user.username);
+        showPopup('Succès', 'Connexion réussie !');
+        updateHeader();
+    }
+}
+
 function switchTab(tab) {
     const inscriptionForm = document.getElementById('inscriptionForm');
     const connexionForm = document.getElementById('connexionForm');
@@ -32,72 +121,12 @@ function updateHeader() {
 function logout() {
     localStorage.removeItem('userFirstName');
     updateHeader();
-    alert('Vous avez été déconnecté.');
-    window.location.href = 'accueil.html';
-}
+    
+    showPopup('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', 'success', false);
 
-function handleInscriptionSubmit(event) {
-    event.preventDefault();
-    const username = document.getElementById('usernameInscription').value;
-    const email = document.getElementById('emailInscription').value;
-    const password = document.getElementById('passwordInscription').value;
-    const confirmPassword = document.getElementById('confirmPasswordInscription').value;
-
-    if (password !== confirmPassword) {
-        alert('Les mots de passe ne correspondent pas.');
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const userExists = users.some(user => user.email === email || user.username === username);
-    if (userExists) {
-        alert('Cet email ou nom d\'utilisateur est déjà utilisé.');
-        return;
-    }
-
-    const newUser = { username, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('userFirstName', username);
-    alert('Inscription réussie ! Vous êtes maintenant connecté.');
-    updateHeader();
-    setTimeout(function() {
+    setTimeout(() => {
         window.location.href = 'accueil.html';
-    }, 10);
-}
-
-function handleConnexionSubmit(event) {
-    event.preventDefault();
-    resetErrorStyles();
-    const username = document.getElementById('usernameConnexion').value;
-    const password = document.getElementById('passwordConnexion').value;
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === username);
-
-    if (!user) {
-        showError('usernameConnexion', 'Nom d\'utilisateur invalide.');
-        return;
-    } else if (user.password !== password) {
-        showError('passwordConnexion', 'Mot de passe incorrect.');
-        return;
-    } else {
-        localStorage.setItem('userFirstName', user.username);
-        alert('Connexion réussie !');
-        updateHeader();
-        setTimeout(function() {
-            window.location.href = 'accueil.html';
-        }, 10);
-    }
-}
-
-function showError(fieldId, message) {
-    const field = document.getElementById(fieldId);
-    const errorField = document.createElement('div');
-    errorField.className = 'error-message';
-    errorField.innerText = message;
-    field.classList.add('error');
-    field.parentNode.appendChild(errorField);
+    }, 1500);
 }
 
 function resetErrorStyles() {

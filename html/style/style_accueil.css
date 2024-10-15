@@ -73,7 +73,6 @@ body {
     font-weight: bold;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.05);
-    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     border-radius: 20px;
     padding: 15px 50px;
@@ -135,32 +134,23 @@ body {
 }
 
 .text-planet {
-    font-family: 'Poppins', sans-serif;
     flex: 1;
-    width: 10%;
     margin-left: 300px;
 }
 
 .text-planet h1 {
-    font-family: 'Poppins', sans-serif;
     font-size: 48px;
     font-weight: 600;
-    margin-bottom: 10px;
     color: #ffffff;
 }
 
 .text-planet p {
-    font-family: 'Poppins', sans-serif;
     font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 20px;
     color: #ffffff;
 }
 
 .image-planet {
     flex: 1;
-    width: auto;
-    text-align: right;
     margin-right: 150px;
 }
 
@@ -170,43 +160,28 @@ body {
 }
 
 .compete {
-    display: flex;
-    align-items: center;
-    padding: 50px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: white;
     flex-direction: row-reverse;
 }
 
 .text-compete {
-    font-family: 'Poppins', sans-serif;
     flex: 1;
-    width: 10%;
     margin-right: 250px;
     font-size: 25px;
 }
 
 .text-compete h1 {
-    font-family: 'Poppins', sans-serif;
     font-size: 48px;
     font-weight: 600;
-    margin-bottom: 10px;
     color: #ffffff;
 }
 
 .text-compete p {
-    font-family: 'Poppins', sans-serif;
     font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 20px;
     color: #ffffff;
 }
 
 .image-compete {
     flex: 1;
-    width: auto;
-    text-align: left;
     margin-left: 250px;
 }
 
@@ -226,7 +201,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     margin: 20px 0;
 }
 
@@ -234,11 +208,9 @@ body {
     font-size: 24px;
     font-weight: 600;
     color: #ffffff;
-    margin-bottom: 20px;
 }
 
 .faq-line {
-    border: none;
     border-top: 2px solid rgba(255, 255, 255, 0.2);
     width: 50%;
     margin-bottom: 20px;
@@ -251,15 +223,15 @@ body {
     margin-bottom: 100px;
 }
 
-.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .faq-container.hidden {
     opacity: 0;
     transform: translateY(50px);
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.faq-container.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .faq-item {
@@ -279,7 +251,6 @@ body {
 .faq-question h3 {
     font-size: 18px;
     font-weight: 600;
-    margin: 0;
     color: #ffffff;
 }
 
@@ -327,14 +298,6 @@ body {
     .image-planet, .image-compete {
         width: 50vw;
     }
-}
-
-.header-link {
-    transition: transform 0.6s ease-in;
-}
-
-.header-link:hover {
-    transform: scale(1.2);
 }
 
 .popup {
@@ -403,10 +366,8 @@ button#loginBtn {
     transition: background-color 0.3s;
     width: 100%;
     max-width: 300px;
-    align-self: center;
 }
 
 button#loginBtn:hover {
     background-color: #3e8e41;
 }
-

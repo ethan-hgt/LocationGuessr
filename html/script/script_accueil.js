@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginBtn = document.getElementById('loginBtn');
 
     faqItems.forEach(item => {
-        const faqToggle = item.querySelector('.faq-toggle');
         const faqQuestion = item.querySelector('.faq-question');
 
         faqQuestion.addEventListener('click', () => {

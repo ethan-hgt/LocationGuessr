@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocationGuessr - Accueil</title>
-    <link rel="stylesheet" href="style/style_accueil.css">
+    <title>Page de Jeu</title>
+    <link rel="stylesheet" href="/html/style/style_play.css">
+    <link rel="stylesheet" href="style/style_header.css">
+    <script src="/html/script/script_play.js"></script>
 </head>
+<header>
+    <div class="left-header">
+        <a href="accueil.html">
+            <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+        </a>
+        <a href="play.html" class="header-link">Jouer</a>
+        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+        <a href="/html/aboutUs.html" class="header-link">À propos</a>
+    </div>
+    <div class="right-header">
+        <a href="login.html" class="header-link">Connexion</a>
+    </div>
+</header>
 <body>
-    <header>
-        <nav>
-            <a href="play.html" class="header-link">Jouer</a>
-        </nav>
-    </header>
-
-    <main>
-        <button id="playButton" class="play">Jouer</button>
-
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <span id="closePopup" class="close">&times;</span>
-                <h2>Vous devez vous connecter</h2>
-                <p>Créez un compte ou connectez-vous pour jouer.</p>
-                <button id="loginBtn">Connexion</button>
-            </div>
+    <h1 class="page-title">Choisissez le mode de jeu</h1>
+    <div class="container">
+        <div id="gameSelection" class="selection-container">
+            <button class="game-button" id="franceBtn">
+                <img src="/img/France.png" draggable="false" alt="France">
+            </button>
+            <button class="game-button" id="mondialBtn">
+                <img src="/img/Mondial.png" draggable="false" alt="Mondial">
+            </button>
         </div>
-    </main>
-
-    <script src="script/script_accueil.js"></script>
+        <div id="gameSection" class="game-container hidden">
+            <h1 id="gameTitle">Jeu en cours</h1>
+            <div id="gameContent"></div>
+        </div>
+    </div>
 </body>
 </html>

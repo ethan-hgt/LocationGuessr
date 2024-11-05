@@ -1,12 +1,30 @@
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     updateHeader();
-    $('#inscriptionForm').on('submit', handleInscriptionSubmit);
-    $('#connexionForm').on('submit', handleConnexionSubmit);
+    document.getElementById('inscriptionForm').addEventListener('submit', handleInscriptionSubmit);
+    document.getElementById('connexionForm').addEventListener('submit', handleConnexionSubmit);
 });
+
+function switchTab(tab) {
+    const inscriptionForm = document.getElementById('inscriptionForm');
+    const connexionForm = document.getElementById('connexionForm');
+    const tabSlider = document.querySelector('.tab-slider');
+    
+    if (tab === 'connexion') {
+        inscriptionForm.style.display = 'none';
+        connexionForm.style.display = 'flex';
+        tabSlider.style.left = '0';
+    } else {
+        inscriptionForm.style.display = 'flex';
+        connexionForm.style.display = 'none';
+        tabSlider.style.left = '50%';
+    }
+}
 
 function showPopup(title, message, type = 'success', redirect = true) {
     const popup = document.getElementById('customPopup');
     const popupIcon = document.getElementById('popupIcon');
+
+    if (!popup || !popupIcon) return;
 
     document.getElementById('popupTitle').innerText = title;
     document.getElementById('popupMessage').innerText = message;
@@ -41,10 +59,12 @@ function showPopup(title, message, type = 'success', redirect = true) {
 
 function closePopup() {
     const popup = document.getElementById('customPopup');
-    popup.classList.remove('show');
+    if (popup) {
+        popup.classList.remove('show');
+    }
 }
 
-function handleInscriptionSubmit(event) {
+async function handleInscriptionSubmit(event) {
     event.preventDefault();
     const username = document.getElementById('usernameInscription').value;
     const email = document.getElementById('emailInscription').value;
@@ -56,77 +76,112 @@ function handleInscriptionSubmit(event) {
         return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const userExists = users.some(user => user.email === email || user.username === username);
-    if (userExists) {
-        showPopup('Erreur', 'Cet email ou nom d\'utilisateur est déjà utilisé.', 'error', false);
+    if (password.length < 6) {
+        showPopup('Erreur', 'Le mot de passe doit contenir au moins 6 caractères.', 'error', false);
         return;
     }
 
-    const newUser = { username, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('userFirstName', username);
-    showPopup('Succès', 'Inscription réussie ! Vous êtes maintenant connecté.');
-    updateHeader();
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showPopup('Erreur', data.message, 'error', false);
+            return;
+        }
+
+        localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userFirstName', data.user.username);
+        localStorage.setItem('userId', data.user.id);
+        
+        showPopup('Succès', 'Inscription réussie ! Vous êtes maintenant connecté.');
+        updateHeader();
+    } catch (err) {
+        console.error(err);
+        showPopup('Erreur', 'Une erreur est survenue lors de l\'inscription.', 'error', false);
+    }
 }
 
-function handleConnexionSubmit(event) {
+async function handleConnexionSubmit(event) {
     event.preventDefault();
     resetErrorStyles();
     const username = document.getElementById('usernameConnexion').value;
     const password = document.getElementById('passwordConnexion').value;
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === username);
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
 
-    if (!user) {
-        showPopup('Erreur', 'Nom d\'utilisateur invalide.', 'error', false);
-        return;
-    } else if (user.password !== password) {
-        showPopup('Erreur', 'Mot de passe incorrect.', 'error', false);
-        return;
-    } else {
-        localStorage.setItem('userFirstName', user.username);
+        const data = await response.json();
+
+        if (!response.ok) {
+            showPopup('Erreur', data.message || 'Identifiants invalides', 'error', false);
+            return;
+        }
+
+        localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userFirstName', data.user.username);
+        localStorage.setItem('userId', data.user.id);
+        
         showPopup('Succès', 'Connexion réussie !');
         updateHeader();
+    } catch (err) {
+        console.error(err);
+        showPopup('Erreur', 'Une erreur est survenue lors de la connexion.', 'error', false);
     }
 }
 
-function switchTab(tab) {
-    const inscriptionForm = document.getElementById('inscriptionForm');
-    const connexionForm = document.getElementById('connexionForm');
-    const tabSlider = document.querySelector('.tab-slider');
-    if (tab === 'connexion') {
-        inscriptionForm.style.display = 'none';
-        connexionForm.style.display = 'flex';
-        tabSlider.style.left = '0';
-    } else {
-        inscriptionForm.style.display = 'flex';
-        connexionForm.style.display = 'none';
-        tabSlider.style.left = '50%';
-    }
-}
-
-function updateHeader() {
+async function updateHeader() {
+    const userToken = localStorage.getItem('userToken');
     const userName = localStorage.getItem('userFirstName');
     const rightHeader = document.querySelector('.right-header');
-    if (userName) {
-        rightHeader.innerHTML = `<span>${userName} (<a href="#" class="logout-link" onclick="logout(); return false;">Déconnexion</a>)</span>`;
+
+    if (userToken && userName) {
+        try {
+            const response = await fetch('http://localhost:3000/api/user/profile', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+
+            if (response.ok) {
+                rightHeader.innerHTML = `<span>${userName} (<a href="#" class="logout-link" onclick="logout(); return false;">Déconnexion</a>)</span>`;
+            } else {
+                logout(false);
+            }
+        } catch (err) {
+            console.error(err);
+            logout(false);
+        }
     } else {
         rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
     }
 }
 
-function logout() {
+function logout(showMessage = true) {
+    localStorage.removeItem('userToken');
     localStorage.removeItem('userFirstName');
+    localStorage.removeItem('userId');
     updateHeader();
     
-    showPopup('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', 'success', false);
-
-    setTimeout(() => {
-        window.location.href = 'accueil.html';
-    }, 1500);
+    if (showMessage) {
+        showPopup('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', 'success', false);
+        setTimeout(() => {
+            window.location.href = 'accueil.html';
+        }, 1500);
+    }
 }
 
 function resetErrorStyles() {

@@ -11,14 +11,15 @@ window.onload = function() {
 };
         
 document.getElementById('franceBtn').addEventListener('click', function() {
-    gameTitle.textContent = "France";
-    loadGameContent('France');
+    localStorage.setItem('gameMode', 'france');
+    window.location.href = "/html/jeu.html";
 });
-        
-document.getElementById('mondialBtn').addEventListener('click', function() {
-   gameTitle.textContent = "Mondial";
-   loadGameContent('Mondial');
-});
+
+document.getElementById("mondialBtn").onclick = function() {
+    localStorage.setItem('gameMode', 'mondial');
+    window.location.href = "/html/jeu.html";
+};
+
         
 function loadGameContent(game) {
     gameSelection.classList.add('hidden');

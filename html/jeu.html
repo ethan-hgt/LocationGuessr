@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoGuessr Simplifié avec Mapbox GL et Google Street View</title>
+  <link rel="stylesheet" href="../html/style/style_jeu.css">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style/style_header.css">
+  <link rel="stylesheet" href="style/style_accueil.css">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPsYGzXGaPJlX7k_PAfilNo2gfNdW7GJI"></script>
+</head>
+
+<body>
+    <header>
+        <div class="left-header">
+            <a href="accueil.html">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+            </a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+            <a href="/html/aboutUs.html" class="header-link">À propos</a>
+        </div>
+        <div class="right-header">
+            <a href="login.html" class="header-link">Connexion</a>
+        </div>
+    </header>
+
+    <div id="pano"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <p class="loading-text">Veuillez patienter le temps que l'image Street View charge</p>
+        <lottie-player src="https://lottie.host/79f5143b-226b-47f3-8c8e-26ec5bffd68e/OChr5FMPQf.json" background="#222" speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+    </div>
+
+    <div id="mapContainer">
+        <div id="map"></div>
+        <div id="distanceDisplay">Distance: </div>
+    </div>
+
+    <div id="bottomNav">
+        <button id="changePositionBtn">Changer la Position</button>
+        <button id="showMapBtn" onclick="toggleMap()">Ouvrir la Carte</button>
+        <button id="validateChoiceBtn" onclick="validateChoice()">Valider le Choix</button>
+        <button id="nextRoundBtn" onclick="nextRound()" style="display: none;">Manche Suivante</button>
+    </div>
+
+    <script src="../html/script/script_jeu.js"></script>
+</body>
+</html>

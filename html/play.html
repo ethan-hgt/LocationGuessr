@@ -6,29 +6,34 @@
     <title>Page de Jeu</title>
     <link rel="stylesheet" href="/html/style/style_play.css">
     <link rel="stylesheet" href="style/style_header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style_accueil.css">
     <script src="/html/script/script_play.js"></script>
+    <script src="/html/script/script_login.js"></script>
+    <script src="/html/script/script_accueil.js"></script>
 </head>
-<header>
-    <div class="left-header">
-        <a href="accueil.html">
-            <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
-        </a>
-        <a href="play.html" class="header-link">Jouer</a>
-        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
-        <a href="/html/aboutUs.html" class="header-link">À propos</a>
-    </div>
-    <div class="right-header">
-        <a href="login.html" class="header-link">Connexion</a>
-    </div>
-</header>
 <body>
+    <header>
+        <div class="left-header">
+            <a href="accueil.html">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+            </a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+            <a href="/html/aboutUs.html" class="header-link">À propos</a>
+        </div>
+        <div class="right-header">
+            <a href="login.html" class="header-link">Connexion</a>
+        </div>
+    </header>
+
     <h1 class="page-title">Choisissez le mode de jeu</h1>
     <div class="container">
         <div id="gameSelection" class="selection-container">
-            <button class="game-button" id="franceBtn">
+            <button class="game-button" id="franceBtn" onclick="selectGameMode('france')">
                 <img src="/img/France.png" draggable="false" alt="France">
             </button>
-            <button class="game-button" id="mondialBtn">
+            <button class="game-button" id="mondialBtn" onclick="selectGameMode('mondial')">
                 <img src="/img/Mondial.png" draggable="false" alt="Mondial">
             </button>
         </div>
@@ -37,5 +42,12 @@
             <div id="gameContent"></div>
         </div>
     </div>
+
+    <script>
+        function selectGameMode(mode) {
+            localStorage.setItem('gameMode', mode);
+            window.location.href = "/html/jeu.html";
+        }
+    </script>
 </body>
 </html>

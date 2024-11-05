@@ -19,21 +19,28 @@ html, body {
     background-position: center;
     color: #ffffff;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     padding: 0;
     margin: 0;
 }
 
+.user-position {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.2em;
+}
+
 .leaderboard-container {
     text-align: center;
-    margin: 0 auto;
-    padding: 40px 20px;
+    margin: auto;
     width: 100%;
-    max-width: 1200px; 
-    border-radius: 25px; 
-    border: 1px solid rgba(47, 47, 47, 1); 
-    background-color: rgba(80, 80, 80, 0.25); 
+    max-width: 1200px;
+    border-radius: 25px;
+    border: 1px solid rgba(47, 47, 47, 1);
+    background-color: rgba(80, 80, 80, 0.25);
     padding: 20px;
 }
 
@@ -58,9 +65,8 @@ html, body {
 .leaderboard-content {
     max-height: 500px;
     width: 800px;
-    overflow-y: auto;
-    overflow-x: hidden;
     margin: 0 auto;
+    position: relative;
 }
 
 .header-row {
@@ -81,22 +87,25 @@ html, body {
 
 .scrollable-rows {
     max-height: 300px;
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #a1a1a1 transparent;
+    overflow-y: scroll !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #88888887 rgba(0, 0, 0, 0.2) !important;
 }
 
 .scrollable-rows::-webkit-scrollbar {
-    width: 10px;
+    width: 8px !important;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .scrollable-rows::-webkit-scrollbar-thumb {
-    background-color: #88888887;
+    background-color: #88888887 !important;
     border-radius: 6px;
+    min-height: 50px;
 }
 
 .scrollable-rows::-webkit-scrollbar-track {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 4px;
 }
 
 .player-row {
@@ -109,6 +118,12 @@ html, body {
     height: 60px;
     align-items: center;
     text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.medal, .rank, .name, .matches, .xp {
+    pointer-events: none;
 }
 
 .player-row.gold {
@@ -128,6 +143,38 @@ html, body {
     height: 40px;
 }
 
+.current-user {
+    background-color: rgba(255, 215, 0, 0.1);
+    border: 1px solid #ffd700;
+}
+
+.total-players {
+    text-align: center;
+    margin-top: 20px;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.player-row[data-tooltip] {
+    position: relative;
+}
+
+.player-row[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: pre-line;
+    z-index: 3;
+    right: 105%;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
 @media (max-width: 768px) {
     .leaderboard-container {
         width: 95%;
@@ -142,4 +189,3 @@ html, body {
         font-size: 16px;
     }
 }
-

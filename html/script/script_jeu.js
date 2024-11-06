@@ -1,34 +1,49 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiNGtlZXppeCIsImEiOiJjbTF5c2ZucmEwMThzMnFzanNreXJzOW5uIn0.OR0rEGAdPmQIGBBd2hGv_g';
 
 let currentRound = 0;
+let totalScore = 0;
 let correctPoint;
 let correctMarker, userMarker;
 let map;
 let choiceValidated = false;
+let timerInterval, timeRemaining;
+let previousPositions = [];
+let initialPosition;
+let panorama;
 const streetViewService = new google.maps.StreetViewService();
 
 let modeDeJeu = localStorage.getItem('gameMode') || 'mondial';
+const totalRounds = 5;
 
 function initialize() {
   createMap();
   loadRound();
-
+  updateRoundCounter();
+  startTimer();
   document.getElementById('validateChoiceBtn').disabled = true;
+  document.getElementById('validateChoiceBtn').classList.add('disabled-button');
+
+  // Initialiser les boutons de contrôle
+  document.getElementById('zoomIn').onclick = () => adjustZoom(1);
+  document.getElementById('zoomOut').onclick = () => adjustZoom(-1);
+  document.getElementById('undoMove').onclick = undoMove;
+  document.getElementById('settings').onclick = toggleSettings;
+  document.getElementById('resetPosition').onclick = resetToInitialPosition;
 }
 
 function getRandomPositionInFrance() {
-    const zones = [
-        { minLat: 48.0, maxLat: 51.0, minLng: -5.0, maxLng: 2.5 },
-        { minLat: 45.0, maxLat: 48.0, minLng: -5.0, maxLng: 7.0 },
-        { minLat: 43.5, maxLat: 45.0, minLng: -1.5, maxLng: 7.0 },
-        { minLat: 41.5, maxLat: 43.5, minLng: 2.0, maxLng: 9.0 }
-    ];
-    
-    const zone = zones[Math.floor(Math.random() * zones.length)];
-    const lat = Math.random() * (zone.maxLat - zone.minLat) + zone.minLat;
-    const lng = Math.random() * (zone.maxLng - zone.minLng) + zone.minLng;
+  const zones = [
+    { minLat: 48.0, maxLat: 51.0, minLng: -5.0, maxLng: 2.5 },
+    { minLat: 45.0, maxLat: 48.0, minLng: -5.0, maxLng: 7.0 },
+    { minLat: 43.5, maxLat: 45.0, minLng: -1.5, maxLng: 7.0 },
+    { minLat: 41.5, maxLat: 43.5, minLng: 2.0, maxLng: 9.0 }
+  ];
 
-    return { lat, lng };
+  const zone = zones[Math.floor(Math.random() * zones.length)];
+  const lat = Math.random() * (zone.maxLat - zone.minLat) + zone.minLat;
+  const lng = Math.random() * (zone.maxLng - zone.minLng) + zone.minLng;
+
+  return { lat, lng };
 }
 
 function getRandomPosition() {
@@ -53,23 +68,35 @@ function checkStreetViewAvailable(position, callback) {
 
 function loadRound() {
   document.getElementById('loadingOverlay').style.display = 'flex';
+  timeRemaining = 120;
+  updateTimerDisplay();
 
   const tryPosition = () => {
     const randomPosition = getRandomPosition();
     checkStreetViewAvailable(randomPosition, (available, position) => {
       if (available) {
         correctPoint = { lat: position.lat(), lng: position.lng() };
-        const panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
+        initialPosition = correctPoint;
+        previousPositions = [];
+
+        panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
           position: correctPoint,
           pov: { heading: 0, pitch: 0 },
           zoom: 0,
-          addressControl: false
+          addressControl: false,
+          linksControl: false,
+          panControl: false,
+          enableCloseButton: false,
+          fullscreenControl: false,
+          zoomControl: false,
+          showRoadLabels: false
         });
-        
+
         panorama.addListener('pano_changed', function() {
           document.getElementById('loadingOverlay').style.display = 'none';
+          savePreviousPosition();
         });
-        
+
         resetRoundElements();
       } else {
         tryPosition();
@@ -80,6 +107,30 @@ function loadRound() {
   tryPosition();
 }
 
+function startTimer() {
+  timeRemaining = 120;
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    updateTimerDisplay();
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      autoValidateChoice();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = timeRemaining % 60;
+  document.getElementById('timer').textContent = `Temps: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+function updateRoundCounter() {
+  document.getElementById('roundCounter').textContent = `Manche: ${currentRound + 1}/${totalRounds}`;
+}
+
 function resetRoundElements() {
   if (userMarker) userMarker.remove();
   if (correctMarker) correctMarker.remove();
@@ -87,6 +138,7 @@ function resetRoundElements() {
   document.getElementById('distanceDisplay').style.display = 'none';
   document.getElementById('validateChoiceBtn').style.display = 'block';
   document.getElementById('validateChoiceBtn').disabled = true;
+  document.getElementById('validateChoiceBtn').classList.add('disabled-button');
   document.getElementById('nextRoundBtn').style.display = 'none';
   choiceValidated = false;
   document.getElementById('pano').style.display = 'block';
@@ -128,11 +180,50 @@ function onMapClick(e) {
     .addTo(map);
 
   document.getElementById('validateChoiceBtn').disabled = false;
+  document.getElementById('validateChoiceBtn').classList.remove('disabled-button');
+}
+
+function adjustZoom(direction) {
+  const currentZoom = panorama.getZoom();
+  panorama.setZoom(currentZoom + direction);
+}
+
+function savePreviousPosition() {
+  const currentPosition = panorama.getPosition();
+  if (currentPosition) {
+    previousPositions.push({ lat: currentPosition.lat(), lng: currentPosition.lng() });
+  }
+}
+
+function undoMove() {
+  if (previousPositions.length > 1) {
+    previousPositions.pop(); // Retire la position actuelle
+    const lastPosition = previousPositions[previousPositions.length - 1];
+    panorama.setPosition(new google.maps.LatLng(lastPosition.lat, lastPosition.lng));
+  }
+}
+
+function resetToInitialPosition() {
+  panorama.setPosition(new google.maps.LatLng(initialPosition.lat, initialPosition.lng));
+}
+
+function toggleSettings() {
+  const settingsPanel = document.getElementById('settingsPanel');
+  if (settingsPanel) {
+    settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+  }
+}
+
+function calculateScore(distance) {
+  const distanceScore = Math.max(0, 1000 - distance * 10);
+  const timeScore = timeRemaining * 5;
+  return distanceScore + timeScore;
 }
 
 function validateChoice() {
   if (choiceValidated || !userMarker) return;
 
+  clearInterval(timerInterval);
   choiceValidated = true;
   const userPosition = userMarker.getLngLat();
 
@@ -146,14 +237,42 @@ function validateChoice() {
   document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${distance.toFixed(2)} km`;
   document.getElementById('distanceDisplay').style.display = 'block';
 
+  const roundScore = calculateScore(distance);
+  totalScore += roundScore;
+
   document.getElementById('validateChoiceBtn').style.display = 'none';
   document.getElementById('nextRoundBtn').style.display = 'block';
 
   centerMapBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
 }
 
+function autoValidateChoice() {
+  choiceValidated = true;
+
+  document.getElementById('validateChoiceBtn').style.display = 'none';
+  document.getElementById('nextRoundBtn').style.display = 'block';
+
+  if (currentRound + 1 >= totalRounds) {
+    endGame();
+  } else {
+    nextRound();
+  }
+}
+
 function nextRound() {
-  loadRound();
+  if (currentRound + 1 >= totalRounds) {
+    endGame();
+  } else {
+    currentRound++;
+    updateRoundCounter();
+    loadRound();
+    startTimer();
+  }
+}
+
+function endGame() {
+  document.getElementById('resultOverlay').style.display = 'flex';
+  document.getElementById('finalScore').textContent = `Score final: ${totalScore}`;
 }
 
 function centerMapBetweenPoints(pointA, pointB) {
@@ -202,5 +321,4 @@ function removeLine() {
   }
 }
 
-document.getElementById('changePositionBtn').onclick = nextRound;
 window.onload = initialize;

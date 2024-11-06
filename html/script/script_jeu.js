@@ -234,7 +234,7 @@ function validateChoice() {
   drawLineBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
 
   const distance = turf.distance([userPosition.lng, userPosition.lat], [correctPoint.lng, correctPoint.lat], { units: 'kilometers' });
-  document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${distance.toFixed(2)} km`;
+  document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${Math.round(distance)} km`;
   document.getElementById('distanceDisplay').style.display = 'block';
 
   const roundScore = calculateScore(distance);
@@ -245,6 +245,7 @@ function validateChoice() {
 
   centerMapBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
 }
+
 
 function autoValidateChoice() {
   choiceValidated = true;

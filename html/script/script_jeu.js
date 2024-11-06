@@ -12,6 +12,8 @@ let modeDeJeu = localStorage.getItem('gameMode') || 'mondial';
 function initialize() {
   createMap();
   loadRound();
+
+  document.getElementById('validateChoiceBtn').disabled = true;
 }
 
 function getRandomPositionInFrance() {
@@ -84,6 +86,7 @@ function resetRoundElements() {
   removeLine();
   document.getElementById('distanceDisplay').style.display = 'none';
   document.getElementById('validateChoiceBtn').style.display = 'block';
+  document.getElementById('validateChoiceBtn').disabled = true;
   document.getElementById('nextRoundBtn').style.display = 'none';
   choiceValidated = false;
   document.getElementById('pano').style.display = 'block';
@@ -124,29 +127,29 @@ function onMapClick(e) {
     .setLngLat([e.lngLat.lng, e.lngLat.lat])
     .addTo(map);
 
-  document.getElementById('validateChoiceBtn').style.display = 'block';
+  document.getElementById('validateChoiceBtn').disabled = false;
 }
 
 function validateChoice() {
-    if (choiceValidated) return;
-  
-    choiceValidated = true;
-    const userPosition = userMarker.getLngLat();
-  
-    correctMarker = new mapboxgl.Marker({ color: "red" })
-      .setLngLat([correctPoint.lng, correctPoint.lat])
-      .addTo(map);
-  
-    drawLineBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
-  
-    const distance = turf.distance([userPosition.lng, userPosition.lat], [correctPoint.lng, correctPoint.lat], { units: 'kilometers' });
-    document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${distance.toFixed(2)} km`;
-    document.getElementById('distanceDisplay').style.display = 'block';
-  
-    document.getElementById('validateChoiceBtn').style.display = 'none';
-    document.getElementById('nextRoundBtn').style.display = 'block';
-  
-    centerMapBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
+  if (choiceValidated || !userMarker) return;
+
+  choiceValidated = true;
+  const userPosition = userMarker.getLngLat();
+
+  correctMarker = new mapboxgl.Marker({ color: "red" })
+    .setLngLat([correctPoint.lng, correctPoint.lat])
+    .addTo(map);
+
+  drawLineBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
+
+  const distance = turf.distance([userPosition.lng, userPosition.lat], [correctPoint.lng, correctPoint.lat], { units: 'kilometers' });
+  document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${distance.toFixed(2)} km`;
+  document.getElementById('distanceDisplay').style.display = 'block';
+
+  document.getElementById('validateChoiceBtn').style.display = 'none';
+  document.getElementById('nextRoundBtn').style.display = 'block';
+
+  centerMapBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
 }
 
 function nextRound() {

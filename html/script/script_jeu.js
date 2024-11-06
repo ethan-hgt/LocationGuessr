@@ -10,25 +10,70 @@ let timerInterval, timeRemaining;
 let previousPositions = [];
 let initialPosition;
 let panorama;
+let isProcessingRound = false; // Nouvelle variable pour éviter le spam de manche suivante, c'étais une faille
 const streetViewService = new google.maps.StreetViewService();
 
 let modeDeJeu = localStorage.getItem('gameMode') || 'mondial';
 const totalRounds = 5;
 
-function initialize() {
-  createMap();
-  loadRound();
-  updateRoundCounter();
-  startTimer();
-  document.getElementById('validateChoiceBtn').disabled = true;
-  document.getElementById('validateChoiceBtn').classList.add('disabled-button');
+async function saveScore(finalScore) {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
 
-  // Initialiser les boutons de contrôle
-  document.getElementById('zoomIn').onclick = () => adjustZoom(1);
-  document.getElementById('zoomOut').onclick = () => adjustZoom(-1);
-  document.getElementById('undoMove').onclick = undoMove;
-  document.getElementById('settings').onclick = toggleSettings;
-  document.getElementById('resetPosition').onclick = resetToInitialPosition;
+    try {
+        const response = await fetch('http://localhost:3000/api/user/stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                score: Math.floor(finalScore),
+                gameDetails: {
+                    mode: modeDeJeu,
+                    roundsPlayed: totalRounds,
+                    timePlayed: (120 - timeRemaining) * totalRounds,
+                    date: new Date()
+                }
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log("Score sauvegardé avec succès!");
+            return true;
+        } else {
+            console.error("Erreur lors de la sauvegarde:", data.message);
+            return false;
+        }
+    } catch (error) {
+        console.error("Erreur lors de la sauvegarde:", error);
+        return false;
+    }
+}
+
+function initialize() {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    createMap();
+    loadRound();
+    updateRoundCounter();
+    startTimer();
+    document.getElementById('validateChoiceBtn').disabled = true;
+    document.getElementById('validateChoiceBtn').classList.add('disabled-button');
+
+    document.getElementById('zoomIn').onclick = () => adjustZoom(1);
+    document.getElementById('zoomOut').onclick = () => adjustZoom(-1);
+    document.getElementById('undoMove').onclick = undoMove;
+    document.getElementById('settings').onclick = toggleSettings;
+    document.getElementById('resetPosition').onclick = resetToInitialPosition;
 }
 
 function getRandomPositionInFrance() {
@@ -72,36 +117,36 @@ function loadRound() {
   updateTimerDisplay();
 
   const tryPosition = () => {
-    const randomPosition = getRandomPosition();
-    checkStreetViewAvailable(randomPosition, (available, position) => {
-      if (available) {
-        correctPoint = { lat: position.lat(), lng: position.lng() };
-        initialPosition = correctPoint;
-        previousPositions = [];
+      const randomPosition = getRandomPosition();
+      checkStreetViewAvailable(randomPosition, (available, position) => {
+          if (available) {
+              correctPoint = { lat: position.lat(), lng: position.lng() };
+              initialPosition = correctPoint;
+              previousPositions = [];
 
-        panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
-          position: correctPoint,
-          pov: { heading: 0, pitch: 0 },
-          zoom: 0,
-          addressControl: false,
-          linksControl: false,
-          panControl: false,
-          enableCloseButton: false,
-          fullscreenControl: false,
-          zoomControl: false,
-          showRoadLabels: false
-        });
+              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
+                  position: correctPoint,
+                  pov: { heading: 0, pitch: 0 },
+                  zoom: 0,
+                  addressControl: false,
+                  linksControl: false,
+                  panControl: false,
+                  enableCloseButton: false,
+                  fullscreenControl: false,
+                  zoomControl: false,
+                  showRoadLabels: false
+              });
 
-        panorama.addListener('pano_changed', function() {
-          document.getElementById('loadingOverlay').style.display = 'none';
-          savePreviousPosition();
-        });
+              panorama.addListener('pano_changed', function() {
+                  document.getElementById('loadingOverlay').style.display = 'none';
+                  savePreviousPosition();
+              });
 
-        resetRoundElements();
-      } else {
-        tryPosition();
-      }
-    });
+              resetRoundElements();
+          } else {
+              tryPosition();
+          }
+      });
   };
 
   tryPosition();
@@ -197,7 +242,7 @@ function savePreviousPosition() {
 
 function undoMove() {
   if (previousPositions.length > 1) {
-    previousPositions.pop(); // Retire la position actuelle
+    previousPositions.pop();
     const lastPosition = previousPositions[previousPositions.length - 1];
     panorama.setPosition(new google.maps.LatLng(lastPosition.lat, lastPosition.lng));
   }
@@ -215,13 +260,14 @@ function toggleSettings() {
 }
 
 function calculateScore(distance) {
-  const distanceScore = Math.max(0, 1000 - distance * 10);
-  const timeScore = timeRemaining * 5;
+  const distanceScore = Math.floor(Math.max(0, 1000 - distance * 10));
+  const timeScore = Math.floor(timeRemaining * 5);
   return distanceScore + timeScore;
 }
 
 function validateChoice() {
-  if (choiceValidated || !userMarker) return;
+  if (choiceValidated || !userMarker || isProcessingRound) return;
+  isProcessingRound = true;
 
   clearInterval(timerInterval);
   choiceValidated = true;
@@ -233,20 +279,30 @@ function validateChoice() {
 
   drawLineBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
 
-  const distance = turf.distance([userPosition.lng, userPosition.lat], [correctPoint.lng, correctPoint.lat], { units: 'kilometers' });
+  const distance = turf.distance(
+    [userPosition.lng, userPosition.lat],
+    [correctPoint.lng, correctPoint.lat],
+    { units: 'kilometers' }
+  );
+
   document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${Math.round(distance)} km`;
   document.getElementById('distanceDisplay').style.display = 'block';
 
   const roundScore = calculateScore(distance);
-  totalScore += roundScore;
+  totalScore = Math.floor(totalScore + roundScore);
 
   document.getElementById('validateChoiceBtn').style.display = 'none';
   document.getElementById('nextRoundBtn').style.display = 'block';
+  if (currentRound + 1 >= totalRounds) {
+    document.getElementById('nextRoundBtn').textContent = 'Terminer la partie';
+  }
 
   centerMapBetweenPoints({ lng: userPosition.lng, lat: userPosition.lat }, correctPoint);
+  isProcessingRound = false;
 }
 
 function autoValidateChoice() {
+  if (isProcessingRound) return;
   choiceValidated = true;
 
   document.getElementById('validateChoiceBtn').style.display = 'none';
@@ -260,19 +316,50 @@ function autoValidateChoice() {
 }
 
 function nextRound() {
+  if (!choiceValidated) return;
+  
   if (currentRound + 1 >= totalRounds) {
-    endGame();
+      endGame();
   } else {
-    currentRound++;
-    updateRoundCounter();
-    loadRound();
-    startTimer();
+      currentRound++;
+      // Réinitialiser les états
+      choiceValidated = false;
+      isProcessingRound = false;
+      
+      // Charger la nouvelle manche
+      updateRoundCounter();
+      loadRound();
+      startTimer();
   }
 }
 
-function endGame() {
-  document.getElementById('resultOverlay').style.display = 'flex';
-  document.getElementById('finalScore').textContent = `Score final: ${totalScore}`;
+async function endGame() {
+  const resultOverlay = document.getElementById('resultOverlay');
+  resultOverlay.innerHTML = `
+      <div class="result-content">
+          <h1>Résultat de la partie</h1>
+          <p>Score final: ${Math.floor(totalScore)}</p>
+          <div class="result-buttons">
+              <button onclick="window.location.href='accueil.html'">Retourner à l'accueil</button>
+              <button onclick="window.location.href='leaderboard.html'">Voir le classement</button>
+          </div>
+      </div>
+  `;
+  
+  resultOverlay.style.display = 'flex';
+  resultOverlay.style.alignItems = 'center';
+  resultOverlay.style.justifyContent = 'center';
+
+  // Sauvegarder le score
+  if (totalScore > 0) {
+      const saved = await saveScore(totalScore);
+      if (!saved) {
+          const errorDiv = document.createElement('p');
+          errorDiv.textContent = "Erreur lors de la sauvegarde du score.";
+          errorDiv.style.color = 'red';
+          resultOverlay.querySelector('.result-content').appendChild(errorDiv);
+      }
+  }
 }
 
 function centerMapBetweenPoints(pointA, pointB) {

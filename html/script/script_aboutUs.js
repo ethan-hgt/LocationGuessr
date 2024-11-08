@@ -43,7 +43,7 @@ elementsInteractifs.forEach(element => {
     element.addEventListener('mouseenter', () => {
         element.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
         element.style.transform = 'scale(1.05)';
-        element.style.boxShadow = '0 8px 20px rgba(0, 120, 212, 0.5)';
+        element.style.boxShadow = '0 8px 20px rgba(0, 120, 212, 0.5)'; // Couleur bleue
     });
 
     element.addEventListener('mouseleave', () => {
@@ -51,6 +51,7 @@ elementsInteractifs.forEach(element => {
         element.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
     });
 });
+
 
 // Animation du bouton "Rejoignez l'Aventure" lors du chargement
 const boutonAppelAction = document.querySelector('.bouton-cta');

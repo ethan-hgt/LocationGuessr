@@ -96,7 +96,10 @@ html, body {
 
 .element-fonctionnalite:hover, .element-technologie:hover {
     transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 120, 212, 0.5); /* Effet bleu lors du survol */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .icone-fonctionnalite, .icone-technologie {
     width: 60px;

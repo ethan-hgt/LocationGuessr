@@ -1,92 +1,155 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jeu</title>
-  <link rel="stylesheet" href="../html/style/style_jeu.css">
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jeu</title>
+    <link rel="stylesheet" href="../html/style/style_jeu.css" />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="style/style_accueil.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPsYGzXGaPJlX7k_PAfilNo2gfNdW7GJI"></script>
-</head>
+    <link rel="stylesheet" href="style/style_accueil.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPsYGzXGaPJlX7k_PAfilNo2gfNdW7GJI"></script>
+  </head>
 
-<body>
-
+  <body>
     <div id="pano"></div>
     <div id="loadingOverlay" class="loading-overlay">
-        <p class="loading-text">Veuillez patienter le temps que l'image Street View charge</p>
-        <lottie-player src="https://lottie.host/79f5143b-226b-47f3-8c8e-26ec5bffd68e/OChr5FMPQf.json" background="#222" speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+      <p class="loading-text">
+        Veuillez patienter le temps que l'image Street View charge
+      </p>
+      <lottie-player
+        src="https://lottie.host/79f5143b-226b-47f3-8c8e-26ec5bffd68e/OChr5FMPQf.json"
+        background="#222"
+        speed="1"
+        style="width: 300px; height: 300px"
+        loop
+        autoplay
+      ></lottie-player>
     </div>
 
     <div id="mapContainer">
-        <div id="map"></div>
-        <div id="distanceDisplay">Distance: </div>
+      <div id="map"></div>
+      <div id="distanceDisplay">Distance:</div>
     </div>
 
     <div id="timerContainer">
-        <div id="timerText">Temps: 2:00</div>
-        <div id="timerProgressBar"></div>
-      </div>
-      
-      
+      <div id="timerText">Temps: 2:00</div>
+      <div id="timerProgressBar"></div>
+    </div>
 
     <div id="roundCounter">Manche: 1/5</div>
-    <div id="resultOverlay" class="result-overlay" style="display: none;">
-        <div class="result-content">
-            <h2>Résultat de la partie</h2>
-            <p id="finalScore">Score final: 0</p>
-            <button onclick="window.location.href='accueil.html'">Retourner à l'accueil</button>
-            <button onclick="window.location.href='Leaderboard.html'">Voir le leaderboard</button>
-        </div>
+    <div id="resultOverlay" class="result-overlay" style="display: none">
+      <div class="result-content">
+        <h2>Résultat de la partie</h2>
+        <p id="finalScore">Score final: 0</p>
+        <button onclick="window.location.href='accueil.html'">
+          Retourner à l'accueil
+        </button>
+        <button onclick="window.location.href='Leaderboard.html'">
+          Voir le leaderboard
+        </button>
+      </div>
     </div>
-
 
     <div id="bottomNav">
-        <button id="showMapBtn" onclick="toggleMap()">Ouvrir la Carte</button>
-        <button id="validateChoiceBtn" onclick="validateChoice()">Valider le Choix</button>
-        <button id="nextRoundBtn" onclick="nextRound()" style="display: none;">Manche Suivante</button>
+      <button id="showMapBtn" onclick="toggleMap()">Ouvrir la Carte</button>
+      <button id="validateChoiceBtn" onclick="validateChoice()">
+        Valider le Choix
+      </button>
+      <button id="nextRoundBtn" onclick="nextRound()" style="display: none">
+        Manche Suivante
+      </button>
     </div>
-
 
     <div id="controls">
-        <div id="zoomIn" class="button">
-            <span class="tooltip">Zoom avant</span>
-            <i class='bx bx-plus' id="plus"></i>
-        </div>
-        <div id="zoomOut" class="button">
-            <span class="tooltip">Zoom arrière</span>
-            <i class='bx bx-minus' id="moins"  ></i> 
-        </div>
-        <div id="undoMove" class="button">
-            <span class="tooltip">Annuler mouvement</span>
-            <i class='bx bx-redo bx-flip-horizontal' id="arrow"></i>
-        </div>
-        <div id="resetPosition" class="button">
-            <span class="tooltip">Retourner au point de départ</span>
-            <i class="bx bxs-flag-checkered" id="flagIcon"></i>
-        </div>
-        <div id="settings" class="button">
-            <span class="tooltip">Paramètres</span>
-            <i class="bx bx-cog" id="settingsIcon"></i>
-        </div>
-    </div>
-    
-    
-    
-    
-    
-      
-      <div id="settingsPanel">
-        <h3>Paramètres</h3>
-        <p>Onglet de paramètres</p>
+      <div id="zoomIn" class="button">
+        <span class="tooltip">Zoom avant</span>
+        <i class="bx bx-plus" id="plus"></i>
       </div>
-      
+      <div id="zoomOut" class="button">
+        <span class="tooltip">Zoom arrière</span>
+        <i class="bx bx-minus" id="moins"></i>
+      </div>
+      <div id="undoMove" class="button">
+        <span class="tooltip">Annuler mouvement</span>
+        <i class="bx bx-redo bx-flip-horizontal" id="arrow"></i>
+      </div>
+      <div id="resetPosition" class="button">
+        <span class="tooltip">Retourner au point de départ</span>
+        <i class="bx bxs-flag-checkered" id="flagIcon"></i>
+      </div>
+      <div id="settings" class="button">
+        <span class="tooltip">Paramètres</span>
+        <i class="bx bx-cog" id="settingsIcon"></i>
+      </div>
+    </div>
+
+    <div id="settingsOverlay">
+      <div id="settingsContainer">
+        <h2>Paramètres</h2>
+        <div class="settings-option">
+          <label for="effectVolume">Volume des effets</label>
+          <input type="range" id="effectVolume" min="0" max="100" value="50" />
+        </div>
+        <div class="settings-option">
+          <label for="musicVolume">Volume de la musique</label>
+          <input type="range" id="musicVolume" min="0" max="100" value="50" />
+        </div>
+        <div class="settings-control-group">
+          <div class="settings-control">
+            <i class="bx bx-volume-mute"></i>
+            <p>Son désactivé</p>
+            <label class="toggle-switch">
+              <input type="checkbox" id="soundToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-control">
+            <i class="bx bx-fullscreen"></i>
+            <p>Plein écran désactivé</p>
+            <label class="toggle-switch">
+              <input type="checkbox" id="fullscreenToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="settings-buttons">
+          <button class="resume-button">Reprendre le jeu</button>
+          <button class="leave-button">Quitter le jeu</button>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <div id="confirmOverlay" class="confirm-overlay">
+      <div class="confirm-container">
+        <h3>Êtes-vous sûr de vouloir quitter ?</h3>
+        <p>Votre progression sera perdue.</p>
+        <div class="confirm-buttons">
+          <button id="confirmYes" class="confirm-button leave-button">
+            Oui, quitter
+          </button>
+          <button id="confirmNo" class="confirm-button resume-button">
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="../html/script/script_jeu.js"></script>
-</body>
+  </body>
 </html>

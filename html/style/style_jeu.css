@@ -78,17 +78,25 @@ body, html {
 }
 
 #bottomNav button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
-  background-color: #333;
-  color: #fff;
+  background-color: rgba(50, 50, 50, 0.8);
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #bottomNav button:hover {
-  background-color: #555;
+  background-color: rgba(75, 75, 75, 0.9);
+  transform: translateY(-2px);
+}
+
+#bottomNav button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #roundCounter {
@@ -111,20 +119,6 @@ body, html {
   color: #ffffff;
   font-family: 'Inter', sans-serif;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-
-#timer {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 5px;
-  font-family: 'Inter', sans-serif;
-  z-index: 1002;
 }
 
 #timerContainer {
@@ -172,7 +166,6 @@ body, html {
   box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
 }
 
-
 .result-overlay {
   position: fixed;
   top: 0;
@@ -212,7 +205,6 @@ body, html {
   opacity: 0.6;
 }
 
-
 #controls {
   position: absolute;
   top: 70%;
@@ -243,12 +235,10 @@ body, html {
   background-color: rgba(50, 49, 49, 0.8);
 }
 
-
 .button:active {
   transform: scale(0.9);
   background-color: rgba(255, 255, 255, 0.3);
 }
-
 
 .tooltip {
   position: absolute;
@@ -271,7 +261,7 @@ body, html {
   visibility: visible;
 }
 
-#settings .bx, #resetPosition .bx , #undoMove .bx, #controls .bx, #zoomIn .bx{
+#settings .bx, #resetPosition .bx, #undoMove .bx, #controls .bx, #zoomIn .bx {
   font-size: 24px;
   color: #fbf9f9;
   transition: transform 0.2s;
@@ -293,16 +283,223 @@ body, html {
   }
 }
 
-#settingsPanel {
-  display: none;
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  width: 200px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  border-radius: 10px;
-  z-index: 2000;
+#settingsOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1003;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
+#settingsOverlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+#settingsContainer {
+  background: #222;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  width: 600px;
+  height: 600px;
+  text-align: center;
+}
+
+#settingsContainer h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+
+.settings-option {
+  margin-top: 10%;
+}
+
+.settings-option label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.settings-option input[type="range"] {
+  width: 100%;
+}
+
+.settings-control-group {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+}
+
+.settings-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ffffff;
+}
+
+.settings-control i {
+  font-size: 30px;
+  margin-top: 40%;
+  margin-bottom: 10px;
+}
+
+.settings-control p {
+  width: 155px;
+  text-align: center;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s;
+  margin-bottom: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.settings-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10%;
+}
+
+.resume-button,
+.leave-button {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 5%;
+}
+
+.resume-button:hover {
+  background: #45a049;
+}
+
+.leave-button {
+  background: #f44336;
+}
+
+.leave-button:hover {
+  background: #e53935;
+}
+
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1004;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.confirm-overlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.confirm-container {
+  background: #222;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  width: 400px;
+}
+
+.confirm-container h3 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.confirm-container p {
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.confirm-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.confirm-button:hover {
+  background: #444;
+}

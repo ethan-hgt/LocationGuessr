@@ -1,155 +1,17 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - LocationGuessr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style/style_header.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="/html/script/script_login.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(to bottom, #1A1A1A, transparent),
-                radial-gradient(at 25.775842699982388% 39.0053357311203%, hsla(0, 0%, 10.196078431372548%, 1) 0%, hsla(0, 0%, 10.196078431372548%, 0) 100%),
-                radial-gradient(at 22.798620893034116% 89.40838373202618%, hsla(0, 0%, 16.862745098039216%, 1) 0%, hsla(0, 0%, 16.862745098039216%, 0) 100%),
-                radial-gradient(at 59.84388338557851% 69.0529804330226%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1) 0%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0) 100%),
-                radial-gradient(at 2.795092232733243% 84.44780297608656%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 1) 0%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 0) 100%),
-                radial-gradient(at 56.52838229139141% 10.195594785331108%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%),
-                radial-gradient(at 53.55594647706753% 57.11127746610837%, hsla(0, 0%, 10.196078431372548%, 1) 0%, hsla(0, 0%, 10.196078431372548%, 0) 100%),
-                radial-gradient(at 91.74418994302263% 91.84107248447081%, hsla(0, 0%, 16.862745098039216%, 1) 0%, hsla(0, 0%, 16.862745098039216%, 0) 100%),
-                radial-gradient(at 25.49956661008076% 72.88347003199107%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1) 0%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0) 100%),
-                radial-gradient(at 72.64797999970362% 27.63424868519354%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 1) 0%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 0) 100%),
-                #1A1A1A;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-            color: #fff;
-            padding: 20px;
-        }
-
-
-        .header-link.active, .header-link:hover {
-            transform: scale(1.05);
-            color: #fff;
-            text-decoration: none; 
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-top: 80px;
-        }
-
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        label {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: white;
-        }
-
-        textarea {
-            resize: none;
-            height: 150px;
-        }
-
-        button {
-            background-color: #0078d4;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-
-        button:hover {
-            background-color: #005bb5;
-        }
-
-        footer {
-            background-color: #222;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            color: #fff;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .left-footer {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-
-        .footer-link {
-            font-size: 16px;
-            margin-right: 40px;
-            color: #c0c0c0;
-            text-decoration: none;
-            transition: transform 0.3s ease, color 0.3s ease;
-            background-color: transparent;
-            padding: 5px;
-            display: inline-block;
-            text-align: center;
-            min-width: 80px;
-        }
-
-        .footer-link.active, .footer-link:hover {
-            transform: scale(1.05);
-            color: #fff;
-            background-color: transparent;
-            text-decoration: none;
-        }
-
-        .right-footer .footer-link {
-            margin-right: 0;
-            pointer-events: none;
-            transform: none;
-            transition: none;
-            font-weight: normal;
-            color: #c0c0c0;
-            text-decoration: none; 
-        }
-    </style>
+    <title>Nous Contacter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/html/style/style_contact.css">
+    <link rel="stylesheet" href="/html/style/style_footer.css">
+    <link rel="stylesheet" href="/html/style/style_header.css">
+    <link rel="stylesheet" href="/html/style/style_accueil.css">
 </head>
-<body>
 
+<body>
     <header>
         <div class="left-header">
             <a href="accueil.html">
@@ -164,19 +26,24 @@
         </div>
     </header>
 
-    <h1>Nous contacter</h1>
-    <form action="contact.php" method="POST">
-        <label for="name">Nom</label>
-        <input type="text" id="name" name="name" placeholder="Votre nom" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Votre email" required>
-
-        <label for="message">Message</label>
-        <textarea id="message" name="message" placeholder="Votre message" required></textarea>
-
-        <button type="submit">Envoyer le message</button>
-    </form>
+    <main class="contact-container">
+        <h1>Contactez-nous</h1>
+        <form class="contact-form" action="#" method="post">
+            <div class="form-group">
+                <label for="name">Nom</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="submit-button">Envoyer</button>
+        </form>
+    </main>
 
     <footer>
         <div class="left-footer">
@@ -188,16 +55,5 @@
             <span class="footer-link">© 2024 LocationGuessr</span>
         </div>
     </footer>
-
-    <script>
-        const footerLinks = document.querySelectorAll('.footer-link');
-
-        footerLinks.forEach(link => {
-            const currentLocation = window.location.href;
-            if (link.href === currentLocation) {
-                link.classList.add('active');
-            }
-        });
-    </script>
 </body>
 </html>

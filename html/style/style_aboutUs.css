@@ -18,7 +18,6 @@ html, body {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    
     color: #e0e0e0;
 }
 
@@ -56,13 +55,13 @@ html, body {
     justify-content: center;
     width: 100%;
     max-width: 800px;
-    margin: 0 auto;
+    margin: -5% auto 0;
 }
+
 
 #globe-interactif {
     width: 100%;
     height: 500px;
-
 }
 
 .titre-section {
@@ -213,15 +212,23 @@ html, body {
 
 @media (max-width: 768px) {
     .titre-accueil {
-        font-size: 8vw;
+        font-size: 40px;
     }
 
-    .sous-titre-accueil, .titre-section, .description-fonctionnalite, .element-technologie p {
-        font-size: 3.5vw;
+    .sous-titre-accueil {
+        font-size: 24px;
+    }
+
+    .titre-section, .description-fonctionnalite, .element-technologie p {
+        font-size: 20px;
+    }
+
+    .texte-section {
+        font-size: 18px;
     }
 
     .bouton-cta {
-        font-size: 4vw;
+        font-size: 22px;
     }
 
     #globe-interactif {

@@ -43,7 +43,7 @@ elementsInteractifs.forEach(element => {
     element.addEventListener('mouseenter', () => {
         element.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
         element.style.transform = 'scale(1.05)';
-        element.style.boxShadow = '0 8px 20px rgba(0, 120, 212, 0.5)'; // Couleur bleue
+        element.style.boxShadow = '0 8px 20px rgba(0, 120, 212, 0.5)'; 
     });
 
     element.addEventListener('mouseleave', () => {

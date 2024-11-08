@@ -164,13 +164,36 @@ function startTimer() {
       autoValidateChoice();
     }
   }, 1000);
+
+  const progressBar = document.getElementById('timerProgressBar');
+  progressBar.style.width = '100%';
 }
 
 function updateTimerDisplay() {
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
-  document.getElementById('timer').textContent = `Temps: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  document.getElementById('timerText').textContent = `Temps: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+  const totalDuration = 120;
+  const progressBar = document.getElementById('timerProgressBar');
+  const percentRemaining = (timeRemaining / totalDuration) * 100;
+  progressBar.style.width = `${percentRemaining}%`;
+
+  if (timeRemaining <= 10) {
+    progressBar.classList.add('warning');
+    document.getElementById('timerText').style.color = '#ff6347';
+    document.getElementById('timerText').style.textShadow = '0 0 10px rgba(255, 69, 0, 0.8)';
+  } else {
+    progressBar.classList.remove('warning');
+    document.getElementById('timerText').style.color = '#ffffff';
+    document.getElementById('timerText').style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.5)';
+  }
 }
+
+
+
+
+
 
 function updateRoundCounter() {
   document.getElementById('roundCounter').textContent = `Manche: ${currentRound + 1}/${totalRounds}`;

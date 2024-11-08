@@ -91,7 +91,30 @@ body, html {
   background-color: #555;
 }
 
-#roundCounter, #timer {
+#roundCounter {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 220px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 34, 34, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1002;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+
+#timer {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -104,10 +127,51 @@ body, html {
   z-index: 1002;
 }
 
-#timer {
-  left: auto;
-  right: 10px;
+#timerContainer {
+  position: fixed;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 34, 34, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 1002;
+  position: relative;
 }
+
+#timerText {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#timerProgressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #1e90ff, #00bfff);
+  border-radius: 10px;
+  z-index: 1;
+  transition: width 1s linear, background-color 0.5s;
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.5);
+}
+
+#timerProgressBar.warning {
+  background: linear-gradient(90deg, #ff4500, #ff6347);
+  box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+}
+
 
 .result-overlay {
   position: fixed;

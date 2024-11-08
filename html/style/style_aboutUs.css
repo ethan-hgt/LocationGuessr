@@ -210,6 +210,33 @@ html, body {
     transform: scale(0.98);
 }
 
+@media (max-width: 1024px) and (min-width: 769px) {
+    .titre-accueil {
+        font-size: 48px;
+    }
+
+    .sous-titre-accueil {
+        font-size: 28px;
+    }
+
+    .titre-section {
+        font-size: 28px;
+    }
+
+    .texte-section {
+        font-size: 20px;
+    }
+
+    .description-fonctionnalite, .element-technologie p {
+        font-size: 18px;
+    }
+
+    .bouton-cta {
+        font-size: 24px;
+    }
+}
+
+
 @media (max-width: 768px) {
     .titre-accueil {
         font-size: 40px;
@@ -230,12 +257,6 @@ html, body {
     .bouton-cta {
         font-size: 22px;
     }
-
-    #globe-interactif {
-        height: 300px;
-    }
-
-    .element-fonctionnalite, .element-technologie {
-        width: 100%;
-    }
 }
+
+

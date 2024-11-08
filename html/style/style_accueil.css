@@ -296,25 +296,6 @@ body {
     transform: rotate(45deg);
 }
 
-@media (max-width: 768px) {
-    .titre {
-        font-size: 6vw;
-        padding: 2vw 5vw;
-    }
-
-    .play {
-        font-size: 4vw;
-        padding: 2vw 6vw;
-    }
-
-    .text-planet, .text-compete {
-        font-size: 4vw;
-    }
-
-    .image-planet, .image-compete {
-        width: 50vw;
-    }
-}
 
 .popup {
     display: none;
@@ -386,4 +367,92 @@ button#loginBtn {
 
 button#loginBtn:hover {
     background-color: #3e8e41;
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .explorer, .compete {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 5%;
+        margin: 20px auto;
+    }
+
+    .text-planet, .text-compete {
+        width: 45%;
+        text-align: left;
+        margin: 0;
+    }
+
+    .text-planet h1, .text-compete h1 {
+        font-size: 32px;
+    }
+
+    .text-planet p, .text-compete p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .image-planet, .image-compete {
+        width: 45%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .explorer, .compete {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .text-planet, .text-compete {
+        width: 90%;
+        text-align: center;
+    }
+
+    .text-planet h1, .text-compete h1 {
+        font-size: 28px;
+    }
+
+    .text-planet p, .text-compete p {
+        font-size: 14px;
+    }
+
+    .image-planet, .image-compete {
+        width: 70%;
+        margin-top: 20px;
+    }
+}
+
+
+
+@media (max-width: 480px) {
+    .titre {
+        font-size: 8vw;
+        padding: 2vw 3vw;
+    }
+
+    .play {
+        font-size: 5vw;
+        padding: 2vw 4vw;
+    }
+
+    .text-planet, .text-compete {
+        font-size: 5vw;
+        margin: 0 auto;
+    }
+
+    .text-planet h1, .text-compete h1 {
+        font-size: 28px;
+    }
+
+    .text-planet p, .text-compete p {
+        font-size: 12px;
+    }
+
+    .image-planet, .image-compete {
+        width: 60vw;
+    }
 }

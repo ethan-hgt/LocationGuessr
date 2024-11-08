@@ -52,3 +52,42 @@ footer {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.right-footer .footer-link {
+    transition: none;
+}
+
+.right-footer .footer-link:hover {
+    transform: none;
+    color: #c0c0c0;
+}
+
+
+@media (max-width: 1024px) { 
+    footer {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+    }
+
+    .left-footer, .right-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        width: 100%;
+        position: static;
+        transform: none;
+        margin-bottom: 10px;
+    }
+
+    .footer-link {
+        font-size: 14px;
+    }
+
+    .right-footer {
+        align-items: flex-start;
+        right: 0;
+        top: auto;
+    }
+}
+

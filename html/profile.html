@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - LocationGuessr</title>
+    <link rel="stylesheet" href="style/style_header.css">
+    <link rel="stylesheet" href="style/style_profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="left-header">
+            <a href="accueil.html">
+                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
+            </a>
+            <a href="play.html" class="header-link">Jouer</a>
+            <a href="Leaderboard.html" class="header-link">Classement</a>
+            <a href="aboutUs.html" class="header-link">À propos</a>
+        </div>
+        <div class="right-header">
+            <!-- Sera rempli dynamiquement par le script -->
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <!-- Message de bienvenue pour les nouveaux utilisateurs ICI -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
+                    <div class="avatar-overlay">
+                        <i class='bx bx-camera'></i>
+                        <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                    </div>
+                </div>
+                <h1 id="username">Chargement...</h1>
+                <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
+            </div>
+
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <i class='bx bx-game'></i>
+                    <h3>Parties jouées</h3>
+                    <p id="gamesPlayed">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class='bx bx-trophy'></i>
+                    <h3>Meilleur score</h3>
+                    <p id="bestScore">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class='bx bx-line-chart'></i>
+                    <h3>Score moyen</h3>
+                    <p id="averageScore">0</p>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="info">Informations</button>
+                <button class="tab-btn" data-tab="stats">Statistiques</button>
+            </div>
+
+            <div class="tab-content active" id="info-content">
+                <form id="profileForm" class="profile-form">
+                    <div class="form-group">
+                        <label for="editUsername">Nom d'utilisateur</label>
+                        <input type="text" id="editUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
+                    <div class="password-section">
+                        <h3>Changer le mot de passe</h3>
+                        <div class="form-group">
+                            <label for="currentPassword">Mot de passe actuel</label>
+                            <div class="password-input">
+                                <input type="password" id="currentPassword" name="currentPassword">
+                                <i class='bx bx-hide toggle-password'></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Nouveau mot de passe</label>
+                            <div class="password-input">
+                                <input type="password" id="newPassword" name="newPassword">
+                                <i class='bx bx-hide toggle-password'></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">Sauvegarder les modifications</button>
+                </form>
+            </div>
+
+            <div class="tab-content" id="stats-content">
+                <div class="detailed-stats">
+                    <div class="stats-section">
+                        <h3>Statistiques par mode</h3>
+                        <div class="mode-stats">
+                            <div class="mode-stat">
+                                <h4>Mode France</h4>
+                                <p>Parties jouées : <span id="franceModeGames">0</span></p>
+                                <p>Score moyen : <span id="franceModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="franceModeTop">0</span></p>
+                            </div>
+                            <div class="mode-stat">
+                                <h4>Mode Mondial</h4>
+                                <p>Parties jouées : <span id="worldModeGames">0</span></p>
+                                <p>Score moyen : <span id="worldModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="worldModeTop">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-section">
+                        <h3>Historique récent</h3>
+                        <div class="recent-games" id="recentGames">
+                            <!-- Sera rempli dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="notification" class="notification">
+        <i class='bx bx-check-circle'></i>
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script src="script/script_header.js"></script>
+    <script src="script/script_profile.js"></script>
+</body>
+</html>

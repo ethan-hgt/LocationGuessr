@@ -1,7 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Toujours mettre à jour le header
     updateHeader();
-    document.getElementById('inscriptionForm').addEventListener('submit', handleInscriptionSubmit);
-    document.getElementById('connexionForm').addEventListener('submit', handleConnexionSubmit);
+    
+    // Vérifier si on est sur la page de login
+    if (window.location.pathname.includes('login.html')) {
+        const inscriptionForm = document.getElementById('inscriptionForm');
+        const connexionForm = document.getElementById('connexionForm');
+        
+        if (inscriptionForm) {
+            inscriptionForm.addEventListener('submit', handleInscriptionSubmit);
+        }
+        if (connexionForm) {
+            connexionForm.addEventListener('submit', handleConnexionSubmit);
+        }
+    }
 });
 
 function switchTab(tab) {
@@ -20,7 +32,7 @@ function switchTab(tab) {
     }
 }
 
-function showPopup(title, message, type = 'success', redirect = true) {
+function showPopup(title, message, type = 'success', redirect = true, redirectUrl = 'accueil.html') {
     const popup = document.getElementById('customPopup');
     const popupIcon = document.getElementById('popupIcon');
 
@@ -48,7 +60,7 @@ function showPopup(title, message, type = 'success', redirect = true) {
     if (redirect && type !== 'error') {
         setTimeout(() => {
             closePopup();
-            window.location.href = 'accueil.html';
+            window.location.href = redirectUrl;
         }, timeout);
     } else {
         setTimeout(() => {
@@ -100,8 +112,9 @@ async function handleInscriptionSubmit(event) {
         localStorage.setItem('userToken', data.token);
         localStorage.setItem('userFirstName', data.user.username);
         localStorage.setItem('userId', data.user.id);
+        localStorage.setItem('isNewUser', 'true');
         
-        showPopup('Succès', 'Inscription réussie ! Vous êtes maintenant connecté.');
+        showPopup('Bienvenue !', 'Inscription réussie ! Configurons votre profil...', 'success', true, 'profile.html');
         updateHeader();
     } catch (err) {
         console.error(err);
@@ -157,7 +170,19 @@ async function updateHeader() {
             });
 
             if (response.ok) {
-                rightHeader.innerHTML = `<span>${userName} (<a href="#" class="logout-link" onclick="logout(); return false;">Déconnexion</a>)</span>`;
+                const userData = await response.json();
+                const avatarUrl = userData.avatarUrl || '/img/default-avatar.webp';
+                
+                rightHeader.innerHTML = `
+                    <div class="user-profile" onclick="toggleProfileMenu(event)">
+                        <img src="${avatarUrl}" alt="Avatar" class="header-avatar">
+                        <span class="header-username">${userName}</span>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="profile.html">Mon Profil</a>
+                            <a href="#" onclick="logout(); return false;" class="logout-option">Déconnexion</a>
+                        </div>
+                    </div>
+                `;
             } else {
                 logout(false);
             }
@@ -168,6 +193,19 @@ async function updateHeader() {
     } else {
         rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
     }
+}
+
+function toggleProfileMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+
+    document.addEventListener('click', function closeMenu(e) {
+        if (!e.target.closest('.user-profile')) {
+            dropdown.classList.remove('show');
+            document.removeEventListener('click', closeMenu);
+        }
+    });
 }
 
 function logout(showMessage = true) {

@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    avatarUrl: {
+        type: String,
+        default: '/img/default-avatar.webp'
+    },
     stats: {
         gamesPlayed: {
             type: Number,
@@ -37,9 +41,26 @@ const userSchema = new mongoose.Schema({
             type: Number,
             default: 0
         },
+        franceMode: {
+            gamesPlayed: { type: Number, default: 0 },
+            totalScore: { type: Number, default: 0 },
+            bestScore: { type: Number, default: 0 },
+            averageScore: { type: Number, default: 0 }
+        },
+        worldMode: {
+            gamesPlayed: { type: Number, default: 0 },
+            totalScore: { type: Number, default: 0 },
+            bestScore: { type: Number, default: 0 },
+            averageScore: { type: Number, default: 0 }
+        },
         lastPlayedDate: {
             type: Date
-        }
+        },
+        recentGames: [{
+            mode: String,
+            score: Number,
+            date: { type: Date, default: Date.now }
+        }]
     },
     createdAt: {
         type: Date,
@@ -47,9 +68,9 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// Hooks existants
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
-    
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });

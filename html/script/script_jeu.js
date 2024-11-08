@@ -32,8 +32,8 @@ async function saveScore(finalScore) {
             },
             body: JSON.stringify({
                 score: Math.floor(finalScore),
+                mode: modeDeJeu,  
                 gameDetails: {
-                    mode: modeDeJeu,
                     roundsPlayed: totalRounds,
                     timePlayed: (120 - timeRemaining) * totalRounds,
                     date: new Date()

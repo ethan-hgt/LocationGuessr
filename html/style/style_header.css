@@ -79,7 +79,7 @@ header {
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #4CAF50;
+    border: 2px solid #136bc3;
 }
 
 .header-username {
@@ -154,7 +154,7 @@ header {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #4CAF50;
+    background-color: #00bfff;
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.3s ease;

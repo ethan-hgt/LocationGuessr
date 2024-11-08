@@ -2,118 +2,158 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background-color: black;
     font-family: 'Inter', sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-main.main-container {
+.conteneur-principal {
+    width: 100%;
+    max-width: 1200px;
+    margin: 100px auto 0;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding-top: 50px; /* Espace en haut pour descendre le titre */
-    position: relative;
+    gap: 60px;
 }
 
-.title-container h1 {
-    font-size: 5vw;
-    color: white;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
-    margin-bottom: 20px; /* Réduit l'espace sous le titre */
+.section-accueil {
     text-align: center;
+    margin-bottom: 40px;
 }
 
-.content-container {
-    width: 100%;
+.titre-accueil {
+    font-size: 4vw;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    margin-bottom: 10px;
+}
+
+.sous-titre-accueil {
+    font-size: 1.5vw;
+    color: #b0b0b0;
+    margin-bottom: 20px;
+}
+
+.section-globe-interactif {
     display: flex;
-    flex-direction: column; /* Empile les éléments verticalement */
-    align-items: center;
-}
-
-.planet-container {
-    width: 100%; /* La planète prend toute la largeur */
-    display: flex;
-    justify-content: center; /* Centre la planète horizontalement */
-    align-items: center;
-    margin-bottom: 20px; /* Espace entre la planète et le paragraphe */
-}
-
-#planet-viewer {
+    justify-content: center;
     width: 100%;
-    height: auto;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.paragraphe-location {
-    max-width: 800px; /* Élargit la largeur maximale du paragraphe */
-    font-size: 1.2vw;
-    color: #e0e0e0;
-    line-height: 1.6;
-    text-align: left;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
+#globe-interactif {
+    width: 100%;
+    height: 500px;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
+}
+
+.titre-section {
+    font-size: 2.5vw;
+    color: #ffffff;
     text-align: center;
-    margin: 0 20px; /* Marge horizontale pour laisser de l'espace sur les côtés */
+    margin-bottom: 20px;
+    border-bottom: 2px solid #444;
+    display: inline-block;
+    padding-bottom: 10px;
 }
 
-@keyframes fadeInText {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.texte-section {
+    text-align: center;
+    font-size: 1.2vw;
+    line-height: 1.6;
+    margin: 0 auto;
+    max-width: 800px;
 }
 
-footer {
-    background-color: #222;
-    padding: 10px 20px;
+.section-fonctionnalites, .section-technologies, .section-equipe, .section-mission {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.liste-fonctionnalites, .liste-technologies {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.element-fonctionnalite, .element-technologie {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 300px;
+}
+
+.element-fonctionnalite:hover, .element-technologie:hover {
+    transform: translateY(-10px);
+}
+
+.icone-fonctionnalite, .icone-technologie {
+    width: 60px;
     height: 60px;
-    color: #fff;
-    width: 100%;
-    box-sizing: border-box;
-    position: fixed;
-    bottom: 0;
-    z-index: 100;
+    margin-bottom: 15px;
 }
 
-.left-footer {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    gap: 40px;
+.description-fonctionnalite, .element-technologie p {
+    font-size: 1.1vw;
 }
 
-.footer-link {
-    font-size: 16px;
-    color: #c0c0c0;
-    text-decoration: none;
-    transition: transform 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+.section-cta {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 80px;
 }
 
-.footer-link:hover {
-    transform: scale(1.05);
-    opacity: 1;
-    color: #fff;
+.bouton-cta {
+    background-color: #0078d4;
+    color: #ffffff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.2vw;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 120, 212, 0.5);
 }
 
-.footer-link.active {
-    font-weight: bold;
-    color: #fff;
-    opacity: 1;
+.bouton-cta:hover {
+    background-color: #005bb5;
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 91, 181, 0.5);
 }
 
-.right-footer {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+.bouton-cta:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    .titre-accueil {
+        font-size: 8vw;
+    }
+
+    .sous-titre-accueil, .titre-section, .description-fonctionnalite, .element-technologie p {
+        font-size: 3.5vw;
+    }
+
+    .bouton-cta {
+        font-size: 4vw;
+    }
+
+    #globe-interactif {
+        height: 300px;
+    }
+
+    .element-fonctionnalite, .element-technologie {
+        width: 100%;
+    }
 }

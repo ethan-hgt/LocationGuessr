@@ -1,67 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LocationGuessr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/style_accueil.css">
-    <link rel="stylesheet" href="style/style_header.css">
-    <link rel="stylesheet" href="style/style_aboutUs.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style/style_accueil.css" />
+    <link rel="stylesheet" href="style/style_header.css" />
+    <link rel="stylesheet" href="style/style_aboutUs.css" />
+    <link rel="stylesheet" href="style/style_footer.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/html/script/script_login.js"></script>
     <script src="/html/script/script_accueil.js"></script>
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.31/build/spline-viewer.js"></script>
-</head>
+    <script src="/html/script/script_aboutUs.js"></script>
 
-<body>
+    <script
+      type="module"
+      src="https://unpkg.com/@splinetool/viewer@1.9.31/build/spline-viewer.js"
+    ></script>
+  </head>
 
+  <body>
     <header>
-        <div class="left-header">
-            <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
-            </a>
-            <a href="play.html" class="header-link">Jouer</a>
-            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
-            <a href="/html/aboutUs.html" class="header-link active">À propos</a>
-        </div>
-        <div class="right-header">
-            <a href="login.html" class="header-link">Connexion</a>
-        </div>
+      <div class="left-header">
+        <a href="accueil.html">
+          <img
+            src="../img/plane.png"
+            alt="icon"
+            class="header-icon"
+            draggable="false"
+          />
+        </a>
+        <a href="play.html" class="header-link">Jouer</a>
+        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+        <a href="/html/aboutUs.html" class="header-link active">À propos</a>
+      </div>
+      <div class="right-header">
+        <a href="login.html" class="header-link">Connexion</a>
+      </div>
     </header>
 
-    <main class="main-container">
-        <div class="title-container">
-            <h1>Location Guessr</h1>
+    <main class="conteneur-principal">
+      <section class="section-accueil">
+        <h1 class="titre-accueil">Location Guessr</h1>
+        <p class="sous-titre-accueil">
+          Découvrez le monde comme jamais auparavant.
+        </p>
+      </section>
+
+      <section class="section-globe-interactif">
+        <spline-viewer
+          id="globe-interactif"
+          url="https://prod.spline.design/qB2VAzvitiRG2k2n/scene.splinecode"
+        ></spline-viewer>
+        <div class="couverture-overlay"></div>
+      </section>
+
+      <section class="section-mission">
+        <h2 class="titre-section">Notre Mission</h2>
+        <p class="texte-section">
+          Notre but était de recréer le site GeoGuessr tout en gardant un design
+          personnel. Nous avons cherché à créer un site moderne, intuitif et
+          esthétique qui offre une expérience unique et engageante aux
+          utilisateurs.
+        </p>
+      </section>
+
+      <section class="section-fonctionnalites">
+        <h2 class="titre-section">Fonctionnalités Clés</h2>
+        <div class="liste-fonctionnalites">
+          <div class="element-fonctionnalite">
+            <img
+              src="/img/icon-explore.png"
+              alt="Icône exploration"
+              class="icone-fonctionnalite"
+            />
+            <p class="description-fonctionnalite">
+              Explorez des lieux emblématiques du monde entier.
+            </p>
+          </div>
+          <div class="element-fonctionnalite">
+            <img
+              src="/img/icon-competition.png"
+              alt="Icône compétition"
+              class="icone-fonctionnalite"
+            />
+            <p class="description-fonctionnalite">
+              Participez à des défis et améliorez votre classement.
+            </p>
+          </div>
+          <div class="element-fonctionnalite">
+            <img
+              src="/img/icon-learn.png"
+              alt="Icône apprentissage"
+              class="icone-fonctionnalite"
+            />
+            <p class="description-fonctionnalite">
+              Apprenez des faits géographiques intéressants à chaque étape.
+            </p>
+          </div>
         </div>
-    
-        <div class="content-container">
-            <div class="planet-container">
-                <spline-viewer id="planet-viewer" url="https://prod.spline.design/qB2VAzvitiRG2k2n/scene.splinecode"></spline-viewer>
-            </div>
-    
-            <div class="paragraphe-location">
-                <p>LocationGuessr est un jeu de géographie dans lequel vous êtes déposé quelque part dans le monde dans un panorama de rue. Votre mission est de trouver des indices qui vous permettront de deviner votre position sur la carte du monde.</p>
-            </div>
+      </section>
+
+      <section class="section-technologies">
+        <h2 class="titre-section">Technologies Utilisées</h2>
+        <div class="liste-technologies">
+          <div class="element-technologie">
+            <img
+              src="/img/html-logo.png"
+              alt="Logo HTML"
+              class="icone-technologie"
+            />
+            <p>HTML</p>
+          </div>
+          <div class="element-technologie">
+            <img
+              src="/img/css-logo.png"
+              alt="Logo CSS"
+              class="icone-technologie"
+            />
+            <p>CSS</p>
+          </div>
+          <div class="element-technologie">
+            <img
+              src="/img/js-logo.png"
+              alt="Logo JavaScript"
+              class="icone-technologie"
+            />
+            <p>JavaScript</p>
+          </div>
+          <div class="element-technologie">
+            <img
+              src="/img/mongodb-logo.webp"
+              alt="Logo MongoDB"
+              class="icone-technologie"
+            />
+            <p>MongoDB</p>
+          </div>
         </div>
+      </section>
+
+      <section class="section-equipe">
+        <h2 class="titre-section">Notre Équipe</h2>
+        <p class="texte-section">
+          Ce projet a été créé par une équipe de deux personnes dans le cadre de
+          notre SAE du premier semestre de 2ème année. Nous avons collaboré pour
+          concevoir et développer l'ensemble du projet, en respectant le cahier
+          des charges et en intégrant des technologies modernes.
+        </p>
+      </section>
+
+      <section class="section-cta">
+        <button
+          class="bouton-cta"
+          onclick="window.location.href='/html/Login.html'"
+        >
+          Rejoignez l'Aventure
+        </button>
+      </section>
     </main>
-    
-    
-    
-    
 
     <footer>
-        <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Politique de confidentialité</a>
-            <a href="terms.html" class="footer-link">Termes et conditions</a>
-            <a href="contact.html" class="footer-link">Nous contacter</a>
-        </div>
-        <div class="right-footer">
-            <span class="footer-link">© 2024 LocationGuessr</span>
-        </div>
+      <div class="left-footer">
+        <a href="privacy.html" class="footer-link"
+          >Politique de confidentialité</a
+        >
+        <a href="terms.html" class="footer-link">Termes et conditions</a>
+        <a href="contact.html" class="footer-link">Nous contacter</a>
+      </div>
+      <div class="right-footer">
+        <span class="footer-link">© 2024 LocationGuessr</span>
+      </div>
     </footer>
 
     <script src="/html/script/script_footer.js"></script>
-
-</body>
+  </body>
 </html>

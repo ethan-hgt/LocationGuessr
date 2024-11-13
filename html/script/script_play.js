@@ -20,6 +20,22 @@ document.getElementById("mondialBtn").onclick = function() {
     window.location.href = "/html/jeu.html";
 };
 
+document.getElementById("neversBtn").onclick = function() {
+    localStorage.setItem('gameMode', 'nevers');
+    window.location.href = "/html/jeu.html";
+};
+
+document.getElementById("versaillesBtn").onclick = function() {
+    localStorage.setItem('gameMode', 'versailles');
+    window.location.href = "/html/jeu.html";
+};
+
+document.getElementById("lampeBtn").onclick = function() {
+    localStorage.setItem('gameMode', 'lampe');
+    window.location.href = "/html/jeu.html";
+};
+
+
         
 function loadGameContent(game) {
     gameSelection.classList.add('hidden');

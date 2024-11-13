@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionAccueil) {
         sectionAccueil.style.opacity = '0';
         setTimeout(() => {
-            sectionAccueil.style.transition = 'opacity 1s ease';
+            sectionAccueil.style.transition = 'opacity 1.5s ease-in-out';
             sectionAccueil.style.opacity = '1';
         }, 500);
     }
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionGlobe) {
         sectionGlobe.style.opacity = '0';
         setTimeout(() => {
-            sectionGlobe.style.transition = 'opacity 1s ease';
+            sectionGlobe.style.transition = 'opacity 1.5s ease-in-out';
             sectionGlobe.style.opacity = '1';
-        }, 700);
+        }, 800);
     }
 
     const autresSections = document.querySelectorAll('.conteneur-principal section:not(.section-accueil):not(.section-globe-interactif)');
@@ -31,7 +31,7 @@ window.addEventListener('scroll', () => {
     sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
         if (rect.top < window.innerHeight - 100) {
-            section.style.transition = 'opacity 0.8s ease-out';
+            section.style.transition = 'opacity 1.2s ease-in-out';
             section.style.opacity = '1';
         }
     });
@@ -41,7 +41,7 @@ window.addEventListener('scroll', () => {
 const elementsInteractifs = document.querySelectorAll('.element-fonctionnalite, .element-technologie');
 elementsInteractifs.forEach(element => {
     element.addEventListener('mouseenter', () => {
-        element.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+        element.style.transition = 'transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out';
         element.style.transform = 'scale(1.05)';
         element.style.boxShadow = '0 8px 20px rgba(0, 120, 212, 0.5)'; 
     });
@@ -52,7 +52,6 @@ elementsInteractifs.forEach(element => {
     });
 });
 
-
 // Animation du bouton "Rejoignez l'Aventure" lors du chargement
 const boutonAppelAction = document.querySelector('.bouton-cta');
 if (boutonAppelAction) {
@@ -60,10 +59,10 @@ if (boutonAppelAction) {
     boutonAppelAction.style.transform = 'scale(0.5)';
     window.addEventListener('load', () => {
         setTimeout(() => {
-            boutonAppelAction.style.transition = 'opacity 1s ease, transform 1s ease';
+            boutonAppelAction.style.transition = 'opacity 1.5s ease-in-out, transform 1.5s ease-in-out';
             boutonAppelAction.style.opacity = '1';
             boutonAppelAction.style.transform = 'scale(1)';
-        }, 1500);
+        }, 1800);
     });
 
     boutonAppelAction.addEventListener('mouseenter', () => {
@@ -91,3 +90,4 @@ if (boutonAppelAction) {
         boutonAppelAction.style.transform = 'scale(1)';
     });
 }
+

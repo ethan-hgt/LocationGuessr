@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const modeStatsSchema = {
+    gamesPlayed: { type: Number, default: 0 },
+    totalScore: { type: Number, default: 0 },
+    bestScore: { type: Number, default: 0 },
+    averageScore: { type: Number, default: 0 }
+};
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -25,37 +32,17 @@ const userSchema = new mongoose.Schema({
         default: '/img/default-avatar.webp'
     },
     stats: {
-        gamesPlayed: {
-            type: Number,
-            default: 0
-        },
-        totalScore: {
-            type: Number,
-            default: 0
-        },
-        bestScore: {
-            type: Number,
-            default: 0
-        },
-        averageScore: {
-            type: Number,
-            default: 0
-        },
-        franceMode: {
-            gamesPlayed: { type: Number, default: 0 },
-            totalScore: { type: Number, default: 0 },
-            bestScore: { type: Number, default: 0 },
-            averageScore: { type: Number, default: 0 }
-        },
-        worldMode: {
-            gamesPlayed: { type: Number, default: 0 },
-            totalScore: { type: Number, default: 0 },
-            bestScore: { type: Number, default: 0 },
-            averageScore: { type: Number, default: 0 }
-        },
-        lastPlayedDate: {
-            type: Date
-        },
+        gamesPlayed: { type: Number, default: 0 },
+        totalScore: { type: Number, default: 0 },
+        bestScore: { type: Number, default: 0 },
+        averageScore: { type: Number, default: 0 },
+        lastPlayedDate: { type: Date },
+        franceMode: modeStatsSchema,
+        mondialMode: modeStatsSchema,
+        disneylandMode: modeStatsSchema,
+        neversMode: modeStatsSchema,
+        versailleMode: modeStatsSchema,
+        darkMode: modeStatsSchema,
         recentGames: [{
             mode: String,
             score: Number,
@@ -68,7 +55,6 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// Hooks existants
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     const salt = await bcrypt.genSalt(10);

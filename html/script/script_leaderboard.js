@@ -9,27 +9,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Initialise les boutons de mode de jeu
 function initModeSelector() {
     document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', async function() {
+        btn.addEventListener('click', function() {
             if (this.classList.contains('active')) return;
             
             currentMode = this.dataset.mode;
-            
             // Met à jour l'apparence des boutons
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // Animation de sortie
-            const rows = document.querySelectorAll('.player-row');
-            rows.forEach((row, index) => {
-                row.style.animation = `slideOut 0.3s forwards ${index * 0.05}s`;
-            });
-            
-            // Attend que l'animation de sortie soit terminée
-            await new Promise(resolve => setTimeout(resolve, (rows.length * 0.05 + 0.3) * 1000));
-            
-            // Recharge le leaderboard
+            // Recharge le leaderboard avec le nouveau mode
             loadLeaderboard();
             if (localStorage.getItem('userToken')) {
                 loadUserPosition();
@@ -38,6 +29,7 @@ function initModeSelector() {
     });
 }
 
+// Charge la position de l'utilisateur connecté
 async function loadUserPosition() {
     try {
         const userId = localStorage.getItem('userId');
@@ -62,7 +54,6 @@ async function loadUserPosition() {
         });
         const statsData = await statsResponse.json();
 
-        userPositionElement.style.opacity = '0';
         userPositionElement.innerHTML = `
             Votre position : #${data.rank}/${data.totalPlayers}
             <br>
@@ -70,18 +61,12 @@ async function loadUserPosition() {
             Moyenne : ${statsData.currentStats.averageScore} | 
             Parties jouées : ${statsData.currentStats.gamesPlayed}
         `;
-        
-        // Animation d'apparition des stats
-        requestAnimationFrame(() => {
-            userPositionElement.style.opacity = '1';
-            userPositionElement.style.transform = 'translateY(0)';
-        });
-
     } catch (err) {
         console.error('Erreur lors du chargement de la position:', err);
     }
 }
 
+// Charge le leaderboard
 async function loadLeaderboard() {
     try {
         const response = await fetch(`http://localhost:3000/api/user/leaderboard?mode=${currentMode}`);
@@ -111,12 +96,15 @@ async function loadLeaderboard() {
                 ${player.stats.lastPlayed ? `Dernière partie: ${formatDate(player.stats.lastPlayed)}` : ''}
             `;
 
-            const medalClass = index < 3 ? getRankClass(index) : '';
+            const rankDisplay = index < 3 
+                ? getMedalImage(index, getRankClass(index)) 
+                : `#${index + 1}`;
+
             row.innerHTML = `
                 <div class="rank">
-                    ${index < 3 ? getMedalImage(index, medalClass) : `#${index + 1}`}
+                    ${rankDisplay}
                 </div>
-                <div class="player-info mode-transition">
+                <div class="player-info">
                     <img src="${getModeIcon(currentMode)}" alt="${currentMode}" class="mode-icon">
                     <span>${player.username}</span>
                 </div>
@@ -126,12 +114,6 @@ async function loadLeaderboard() {
             
             row.appendChild(tooltip);
             scrollableRows.appendChild(row);
-            
-            // Animation de l'icône du mode
-            requestAnimationFrame(() => {
-                const modeTransition = row.querySelector('.mode-transition');
-                modeTransition.classList.add('active');
-            });
         });
         
         updateTotalPlayers(data.totalPlayers);
@@ -141,6 +123,28 @@ async function loadLeaderboard() {
     }
 }
 
+// Met à jour le nombre total de joueurs
+function updateTotalPlayers(total) {
+    let totalElement = document.querySelector('.total-players');
+    if (!totalElement) {
+        totalElement = document.createElement('div');
+        totalElement.className = 'total-players';
+        document.querySelector('.leaderboard-container').appendChild(totalElement);
+    }
+    totalElement.textContent = `${total} ${total > 1 ? 'joueurs' : 'joueur'}`;
+}
+
+// Retourne la classe CSS selon le rang
+function getRankClass(index) {
+    switch(index) {
+        case 0: return 'gold';
+        case 1: return 'silver';
+        case 2: return 'bronze';
+        default: return '';
+    }
+}
+
+// Retourne l'image de médaille selon le rang
 function getMedalImage(index, medalClass = '') {
     const medals = {
         0: '/img/MedailGold.png',

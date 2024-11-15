@@ -48,11 +48,9 @@ const userSchema = new mongoose.Schema({
             score: Number,
             date: { type: Date, default: Date.now }
         }]
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
+}, {
+    timestamps: true
 });
 
 userSchema.pre('save', async function(next) {

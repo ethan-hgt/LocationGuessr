@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { GAME_MODES } = require('./gameMode');
 
 // Route d'inscription
 router.post('/register', async (req, res) => {
@@ -19,11 +20,32 @@ router.post('/register', async (req, res) => {
             });
         }
 
+        // Initialiser les stats pour tous les modes
+        const initialStats = {
+            gamesPlayed: 0,
+            totalScore: 0,
+            bestScore: 0,
+            averageScore: 0,
+            lastPlayedDate: null,
+            recentGames: []
+        };
+
+        // Ajouter les stats spécifiques pour chaque mode
+        Object.keys(GAME_MODES).forEach(mode => {
+            initialStats[`${mode}Mode`] = {
+                gamesPlayed: 0,
+                totalScore: 0,
+                bestScore: 0,
+                averageScore: 0
+            };
+        });
+
         // Créer un nouvel utilisateur
         const user = new User({
             username,
             email,
-            password
+            password,
+            stats: initialStats
         });
 
         await user.save();
@@ -40,7 +62,9 @@ router.post('/register', async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                avatarUrl: user.avatarUrl,
+                stats: user.stats
             }
         });
 
@@ -71,6 +95,26 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Identifiants invalides' });
         }
+
+        // Initialiser les stats manquantes si nécessaire
+        let statsUpdated = false;
+        Object.keys(GAME_MODES).forEach(mode => {
+            const modeKey = `${mode}Mode`;
+            if (!user.stats[modeKey]) {
+                user.stats[modeKey] = {
+                    gamesPlayed: 0,
+                    totalScore: 0,
+                    bestScore: 0,
+                    averageScore: 0
+                };
+                statsUpdated = true;
+            }
+        });
+
+        if (statsUpdated) {
+            await user.save();
+        }
+
         console.log(`Utilisateur connecté : ${user.username}`);
 
         // Créer le token JWT
@@ -85,7 +129,9 @@ router.post('/login', async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                avatarUrl: user.avatarUrl,
+                stats: user.stats
             }
         });
 

@@ -22,63 +22,68 @@
             <a href="aboutUs.html" class="header-link">À propos</a>
         </div>
         <div class="right-header">
-            <a href="login.html" class="header-link">Connexion</a>
+            <a href="login.html" class="header-link active">Connexion</a>
         </div>
     </header>
 
-    <div class="background-container">
-        <div class="form-container">
-            <div class="tab-container">
-                <div class="tab-slider"></div>
-                <button type="button" class="tab-button" onclick="switchTab('connexion')">Connexion</button>
-                <button type="button" class="tab-button" onclick="switchTab('inscription')">Inscription</button>
-            </div>
+    <div class="main-container">
+        <div class="auth-container">
+            <div class="form-container">
+                <div class="tab-container">
+                    <div class="tab-slider"></div>
+                    <button type="button" class="tab-button" onclick="switchTab('connexion')">Connexion</button>
+                    <button type="button" class="tab-button" onclick="switchTab('inscription')">Inscription</button>
+                </div>
 
-            <form id="connexionForm" class="auth-form">
-                <div class="input-container">
-                    <box-icon name="user" class="input-icon" color="white"></box-icon>
-                    <input type="text" id="usernameConnexion" placeholder="Nom d'utilisateur" required>
-                </div>
-                <div class="input-container">
-                    <box-icon name="lock" class="input-icon" color="white"></box-icon>
-                    <input type="password" id="passwordConnexion" placeholder="Mot de passe" required>
-                    <box-icon name="hide" id="toggleIconConnexion" class="toggle-password" color="white" onclick="togglePassword()"></box-icon>
-                </div>
-                
-                <div class="options-container">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Se souvenir de moi</label>
+                <form id="connexionForm" class="auth-form">
+                    <div class="input-container">
+                        <box-icon name="user" class="input-icon" color="white"></box-icon>
+                        <input type="text" id="usernameConnexion" placeholder="Nom d'utilisateur" required>
                     </div>
-                    <p class="forgot-password">Mot de passe oublié ?</p>
-                </div>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="password" id="passwordConnexion" placeholder="Mot de passe" required>
+                        <box-icon name="hide" id="toggleIconConnexion" class="toggle-password" color="white" onclick="togglePassword()"></box-icon>
+                    </div>
+                    
+                    <div class="options-container">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Se souvenir de moi</label>
+                        </div>
+                        <p class="forgot-password">Mot de passe oublié ?</p>
+                    </div>
 
-                <button type="submit" class="submit-button">Connexion</button>
-                
-                <p class="register-text">Vous n'avez pas de compte ? <a href="#" onclick="switchTab('inscription'); return false;">S'inscrire</a></p>
-            </form>
+                    <button type="submit" class="submit-button">Connexion</button>
+                    
+                    <div class="register-text">
+                        <span class="register-text-content">Vous n'avez pas de compte ?</span>
+                        <a href="#" onclick="switchTab('inscription'); return false;">S'inscrire</a>
+                    </div>
+                </form>
 
-            <form id="inscriptionForm" class="auth-form" style="display: none;">
-                <div class="input-container">
-                    <box-icon name="user" class="input-icon" color="white"></box-icon>
-                    <input type="text" id="usernameInscription" placeholder="Nom d'utilisateur" required>
-                </div>
-                <div class="input-container">
-                    <box-icon name="envelope" class="input-icon" color="white"></box-icon>
-                    <input type="email" id="emailInscription" placeholder="Email" required>
-                </div>
-                <div class="input-container">
-                    <box-icon name="lock" class="input-icon" color="white"></box-icon>
-                    <input type="password" id="passwordInscription" placeholder="Mot de passe" required>
-                    <box-icon name="hide" id="toggleIconInscription" class="toggle-password" color="white" onclick="togglePasswordInscription()"></box-icon>
-                </div>
-                <div class="input-container">
-                    <box-icon name="lock" class="input-icon" color="white"></box-icon>
-                    <input type="password" id="confirmPasswordInscription" placeholder="Confirmer le mot de passe" required>
-                    <box-icon name="hide" id="toggleConfirmIconInscription" class="toggle-password" color="white" onclick="toggleConfirmPasswordInscription()"></box-icon>
-                </div>
-                <button type="submit" class="submit-button">S'inscrire</button>
-            </form>
+                <form id="inscriptionForm" class="auth-form" style="display: none;">
+                    <div class="input-container">
+                        <box-icon name="user" class="input-icon" color="white"></box-icon>
+                        <input type="text" id="usernameInscription" placeholder="Nom d'utilisateur" required>
+                    </div>
+                    <div class="input-container">
+                        <box-icon name="envelope" class="input-icon" color="white"></box-icon>
+                        <input type="email" id="emailInscription" placeholder="Email" required>
+                    </div>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="password" id="passwordInscription" placeholder="Mot de passe" required>
+                        <box-icon name="hide" id="toggleIconInscription" class="toggle-password" color="white" onclick="togglePasswordInscription()"></box-icon>
+                    </div>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="password" id="confirmPasswordInscription" placeholder="Confirmer le mot de passe" required>
+                        <box-icon name="hide" id="toggleConfirmIconInscription" class="toggle-password" color="white" onclick="toggleConfirmPasswordInscription()"></box-icon>
+                    </div>
+                    <button type="submit" class="submit-button">S'inscrire</button>
+                </form>
+            </div>
         </div>
     </div>
 

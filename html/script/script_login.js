@@ -1,20 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Toujours mettre à jour le header
     updateHeader();
     
-    // Vérifier si on est sur la page de login
     if (window.location.pathname.includes('login.html')) {
         const inscriptionForm = document.getElementById('inscriptionForm');
         const connexionForm = document.getElementById('connexionForm');
         
         if (inscriptionForm) {
             inscriptionForm.addEventListener('submit', handleInscriptionSubmit);
+            fadeInForm(inscriptionForm, false);
         }
         if (connexionForm) {
             connexionForm.addEventListener('submit', handleConnexionSubmit);
+            fadeInForm(connexionForm, true);
         }
     }
 });
+
+function fadeInForm(form, show) {
+    if (show) {
+        form.style.display = 'flex';
+        form.style.opacity = '0';
+        setTimeout(() => {
+            form.style.opacity = '1';
+        }, 50);
+    } else {
+        form.style.opacity = '0';
+        form.style.display = 'none';
+    }
+}
 
 function switchTab(tab) {
     const inscriptionForm = document.getElementById('inscriptionForm');
@@ -22,18 +35,19 @@ function switchTab(tab) {
     const tabSlider = document.querySelector('.tab-slider');
     
     if (tab === 'connexion') {
-        inscriptionForm.style.display = 'none';
-        connexionForm.style.display = 'flex';
+        fadeInForm(inscriptionForm, false);
+        fadeInForm(connexionForm, true);
         tabSlider.style.left = '0';
     } else {
-        inscriptionForm.style.display = 'flex';
-        connexionForm.style.display = 'none';
+        fadeInForm(connexionForm, false);
+        fadeInForm(inscriptionForm, true);
         tabSlider.style.left = '50%';
     }
 }
 
 function showPopup(title, message, type = 'success', redirect = true, redirectUrl = 'accueil.html') {
     const popup = document.getElementById('customPopup');
+    const popupContent = popup.querySelector('.popup-content');
     const popupIcon = document.getElementById('popupIcon');
 
     if (!popup || !popupIcon) return;
@@ -53,7 +67,11 @@ function showPopup(title, message, type = 'success', redirect = true, redirectUr
         popupIcon.classList.add('success');
     }
 
-    popup.classList.add('show');
+    popup.style.display = 'flex';
+    setTimeout(() => {
+        popup.style.opacity = '1';
+        popupContent.style.transform = 'translateY(0)';
+    }, 50);
 
     const timeout = type === 'error' ? 2000 : 1500;
 
@@ -71,9 +89,13 @@ function showPopup(title, message, type = 'success', redirect = true, redirectUr
 
 function closePopup() {
     const popup = document.getElementById('customPopup');
-    if (popup) {
-        popup.classList.remove('show');
-    }
+    const popupContent = popup.querySelector('.popup-content');
+    
+    popup.style.opacity = '0';
+    popupContent.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 300);
 }
 
 async function handleInscriptionSubmit(event) {
@@ -154,6 +176,32 @@ async function handleConnexionSubmit(event) {
         console.error(err);
         showPopup('Erreur', 'Une erreur est survenue lors de la connexion.', 'error', false);
     }
+}
+
+function togglePassword() {
+    togglePasswordVisibility('passwordConnexion', 'toggleIconConnexion');
+}
+
+function togglePasswordInscription() {
+    togglePasswordVisibility('passwordInscription', 'toggleIconInscription');
+}
+
+function toggleConfirmPasswordInscription() {
+    togglePasswordVisibility('confirmPasswordInscription', 'toggleConfirmIconInscription');
+}
+
+function togglePasswordVisibility(passwordFieldId, toggleIconId) {
+    const passwordField = document.getElementById(passwordFieldId);
+    const toggleIcon = document.getElementById(toggleIconId);
+    
+    const isPassword = passwordField.type === "password";
+    passwordField.type = isPassword ? "text" : "password";
+    toggleIcon.setAttribute('name', isPassword ? 'show' : 'hide');
+    
+    toggleIcon.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        toggleIcon.style.transform = 'scale(1)';
+    }, 200);
 }
 
 async function updateHeader() {

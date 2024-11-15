@@ -157,12 +157,12 @@ function getMedalImage(index, medalClass = '') {
 // Retourne l'icône du mode de jeu
 function getModeIcon(mode) {
     const icons = {
-        'france': '/img/France.png',
-        'mondial': '/img/Mondial.png',
-        'disneyland': '/img/disney.png',
-        'nevers': '/img/nevers.png',
-        'versaille': '/img/versaille.png',
-        'dark': '/img/lampe.png'
+        'france': '/img/francec.png',
+        'mondial': '/img/mondialc.png',
+        'disneyland': '/img/disneyc.png',
+        'nevers': '/img/neversc.png',
+        'versaille': '/img/versaillesc.png',
+        'dark': '/img/darkc.png'
     };
     return icons[mode] || icons['france'];
 }

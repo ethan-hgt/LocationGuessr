@@ -194,30 +194,34 @@ router.put('/profile', auth, async (req, res) => {
 // Route pour mettre à jour les stats
 router.post('/stats', auth, async (req, res) => {
     try {
-        const { score, mode } = req.body;
-        console.log('Mode reçu:', mode); // Pour le debug
+        let { score, mode, gameDetails } = req.body;
+        console.log("Mode reçu:", mode); // Pour debug
         
-        if (!mode) {
-            return res.status(400).json({ message: 'Mode de jeu non spécifié' });
-        }
-
+        // Normaliser le mode
+        const modeMapping = {
+            'parc': 'disneyland',
+            'versailles': 'versailles',
+            'versaille': 'versailles',
+            'nevers': 'nevers',
+            'france': 'france',
+            'mondial': 'mondial',
+            'dark': 'dark'
+        };
+        
+        mode = modeMapping[mode] || mode;
+        console.log("Mode normalisé:", mode); // Pour debug
+        
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
         const modeKey = `${mode}Mode`;
-        console.log('ModeKey:', modeKey); // Pour le debug
-
-        // Mise à jour des stats globales
-        user.stats.gamesPlayed += 1;
-        user.stats.totalScore += score;
-        user.stats.averageScore = user.stats.totalScore / user.stats.gamesPlayed;
-        user.stats.bestScore = Math.max(user.stats.bestScore, score);
-        user.stats.lastPlayedDate = new Date();
+        console.log("ModeKey utilisé:", modeKey); // Pour debug
 
         // Initialisation des stats du mode si elles n'existent pas
         if (!user.stats[modeKey]) {
+            console.log("Initialisation des stats pour le mode:", modeKey);
             user.stats[modeKey] = {
                 gamesPlayed: 0,
                 totalScore: 0,
@@ -230,23 +234,47 @@ router.post('/stats', auth, async (req, res) => {
         user.stats[modeKey].gamesPlayed += 1;
         user.stats[modeKey].totalScore += score;
         user.stats[modeKey].averageScore = user.stats[modeKey].totalScore / user.stats[modeKey].gamesPlayed;
-        user.stats[modeKey].bestScore = Math.max(user.stats[modeKey].bestScore, score);
+        
+        // Mise à jour du meilleur score seulement si le nouveau score est meilleur
+        if (score > user.stats[modeKey].bestScore) {
+            user.stats[modeKey].bestScore = score;
+            
+            // Mise à jour du meilleur score global si nécessaire
+            if (score > user.stats.bestScore) {
+                user.stats.bestScore = score;
+            }
+        }
+
+        // Mise à jour des stats globales
+        user.stats.gamesPlayed += 1;
+        user.stats.totalScore += score;
+        user.stats.averageScore = user.stats.totalScore / user.stats.gamesPlayed;
+        user.stats.lastPlayedDate = new Date();
 
         // Ajouter la partie à l'historique récent
         user.stats.recentGames.unshift({
             mode,
             score,
-            date: new Date()
+            date: new Date(),
+            details: gameDetails || {}
         });
 
         // Garder seulement les 10 dernières parties
         user.stats.recentGames = user.stats.recentGames.slice(0, 10);
 
         await user.save();
+        console.log("Stats sauvegardées avec succès pour le mode:", modeKey);
 
         res.json({
             message: 'Statistiques mises à jour',
-            stats: user.stats
+            stats: {
+                mode: user.stats[modeKey],
+                global: {
+                    bestScore: user.stats.bestScore,
+                    averageScore: user.stats.averageScore,
+                    gamesPlayed: user.stats.gamesPlayed
+                }
+            }
         });
 
     } catch (err) {
@@ -316,6 +344,24 @@ router.post('/stats', auth, async (req, res) => {
     } catch (err) {
         console.error('Erreur lors de la mise à jour des stats:', err);
         res.status(500).json({ message: 'Erreur serveur lors de la mise à jour des statistiques' });
+    }
+});
+
+// Route temporaire pour debug
+router.get('/debug-stats', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        res.json({
+            modes: {
+                versailles: user.stats.versaillesMode,
+                versaille: user.stats.versailleMode,
+                disneyland: user.stats.disneylandMode,
+                nevers: user.stats.neversMode
+            },
+            recentGames: user.stats.recentGames
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

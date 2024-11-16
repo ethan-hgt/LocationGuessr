@@ -9,7 +9,7 @@ const GAME_MODES = {
         icon: '/img/Mondial.png',
         statKey: 'mondialMode'
     },
-    disneyland: {
+    parc: {
         name: 'Disneyland',
         icon: '/img/disney.png',
         statKey: 'disneylandMode'
@@ -19,10 +19,10 @@ const GAME_MODES = {
         icon: '/img/nevers.png',
         statKey: 'neversMode'
     },
-    versaille: {
-        name: 'Versaille',
+    versailles: {  
+        name: 'Versailles',
         icon: '/img/versaille.png',
-        statKey: 'versailleMode'
+        statKey: 'versaillesMode'
     },
     dark: {
         name: 'Dark Mode',

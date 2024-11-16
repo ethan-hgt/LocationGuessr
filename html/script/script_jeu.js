@@ -1,7 +1,11 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiNGtlZXppeCIsImEiOiJjbTF5c2ZucmEwMThzMnFzanNreXJzOW5uIn0.OR0rEGAdPmQIGBBd2hGv_g';
 
+
 let currentRound = 0;
 let totalScore = 0;
+let totalDistance = 0;
+let bestRoundScore = 0;
+let worstRoundScore = 1000;
 let correctPoint;
 let correctMarker, userMarker;
 let map;
@@ -14,7 +18,23 @@ let isProcessingRound = false;
 const streetViewService = new google.maps.StreetViewService();
 
 let modeDeJeu = localStorage.getItem('gameMode') || 'mondial';
+console.log("Mode de jeu actuel:", modeDeJeu); 
 const totalRounds = 5;
+
+function normalizeGameMode(mode) {
+    const modeMapping = {
+        'parc': 'disneyland',
+        'versailles': 'versailles',
+        'versaille': 'versailles',   // Pour la compatibilité
+        'nevers': 'nevers',
+        'france': 'france',
+        'mondial': 'mondial',
+        'dark': 'dark'
+    };
+    const normalizedMode = modeMapping[mode] || mode;
+    console.log("Mode normalisé:", mode, "->", normalizedMode); // Pour debug
+    return normalizedMode;
+}
 
 async function saveScore(finalScore) {
     const token = localStorage.getItem('userToken');
@@ -22,6 +42,11 @@ async function saveScore(finalScore) {
         window.location.href = 'login.html';
         return;
     }
+    
+    const normalizedScore = Math.floor(finalScore);
+    const normalizedMode = normalizeGameMode(modeDeJeu);
+    console.log("Sauvegarde du score pour le mode:", normalizedMode); // Pour debug
+
     try {
         const response = await fetch('http://localhost:3000/api/user/stats', {
             method: 'POST',
@@ -30,16 +55,21 @@ async function saveScore(finalScore) {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                score: Math.floor(finalScore),
-                mode: modeDeJeu,  
+                score: normalizedScore,
+                mode: normalizedMode,
                 gameDetails: {
                     roundsPlayed: totalRounds,
-                    timePlayed: (120 - timeRemaining) * totalRounds,
+                    bestRoundScore: bestRoundScore,
+                    worstRoundScore: worstRoundScore,
+                    averageDistance: totalDistance / totalRounds,
                     date: new Date()
                 }
             })
         });
+        
         const data = await response.json();
+        console.log("Réponse du serveur:", data); // Pour debug
+        
         if (response.ok) {
             console.log("Score sauvegardé avec succès!");
             return true;
@@ -351,17 +381,34 @@ function resetRoundElements() {
 }
 
 function calculateScore(distance) {
+    let roundScore;
     if (modeDeJeu === 'parc' || modeDeJeu === 'nevers' || modeDeJeu === 'versailles') {
-        const distanceMeters = distance * 1000;
-        const maxScore = 1000;
-        const penalty = Math.max(0, distanceMeters - 10);
-        const score = Math.floor(Math.max(0, maxScore - penalty));
-        return score;
+        // Pour les petites zones (en mètres)
+        if (distance <= 5) roundScore = 1000; // Score parfait si moins de 5 mètres
+        else if (distance <= 10) roundScore = 999 - (distance - 5);
+        else if (distance <= 50) roundScore = 900 - (distance - 10) * 3;
+        else if (distance <= 100) roundScore = 780 - (distance - 50) * 3;
+        else if (distance <= 200) roundScore = 630 - (distance - 100) * 1.4;
+        else if (distance <= 500) roundScore = 490 - (distance - 200) * 0.4;
+        else if (distance <= 1000) roundScore = 370 - (distance - 500) * 0.2;
+        else if (distance <= 2000) roundScore = 270 - (distance - 1000) * 0.08;
+        else if (distance <= 5000) roundScore = 190 - (distance - 2000) * 0.04;
+        else roundScore = Math.max(0, 70 - (distance - 5000) * 0.02);
     } else {
-        const distanceScore = Math.floor(Math.max(0, 1000 - distance * 10));
-        const timeScore = Math.floor(timeRemaining * 5);
-        return distanceScore + timeScore;
+        // Pour les modes monde et France (en kilomètres)
+        if (distance <= 0.5) roundScore = 1000;
+        else if (distance <= 1) roundScore = 999 - (distance * 2);
+        else if (distance <= 5) roundScore = 900 - (distance * 60);
+        else if (distance <= 10) roundScore = 780 - (distance * 30);
+        else if (distance <= 20) roundScore = 630 - (distance * 15);
+        else if (distance <= 50) roundScore = 490 - (distance * 5);
+        else if (distance <= 100) roundScore = 370 - (distance * 2);
+        else if (distance <= 200) roundScore = 270 - (distance * 0.8);
+        else if (distance <= 500) roundScore = 190 - (distance * 0.24);
+        else roundScore = Math.max(0, 70 - (distance * 0.04));
     }
+    
+    return roundScore;
 }
 function validateChoice() {
     if (choiceValidated || !userMarker || isProcessingRound) return;
@@ -383,14 +430,24 @@ function validateChoice() {
         { units: (modeDeJeu === 'nevers' || modeDeJeu === 'parc' || modeDeJeu === 'versailles') ? 'meters' : 'kilometers' }
     );
 
-    const distanceText = (modeDeJeu === 'nevers' || modeDeJeu === 'parc' || modeDeJeu === 'versailles')
-        ? `${Math.round(distance)} mètres`
-        : `${Math.round(distance)} km`;
-    document.getElementById('distanceDisplay').textContent = `Distance au point correct : ${distanceText}`;
-    document.getElementById('distanceDisplay').style.display = 'block';
-
+    totalDistance += distance;
     const roundScore = calculateScore(distance);
     totalScore += roundScore;
+    
+    // Mise à jour des meilleurs/pires scores
+    bestRoundScore = Math.max(bestRoundScore, roundScore);
+    worstRoundScore = Math.min(worstRoundScore, roundScore);
+
+    const distanceText = (modeDeJeu === 'nevers' || modeDeJeu === 'parc' || modeDeJeu === 'versailles')
+        ? `${Math.round(distance)} mètres`
+        : `${Math.round(distance * 100) / 100} km`;
+
+    document.getElementById('distanceDisplay').innerHTML = 
+        `Distance : ${distanceText}<br>Score de la manche : ${Math.round(roundScore)}<br>Score cumulé : ${Math.round(totalScore / totalRounds * 5)}/5000`;
+
+    document.getElementById('distanceDisplay').innerHTML = 
+        `Distance : ${distanceText}<br>Points : ${Math.round(roundScore)}`;
+    document.getElementById('distanceDisplay').style.display = 'block';
 
     document.getElementById('validateChoiceBtn').style.display = 'none';
     document.getElementById('nextRoundBtn').style.display = 'block';
@@ -441,9 +498,12 @@ async function endGame() {
     const title = document.createElement("h1");
     title.textContent = "Résultat de la partie";
 
+    // Calculer le score final en multipliant par 5 pour avoir sur 5000
+    const finalScore = Math.floor(totalScore / totalRounds * 5);
+
     const score = document.createElement("p");
     score.id = "finalScore";
-    score.textContent = `Score final: ${Math.floor(totalScore)}`;
+    score.textContent = `Score final: ${finalScore}`;
 
     const accueilButton = document.createElement("button");
     accueilButton.textContent = "Accueil";
@@ -474,8 +534,8 @@ async function endGame() {
     resultOverlay.style.alignItems = 'center';
     resultOverlay.style.justifyContent = 'center';
 
-    if (totalScore > 0) {
-        const saved = await saveScore(totalScore);
+    if (finalScore > 0) {
+        const saved = await saveScore(finalScore);
         if (!saved) {
             const errorDiv = document.createElement('p');
             errorDiv.textContent = "Erreur lors de la sauvegarde du score.";

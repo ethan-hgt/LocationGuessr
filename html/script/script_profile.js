@@ -117,17 +117,25 @@ async function loadUserProfile() {
 async function loadUserStats() {
     try {
         const token = localStorage.getItem('userToken');
+        console.log('Token:', token); // Vérifier le token
+
         const response = await fetch(`${API_URL}/user/stats/details`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
+        console.log('Response status:', response.status); // Vérifier le statut de la réponse
+
         if (!response.ok) throw new Error('Erreur de chargement des statistiques');
 
         const statsData = await response.json();
+        console.log('Données reçues de l\'API (complètes):', statsData);
+        console.log('Stats actuelles:', statsData.currentStats); // Vérifier les stats
+
         displayStats(statsData.currentStats);
     } catch (error) {
+        console.error('Erreur complète:', error);
         showNotification('Erreur lors du chargement des statistiques', 'error');
     }
 }
@@ -154,12 +162,10 @@ function displayUserData(userData) {
 }
 
 function displayStats(stats) {
-    // Stats globales
     document.getElementById('gamesPlayed').textContent = stats.gamesPlayed || 0;
     document.getElementById('bestScore').textContent = stats.bestScore || 0;
     document.getElementById('averageScore').textContent = Math.round(stats.averageScore || 0);
 
-    // Stats par mode
     const modes = [
         { id: 'france', name: 'France', icon: '🇫🇷' },
         { id: 'mondial', name: 'Mondial', icon: '🌍' },
@@ -182,8 +188,9 @@ function displayStats(stats) {
         if (topElement) topElement.textContent = modeStats.bestScore;
     });
 
-    // Historique récent
-    displayRecentGames(stats.recentGames || []);
+    if (stats.recentGames) {
+        displayRecentGames(stats.recentGames);
+    }
 }
 
 function displayRecentGames(recentGames) {
@@ -201,18 +208,32 @@ function displayRecentGames(recentGames) {
         dark: '🌙'
     };
 
+    if (!recentGames || recentGames.length === 0) {
+        container.innerHTML = '<div class="no-games">Aucune partie récente</div>';
+        return;
+    }
+
     recentGames.forEach(game => {
         const gameElement = document.createElement('div');
         gameElement.className = 'game-entry';
         
-        const modeName = game.mode.charAt(0).toUpperCase() + game.mode.slice(1);
-        if (game.mode === 'dark') modeName = 'Dark Mode';
+        // On crée une copie du nom du mode pour pouvoir le modifier
+        let modeName = game.mode;
+        if (modeName === 'dark') {
+            modeName = 'Dark Mode';
+        } else {
+            modeName = modeName.charAt(0).toUpperCase() + modeName.slice(1);
+        }
         
         gameElement.innerHTML = `
             <div class="game-info">
                 <span class="mode-icon">${modeIcons[game.mode] || '🎮'}</span>
                 <strong>${modeName}</strong>
-                <span>${new Date(game.date).toLocaleDateString()}</span>
+                <span>${new Date(game.date).toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}</span>
             </div>
             <div class="game-score">
                 <span>${game.score} points</span>
@@ -221,10 +242,6 @@ function displayRecentGames(recentGames) {
         
         container.appendChild(gameElement);
     });
-
-    if (recentGames.length === 0) {
-        container.innerHTML = '<div class="no-games">Aucune partie récente</div>';
-    }
 }
 
 async function handleProfileUpdate(event) {

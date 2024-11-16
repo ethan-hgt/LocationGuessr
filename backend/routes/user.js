@@ -354,42 +354,57 @@ router.get('/rank/:userId', async (req, res) => {
 // Route pour obtenir les stats détaillées d'un joueur
 router.get('/stats/details', auth, async (req, res) => {
     try {
-        const { mode } = req.query;
-        const modeKey = mode ? `${mode}Mode` : null;
-        
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        const stats = modeKey && mode !== 'all' ? user.stats[modeKey] || {} : user.stats;
-        
-        // Vérifier si stats existe et initialiser les valeurs par défaut si nécessaire
+        // S'assurer que chaque mode a des stats initialisées
+        const modes = ['france', 'mondial', 'disneyland', 'nevers', 'versaille', 'dark'];
+        modes.forEach(mode => {
+            const modeKey = `${mode}Mode`;
+            if (!user.stats[modeKey]) {
+                user.stats[modeKey] = {
+                    gamesPlayed: 0,
+                    totalScore: 0,
+                    bestScore: 0,
+                    averageScore: 0
+                };
+            }
+        });
+
         const currentStats = {
-            gamesPlayed: stats.gamesPlayed || 0,
-            bestScore: stats.bestScore || 0,
-            averageScore: stats.averageScore || 0,
-            lastPlayed: user.stats.lastPlayedDate || null
+            ...user.stats,
+            gamesPlayed: user.stats.gamesPlayed || 0,
+            bestScore: user.stats.bestScore || 0,
+            averageScore: user.stats.averageScore || 0,
+            lastPlayed: user.stats.lastPlayedDate,
+            franceMode: user.stats.franceMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            mondialMode: user.stats.mondialMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            disneylandMode: user.stats.disneylandMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            neversMode: user.stats.neversMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            versailleMode: user.stats.versailleMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            darkMode: user.stats.darkMode || { gamesPlayed: 0, averageScore: 0, bestScore: 0 },
+            recentGames: user.stats.recentGames || []
         };
 
-        let query = {};
-        if (modeKey && mode !== 'all') {
-            query[`stats.${modeKey}.bestScore`] = { $gt: currentStats.bestScore };
-        } else {
-            query['stats.bestScore'] = { $gt: currentStats.bestScore };
-        }
+        // Calcul du rang
+        const betterPlayers = await User.countDocuments({
+            'stats.bestScore': { $gt: user.stats.bestScore }
+        });
 
-        const rank = await User.countDocuments(query) + 1;
+        // Total des joueurs
         const totalPlayers = await User.countDocuments({
-            [modeKey && mode !== 'all' ? `stats.${modeKey}.gamesPlayed` : 'stats.gamesPlayed']: { $gt: 0 }
+            'stats.gamesPlayed': { $gt: 0 }
         });
 
         res.json({
             username: user.username,
-            rank,
+            rank: betterPlayers + 1,
             totalPlayers,
             currentStats
         });
+
     } catch (err) {
         console.error('Erreur stats details:', err);
         res.status(500).json({ message: 'Erreur serveur' });

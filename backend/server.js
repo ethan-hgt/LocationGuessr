@@ -2,8 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
-const fs = require('fs');
-const multer = require('multer'); // Ajouté pour la gestion des erreurs multer
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -13,44 +12,22 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Configuration des dossiers statiques
-app.use('/img', express.static(path.join(__dirname, '../img'))); // Pour les images du site
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Pour les avatars uploadés
-app.use('/public', express.static(path.join(__dirname, 'public')));
-
-// Création des dossiers nécessaires
-const uploadsDir = path.join(__dirname, 'uploads');
-const avatarsDir = path.join(uploadsDir, 'avatars');
-const publicDir = path.join(__dirname, 'public');
-
-[uploadsDir, avatarsDir, publicDir].forEach(dir => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
+// Configuration des chemins statiques avec logs de débogage
+app.use('/img', (req, res, next) => {
+    console.log('[Static] Accès aux images:', req.url);
+    express.static(path.join(__dirname, '../img'))(req, res, next);
 });
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));
 
-// Test route
+// Route de test
 app.get('/test', (req, res) => {
     res.json({ message: 'Le serveur fonctionne correctement !' });
 });
 
-// Route de debug pour vérifier les chemins
-app.get('/check-paths', (req, res) => {
-    const paths = {
-        uploads: fs.existsSync(uploadsDir),
-        avatars: fs.existsSync(avatarsDir),
-        public: fs.existsSync(publicDir),
-        img: fs.existsSync(path.join(__dirname, '../img')),
-        defaultAvatar: fs.existsSync(path.join(__dirname, '../img/default-avatar.webp'))
-    };
-    res.json(paths);
-});
-
-// Route pour vérifier les modes disponibles
+// Route pour les modes de jeu
 app.get('/api/modes', (req, res) => {
     const modes = {
         france: {
@@ -81,44 +58,41 @@ app.get('/api/modes', (req, res) => {
     res.json(modes);
 });
 
-// Connexion à MongoDB avec options améliorées
+// Connexion MongoDB avec options améliorées
 mongoose.connect(process.env.MONGODB_URI, {
-    autoIndex: true, // Pour les performances en production, mettre à false
-    serverSelectionTimeoutMS: 5000, // Timeout après 5 secondes
-    socketTimeoutMS: 45000, // Ferme les sockets après 45 secondes
-    family: 4 // Utilise IPv4, ignorer IPv6
+    autoIndex: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    family: 4
 })
-.then(() => console.log('Connecté à MongoDB'))
-.catch(err => console.error('Erreur de connexion à MongoDB:', err));
+.then(() => console.log('[MongoDB] Connexion établie'))
+.catch(err => console.error('[MongoDB] Erreur de connexion:', err));
 
-// Middleware de logging pour le debug en développement
+// Middleware de logging en développement
 if (process.env.NODE_ENV !== 'production') {
     app.use((req, res, next) => {
-        console.log(`${req.method} ${req.url}`);
+        console.log(`[Request] ${req.method} ${req.url}`);
         next();
     });
 }
 
-// Gestion des erreurs globales
+// Gestionnaire d'erreurs global amélioré
 app.use((err, req, res, next) => {
-    // Gestion des erreurs Multer
-    if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({
-            message: 'Le fichier est trop volumineux. Taille maximum : 500KB'
-        });
-    }
+    console.error('[Error] Type:', err.name);
+    console.error('[Error] Message:', err.message);
+    console.error('[Error] Path:', req.path);
+
     if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+                message: 'Le fichier est trop volumineux. Taille maximum : 2MB'
+            });
+        }
         return res.status(400).json({
-            message: 'Erreur lors de l\'upload du fichier'
+            message: `Erreur upload: ${err.message}`
         });
     }
-    
-    // Log de l'erreur en développement
-    if (process.env.NODE_ENV !== 'production') {
-        console.error(err.stack);
-    }
-    
-    // Gestion des erreurs de validation MongoDB
+
     if (err.name === 'ValidationError') {
         return res.status(400).json({
             message: 'Erreur de validation',
@@ -126,7 +100,6 @@ app.use((err, req, res, next) => {
         });
     }
 
-    // Gestion des erreurs de duplicate key MongoDB
     if (err.code === 11000) {
         return res.status(400).json({
             message: 'Cette valeur existe déjà'
@@ -139,25 +112,28 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Route 404 pour les chemins non trouvés
+// Route 404
 app.use((req, res) => {
+    console.log('[404] Route non trouvée:', req.url);
     res.status(404).json({ message: 'Route non trouvée' });
 });
 
-// Gestion propre de la fermeture
+// Gestion de la fermeture
 process.on('SIGTERM', () => {
-    console.log('SIGTERM reçu. Fermeture propre...');
+    console.log('[Server] SIGTERM reçu. Fermeture propre...');
     mongoose.connection.close()
         .then(() => {
-            console.log('MongoDB déconnecté');
+            console.log('[MongoDB] Déconnexion réussie');
             process.exit(0);
         })
         .catch(err => {
-            console.error('Erreur lors de la fermeture de MongoDB:', err);
+            console.error('[MongoDB] Erreur lors de la fermeture:', err);
             process.exit(1);
         });
 });
 
 app.listen(port, () => {
-    console.log(`Serveur démarré sur le port ${port}`);
+    console.log(`[Server] Démarré sur le port ${port}`);
+    console.log('[Server] Chemins statiques configurés:');
+    console.log('  - Images:', path.join(__dirname, '../img'));
 });

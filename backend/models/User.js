@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
-    avatarUrl: {
-        type: String,
-        default: '/img/default-avatar.webp'
+    avatarData: {
+        type: String,  // Pour stocker l'image en base64 avec le préfixe data:
+        default: null
     },
     stats: {
         gamesPlayed: { type: Number, default: 0 },

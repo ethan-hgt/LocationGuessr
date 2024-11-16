@@ -49,8 +49,8 @@ async function handleAvatarChange(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.size > 500 * 1024) {
-        showNotification('L\'image ne doit pas dépasser 500KB', 'error');
+    if (file.size > 2 * 1024 * 1024) {
+        showNotification('L\'image ne doit pas dépasser 2MB', 'error');
         return;
     }
 
@@ -80,15 +80,19 @@ async function handleAvatarChange(event) {
         if (!response.ok) throw new Error('Erreur lors du téléchargement');
 
         const data = await response.json();
-        avatar.src = data.avatarUrl;
-        avatar.style.opacity = '1';
-        
-        showNotification('Photo de profil mise à jour avec succès');
-        
-        const headerAvatar = document.querySelector('.header-avatar');
-        if (headerAvatar) {
-            headerAvatar.src = data.avatarUrl;
+        if (data.avatarUrl) {
+            avatar.src = data.avatarUrl;
+            
+            // Mettre à jour aussi l'avatar dans le header
+            const headerAvatar = document.querySelector('.header-avatar');
+            if (headerAvatar) {
+                headerAvatar.src = data.avatarUrl;
+            }
         }
+        
+        avatar.style.opacity = '1';
+        showNotification('Photo de profil mise à jour avec succès');
+
     } catch (error) {
         console.error('Erreur:', error);
         showNotification('Erreur lors de la mise à jour de l\'avatar', 'error');
@@ -140,13 +144,23 @@ async function loadUserStats() {
     }
 }
 
-function displayUserData(userData) {
+async function displayUserData(userData) {
     document.getElementById('username').textContent = userData.username;
     document.getElementById('editUsername').value = userData.username;
     document.getElementById('editEmail').value = userData.email || '';
     
+    // Gestion de l'avatar
+    const profileAvatar = document.getElementById('profileAvatar');
     if (userData.avatarUrl) {
-        document.getElementById('profileAvatar').src = userData.avatarUrl;
+        profileAvatar.src = userData.avatarUrl;
+        
+        // Mettre à jour aussi l'avatar dans le header si présent
+        const headerAvatar = document.querySelector('.header-avatar');
+        if (headerAvatar) {
+            headerAvatar.src = userData.avatarUrl;
+        }
+    } else {
+        profileAvatar.src = '/img/default-avatar.webp';
     }
 
     if (userData.createdAt) {

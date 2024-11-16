@@ -2,37 +2,61 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 const User = require('../models/User');
-const { validateGameMode, getModeKey } = require('./gameMode');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
-// Configuration de Multer pour l'upload des avatars
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        const dir = path.join(__dirname, '..', 'uploads', 'avatars');
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        cb(null, dir);
-    },
-    filename: function(req, file, cb) {
-        const userId = req.userId;
-        cb(null, `avatar-${userId}${path.extname(file.originalname)}`);
-    }
-});
-
+// Configuration de Multer pour stocker en mémoire uniquement
+const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 500 * 1024
+        fileSize: 2 * 1024 * 1024 // 2MB
     },
     fileFilter: function(req, file, cb) {
+        console.log('[Avatar] Type de fichier reçu:', file.mimetype);
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(file.mimetype)) {
-            return cb(new Error('Seuls les formats JPG, PNG et WebP sont acceptés.'), false);
+            console.log('[Avatar] Type de fichier rejeté:', file.mimetype);
+            return cb(new Error('Format non supporté'));
         }
+        console.log('[Avatar] Type de fichier accepté');
         cb(null, true);
+    }
+});
+
+// Route pour l'upload d'avatar
+router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
+    try {
+        console.log('[Avatar] Début du traitement de la requête');
+        
+        if (!req.file) {
+            console.log('[Avatar] Aucun fichier reçu');
+            return res.status(400).json({ message: 'Aucun fichier uploadé' });
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            console.log('[Avatar] Utilisateur non trouvé:', req.userId);
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        // Conversion en base64 et création de l'URL data
+        const base64 = req.file.buffer.toString('base64');
+        const avatarData = `data:${req.file.mimetype};base64,${base64}`;
+        
+        // Sauvegarde dans MongoDB
+        user.avatarData = avatarData;
+        await user.save();
+        
+        console.log('[Avatar] Avatar sauvegardé avec succès');
+
+        res.json({
+            success: true,
+            avatarUrl: avatarData
+        });
+
+    } catch (error) {
+        console.error('[Avatar] Erreur:', error);
+        res.status(500).json({ message: 'Erreur lors de l\'upload' });
     }
 });
 
@@ -94,12 +118,23 @@ router.get('/leaderboard', async (req, res) => {
 // Route pour obtenir le profil
 router.get('/profile', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.userId).select('-password');
+        const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
+
+        // Créer l'objet de réponse
+        const userResponse = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            stats: user.stats,
+            createdAt: user.createdAt,
+            avatarUrl: user.avatarData || '/img/default-avatar.webp'
+        };
+
         console.log('Utilisateur connecté :', user.username);
-        res.json(user);
+        res.json(userResponse);
     } catch (err) {
         console.error('Erreur profile:', err);
         res.status(500).json({ message: 'Erreur serveur' });
@@ -153,39 +188,6 @@ router.put('/profile', auth, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Erreur serveur' });
-    }
-});
-
-// Route pour upload l'avatar
-router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'Aucun fichier uploadé' });
-        }
-
-        const user = await User.findById(req.userId);
-        if (!user) {
-            return res.status(404).json({ message: 'Utilisateur non trouvé' });
-        }
-
-        if (user.avatarUrl && !user.avatarUrl.includes('default-avatar')) {
-            const oldAvatarPath = path.join(__dirname, '..', 'uploads', 'avatars', path.basename(user.avatarUrl));
-            if (fs.existsSync(oldAvatarPath)) {
-                fs.unlinkSync(oldAvatarPath);
-            }
-        }
-
-        const avatarUrl = `/uploads/avatars/avatar-${req.userId}${path.extname(req.file.originalname)}`;
-
-        await User.findByIdAndUpdate(req.userId, { avatarUrl });
-
-        res.json({
-            success: true,
-            avatarUrl: avatarUrl
-        });
-    } catch (error) {
-        console.error('Erreur lors de l\'upload de l\'avatar:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'upload de l\'avatar' });
     }
 });
 

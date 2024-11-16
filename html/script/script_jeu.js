@@ -191,7 +191,7 @@ function setupLampModeOverlay() {
     });
 }
 
-if (modeDeJeu === 'lampe') {
+if (modeDeJeu === 'dark') {
     setupLampModeOverlay();
 }
 

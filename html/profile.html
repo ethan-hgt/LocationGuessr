@@ -26,97 +26,142 @@
     </header>
 
     <main class="profile-container">
-        <!-- Message de bienvenue pour les nouveaux utilisateurs ICI -->
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="avatar-container">
-                    <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
-                    <div class="avatar-overlay">
-                        <i class='bx bx-camera'></i>
-                        <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+        <div class="profile-content">
+            <h1 class="profile-title">Mon Profil</h1>
+            
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-container">
+                        <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
+                        <div class="avatar-overlay">
+                            <i class='bx bx-camera'></i>
+                            <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                        </div>
+                    </div>
+                    <h2 id="username">Chargement...</h2>
+                    <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
+                </div>
+
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <i class='bx bx-game'></i>
+                        <h3>Parties jouées</h3>
+                        <p id="gamesPlayed">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-trophy'></i>
+                        <h3>Meilleur score</h3>
+                        <p id="bestScore">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-line-chart'></i>
+                        <h3>Score moyen</h3>
+                        <p id="averageScore">0</p>
                     </div>
                 </div>
-                <h1 id="username">Chargement...</h1>
-                <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
-            </div>
 
-            <div class="stats-overview">
-                <div class="stat-card">
-                    <i class='bx bx-game'></i>
-                    <h3>Parties jouées</h3>
-                    <p id="gamesPlayed">0</p>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="info">Informations</button>
+                    <button class="tab-btn" data-tab="stats">Statistiques</button>
                 </div>
-                <div class="stat-card">
-                    <i class='bx bx-trophy'></i>
-                    <h3>Meilleur score</h3>
-                    <p id="bestScore">0</p>
-                </div>
-                <div class="stat-card">
-                    <i class='bx bx-line-chart'></i>
-                    <h3>Score moyen</h3>
-                    <p id="averageScore">0</p>
-                </div>
-            </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="info">Informations</button>
-                <button class="tab-btn" data-tab="stats">Statistiques</button>
-            </div>
-
-            <div class="tab-content active" id="info-content">
-                <form id="profileForm" class="profile-form">
-                    <div class="form-group">
-                        <label for="editUsername">Nom d'utilisateur</label>
-                        <input type="text" id="editUsername" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editEmail">Email</label>
-                        <input type="email" id="editEmail" name="email" required>
-                    </div>
-                    <div class="password-section">
-                        <h3>Changer le mot de passe</h3>
+                <div class="tab-content active" id="info-content">
+                    <form id="profileForm" class="profile-form">
                         <div class="form-group">
-                            <label for="currentPassword">Mot de passe actuel</label>
-                            <div class="password-input">
-                                <input type="password" id="currentPassword" name="currentPassword">
-                                <i class='bx bx-hide toggle-password'></i>
-                            </div>
+                            <label for="editUsername">Nom d'utilisateur</label>
+                            <input type="text" id="editUsername" name="username" required>
                         </div>
                         <div class="form-group">
-                            <label for="newPassword">Nouveau mot de passe</label>
-                            <div class="password-input">
-                                <input type="password" id="newPassword" name="newPassword">
-                                <i class='bx bx-hide toggle-password'></i>
+                            <label for="editEmail">Email</label>
+                            <input type="email" id="editEmail" name="email" required>
+                        </div>
+                        <div class="password-section">
+                            <h3>Changer le mot de passe</h3>
+                            <div class="form-group">
+                                <label for="currentPassword">Mot de passe actuel</label>
+                                <div class="password-input">
+                                    <input type="password" id="currentPassword" name="currentPassword">
+                                    <i class='bx bx-hide toggle-password'></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">Nouveau mot de passe</label>
+                                <div class="password-input">
+                                    <input type="password" id="newPassword" name="newPassword">
+                                    <i class='bx bx-hide toggle-password'></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <button type="submit" class="save-btn">Sauvegarder les modifications</button>
-                </form>
-            </div>
+                        <button type="submit" class="save-btn">Sauvegarder les modifications</button>
+                    </form>
+                </div>
 
-            <div class="tab-content" id="stats-content">
-                <div class="detailed-stats">
-                    <div class="stats-section">
-                        <h3>Statistiques par mode</h3>
-                        <div class="mode-stats">
-                            <div class="mode-stat">
-                                <h4>Mode France</h4>
-                                <p>Parties jouées : <span id="franceModeGames">0</span></p>
-                                <p>Score moyen : <span id="franceModeAvg">0</span></p>
-                                <p>Meilleur score : <span id="franceModeTop">0</span></p>
-                            </div>
-                            <div class="mode-stat">
-                                <h4>Mode Mondial</h4>
-                                <p>Parties jouées : <span id="worldModeGames">0</span></p>
-                                <p>Score moyen : <span id="worldModeAvg">0</span></p>
-                                <p>Meilleur score : <span id="worldModeTop">0</span></p>
+                <div class="tab-content" id="stats-content">
+                    <div class="detailed-stats">
+                        <div class="stats-section">
+                            <h3>Statistiques par mode</h3>
+                            <div class="mode-stats">
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">🇫🇷</span>
+                                        <h4>Mode France</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="franceModeGames">0</span></p>
+                                    <p>Score moyen : <span id="franceModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="franceModeTop">0</span></p>
+                                </div>
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">🌍</span>
+                                        <h4>Mode Mondial</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="mondialModeGames">0</span></p>
+                                    <p>Score moyen : <span id="mondialModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="mondialModeTop">0</span></p>
+                                </div>
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">🎡</span>
+                                        <h4>Mode Disneyland</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="disneylandModeGames">0</span></p>
+                                    <p>Score moyen : <span id="disneylandModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="disneylandModeTop">0</span></p>
+                                </div>
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">🏛️</span>
+                                        <h4>Mode Nevers</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="neversModeGames">0</span></p>
+                                    <p>Score moyen : <span id="neversModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="neversModeTop">0</span></p>
+                                </div>
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">👑</span>
+                                        <h4>Mode Versailles</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="versailleModeGames">0</span></p>
+                                    <p>Score moyen : <span id="versailleModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="versailleModeTop">0</span></p>
+                                </div>
+                                <div class="mode-stat">
+                                    <div class="mode-header">
+                                        <span class="mode-icon">🌙</span>
+                                        <h4>Mode Dark</h4>
+                                    </div>
+                                    <p>Parties jouées : <span id="darkModeGames">0</span></p>
+                                    <p>Score moyen : <span id="darkModeAvg">0</span></p>
+                                    <p>Meilleur score : <span id="darkModeTop">0</span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="stats-section">
-                        <h3>Historique récent</h3>
-                        <div class="recent-games" id="recentGames">
-                            <!-- Sera rempli dynamiquement -->
+                        <div class="stats-section">
+                            <h3>Historique récent</h3>
+                            <div class="recent-games" id="recentGames">
+                                <!-- Sera rempli dynamiquement -->
+                            </div>
                         </div>
                     </div>
                 </div>

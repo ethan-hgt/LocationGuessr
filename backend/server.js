@@ -83,8 +83,6 @@ app.get('/api/modes', (req, res) => {
 
 // Connexion à MongoDB avec options améliorées
 mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     autoIndex: true, // Pour les performances en production, mettre à false
     serverSelectionTimeoutMS: 5000, // Timeout après 5 secondes
     socketTimeoutMS: 45000, // Ferme les sockets après 45 secondes

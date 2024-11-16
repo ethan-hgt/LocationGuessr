@@ -1,27 +1,33 @@
 const GAME_MODES = {
     france: {
         name: 'France',
-        icon: '/img/France.png'
+        icon: '/img/France.png',
+        statKey: 'franceMode'
     },
     mondial: {
         name: 'Mondial',
-        icon: '/img/Mondial.png'
+        icon: '/img/Mondial.png',
+        statKey: 'mondialMode'
     },
     disneyland: {
         name: 'Disneyland',
-        icon: '/img/disney.png'
+        icon: '/img/disney.png',
+        statKey: 'disneylandMode'
     },
     nevers: {
         name: 'Nevers',
-        icon: '/img/nevers.png'
+        icon: '/img/nevers.png',
+        statKey: 'neversMode'
     },
     versaille: {
         name: 'Versaille',
-        icon: '/img/versaille.png'
+        icon: '/img/versaille.png',
+        statKey: 'versailleMode'
     },
     dark: {
         name: 'Dark Mode',
-        icon: '/img/lampe.png'
+        icon: '/img/lampe.png',
+        statKey: 'darkMode'
     }
 };
 
@@ -30,11 +36,18 @@ const validateGameMode = (mode) => {
 };
 
 const getModeKey = (mode) => {
-    return validateGameMode(mode) ? `${mode}Mode` : null;
+    if (!validateGameMode(mode)) return null;
+    return GAME_MODES[mode].statKey;
+};
+
+const getModeInfo = (mode) => {
+    if (!validateGameMode(mode)) return null;
+    return GAME_MODES[mode];
 };
 
 module.exports = {
     GAME_MODES,
     validateGameMode,
-    getModeKey
+    getModeKey,
+    getModeInfo
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 const User = require('../models/User');
+const { validateGameMode, getModeKey } = require('./gameMode');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -35,6 +36,61 @@ const upload = multer({
     }
 });
 
+// Dans routes/user.js, route /leaderboard
+router.get('/leaderboard', async (req, res) => {
+    try {
+        const { mode } = req.query;
+        const modeKey = mode ? `${mode}Mode` : null;
+        
+        let sortCriteria = {};
+        let query = {};
+
+        if (modeKey && mode !== 'all') {
+            sortCriteria[`stats.${modeKey}.bestScore`] = -1;
+            query[`stats.${modeKey}.gamesPlayed`] = { $gt: 0 };
+        } else {
+            sortCriteria['stats.bestScore'] = -1;
+            query['stats.gamesPlayed'] = { $gt: 0 };
+        }
+
+        const topPlayers = await User.find(query)
+            .select('username avatarUrl stats')
+            .sort(sortCriteria)
+            .limit(10);
+
+        const formattedLeaderboard = topPlayers.map((player, index) => {
+            const stats = modeKey && mode !== 'all' ? player.stats[modeKey] : player.stats;
+            return {
+                rank: index + 1,
+                _id: player._id,
+                username: player.username,
+                avatarUrl: player.avatarUrl,
+                stats: {
+                    bestScore: stats ? stats.bestScore || 0 : 0,
+                    averageScore: stats ? Math.round((stats.averageScore || 0) * 10) / 10 : 0,
+                    gamesPlayed: stats ? stats.gamesPlayed || 0 : 0,
+                    lastPlayed: player.stats.lastPlayedDate
+                }
+            };
+        });
+
+        // Calculer les stats globales
+        const globalStats = {
+            topScore: formattedLeaderboard.length > 0 ? formattedLeaderboard[0].stats.bestScore : 0,
+            totalPlayers: await User.countDocuments(query)
+        };
+
+        res.json({
+            totalPlayers: globalStats.totalPlayers,
+            leaderboard: formattedLeaderboard,
+            globalStats
+        });
+    } catch (err) {
+        console.error('Erreur leaderboard:', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+});
+
 // Route pour obtenir le profil
 router.get('/profile', auth, async (req, res) => {
     try {
@@ -42,8 +98,10 @@ router.get('/profile', auth, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
+        console.log('Utilisateur connecté :', user.username);
         res.json(user);
     } catch (err) {
+        console.error('Erreur profile:', err);
         res.status(500).json({ message: 'Erreur serveur' });
     }
 });
@@ -105,13 +163,11 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
             return res.status(400).json({ message: 'Aucun fichier uploadé' });
         }
 
-        // Récupérer l'utilisateur pour vérifier l'ancien avatar
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        // Supprimer l'ancien avatar s'il existe
         if (user.avatarUrl && !user.avatarUrl.includes('default-avatar')) {
             const oldAvatarPath = path.join(__dirname, '..', 'uploads', 'avatars', path.basename(user.avatarUrl));
             if (fs.existsSync(oldAvatarPath)) {
@@ -119,10 +175,8 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
             }
         }
 
-        // Nouveau chemin de l'avatar
         const avatarUrl = `/uploads/avatars/avatar-${req.userId}${path.extname(req.file.originalname)}`;
 
-        // Mettre à jour l'utilisateur
         await User.findByIdAndUpdate(req.userId, { avatarUrl });
 
         res.json({
@@ -138,12 +192,20 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
 // Route pour mettre à jour les stats
 router.post('/stats', auth, async (req, res) => {
     try {
-        const { score, mode, gameDetails } = req.body;
-        const user = await User.findById(req.userId);
+        const { score, mode } = req.body;
+        console.log('Mode reçu:', mode); // Pour le debug
         
+        if (!mode) {
+            return res.status(400).json({ message: 'Mode de jeu non spécifié' });
+        }
+
+        const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
+
+        const modeKey = `${mode}Mode`;
+        console.log('ModeKey:', modeKey); // Pour le debug
 
         // Mise à jour des stats globales
         user.stats.gamesPlayed += 1;
@@ -152,8 +214,7 @@ router.post('/stats', auth, async (req, res) => {
         user.stats.bestScore = Math.max(user.stats.bestScore, score);
         user.stats.lastPlayedDate = new Date();
 
-        // Mise à jour des stats du mode spécifique
-        const modeKey = `${mode}Mode`;
+        // Initialisation des stats du mode si elles n'existent pas
         if (!user.stats[modeKey]) {
             user.stats[modeKey] = {
                 gamesPlayed: 0,
@@ -163,6 +224,7 @@ router.post('/stats', auth, async (req, res) => {
             };
         }
 
+        // Mise à jour des stats du mode spécifique
         user.stats[modeKey].gamesPlayed += 1;
         user.stats[modeKey].totalScore += score;
         user.stats[modeKey].averageScore = user.stats[modeKey].totalScore / user.stats[modeKey].gamesPlayed;
@@ -171,6 +233,71 @@ router.post('/stats', auth, async (req, res) => {
         // Ajouter la partie à l'historique récent
         user.stats.recentGames.unshift({
             mode,
+            score,
+            date: new Date()
+        });
+
+        // Garder seulement les 10 dernières parties
+        user.stats.recentGames = user.stats.recentGames.slice(0, 10);
+
+        await user.save();
+
+        res.json({
+            message: 'Statistiques mises à jour',
+            stats: user.stats
+        });
+
+    } catch (err) {
+        console.error('Erreur lors de la mise à jour des stats:', err);
+        res.status(500).json({ message: 'Erreur serveur lors de la mise à jour des statistiques' });
+    }
+});
+
+// Route pour obtenir le classement
+router.post('/stats', auth, async (req, res) => {
+    try {
+        let { score, mode } = req.body;
+        console.log('Mode reçu:', mode);
+        
+        // Conversion du mode si nécessaire
+        if (mode === 'lampe') {
+            mode = 'dark';
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        const modeKey = `${mode}Mode`;
+        console.log('ModeKey:', modeKey);
+
+        // Mise à jour des stats globales
+        user.stats.gamesPlayed += 1;
+        user.stats.totalScore += score;
+        user.stats.averageScore = user.stats.totalScore / user.stats.gamesPlayed;
+        user.stats.bestScore = Math.max(user.stats.bestScore, score);
+        user.stats.lastPlayedDate = new Date();
+
+        // Initialisation des stats du mode si elles n'existent pas
+        if (!user.stats[modeKey]) {
+            user.stats[modeKey] = {
+                gamesPlayed: 0,
+                totalScore: 0,
+                bestScore: 0,
+                averageScore: 0
+            };
+        }
+
+        // Mise à jour des stats du mode spécifique
+        user.stats[modeKey].gamesPlayed += 1;
+        user.stats[modeKey].totalScore += score;
+        user.stats[modeKey].averageScore = user.stats[modeKey].totalScore / user.stats[modeKey].gamesPlayed;
+        user.stats[modeKey].bestScore = Math.max(user.stats[modeKey].bestScore, score);
+
+        // Ajouter la partie à l'historique récent avec le bon nom de mode
+        user.stats.recentGames.unshift({
+            mode: mode, // Utilisez le mode converti
             score,
             date: new Date()
         });
@@ -185,64 +312,16 @@ router.post('/stats', auth, async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Erreur serveur' });
+        console.error('Erreur lors de la mise à jour des stats:', err);
+        res.status(500).json({ message: 'Erreur serveur lors de la mise à jour des statistiques' });
     }
 });
 
-// Route pour obtenir le classement
-router.get('/leaderboard', async (req, res) => {
-    try {
-        const { mode } = req.query;
-        const modeKey = mode ? `${mode}Mode` : null;
-        
-        let sortCriteria = {};
-        let query = {};
-
-        if (modeKey && mode !== 'all') {
-            sortCriteria[`stats.${modeKey}.bestScore`] = -1;
-            query[`stats.${modeKey}.gamesPlayed`] = { $gt: 0 };
-        } else {
-            sortCriteria['stats.bestScore'] = -1;
-            query['stats.gamesPlayed'] = { $gt: 0 };
-        }
-
-        const topPlayers = await User.find(query)
-            .select('username avatarUrl stats')
-            .sort(sortCriteria)
-            .limit(10);
-
-        const formattedLeaderboard = topPlayers.map((player, index) => {
-            const stats = modeKey && mode !== 'all' ? player.stats[modeKey] : player.stats;
-            return {
-                rank: index + 1,
-                _id: player._id,
-                username: player.username,
-                avatarUrl: player.avatarUrl,
-                stats: {
-                    bestScore: stats.bestScore,
-                    averageScore: Math.round(stats.averageScore * 10) / 10,
-                    gamesPlayed: stats.gamesPlayed,
-                    lastPlayed: player.stats.lastPlayedDate
-                }
-            };
-        });
-
-        res.json({
-            totalPlayers: await User.countDocuments(query),
-            leaderboard: formattedLeaderboard
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Erreur serveur' });
-    }
-});
-
-// Ajouter une route pour obtenir la position d'un joueur spécifique
+// Route pour obtenir la position d'un joueur spécifique
 router.get('/rank/:userId', async (req, res) => {
     try {
         const { mode } = req.query;
-        const modeKey = mode ? `${mode}Mode` : null;
+        const modeKey = mode ? getModeKey(mode) : null;
         
         let sortCriteria = {};
         let query = {};
@@ -283,16 +362,24 @@ router.get('/stats/details', auth, async (req, res) => {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        const stats = modeKey && mode !== 'all' ? user.stats[modeKey] : user.stats;
-        let rankQuery = {};
+        const stats = modeKey && mode !== 'all' ? user.stats[modeKey] || {} : user.stats;
+        
+        // Vérifier si stats existe et initialiser les valeurs par défaut si nécessaire
+        const currentStats = {
+            gamesPlayed: stats.gamesPlayed || 0,
+            bestScore: stats.bestScore || 0,
+            averageScore: stats.averageScore || 0,
+            lastPlayed: user.stats.lastPlayedDate || null
+        };
 
+        let query = {};
         if (modeKey && mode !== 'all') {
-            rankQuery[`stats.${modeKey}.bestScore`] = { $gt: stats.bestScore };
+            query[`stats.${modeKey}.bestScore`] = { $gt: currentStats.bestScore };
         } else {
-            rankQuery['stats.bestScore'] = { $gt: stats.bestScore };
+            query['stats.bestScore'] = { $gt: currentStats.bestScore };
         }
 
-        const rank = await User.countDocuments(rankQuery) + 1;
+        const rank = await User.countDocuments(query) + 1;
         const totalPlayers = await User.countDocuments({
             [modeKey && mode !== 'all' ? `stats.${modeKey}.gamesPlayed` : 'stats.gamesPlayed']: { $gt: 0 }
         });
@@ -301,15 +388,10 @@ router.get('/stats/details', auth, async (req, res) => {
             username: user.username,
             rank,
             totalPlayers,
-            currentStats: {
-                gamesPlayed: stats.gamesPlayed || 0,
-                bestScore: stats.bestScore || 0,
-                averageScore: Math.round((stats.averageScore || 0) * 10) / 10,
-                lastPlayed: user.stats.lastPlayedDate
-            }
+            currentStats
         });
     } catch (err) {
-        console.error(err);
+        console.error('Erreur stats details:', err);
         res.status(500).json({ message: 'Erreur serveur' });
     }
 });

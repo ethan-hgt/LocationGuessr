@@ -9,32 +9,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Initialise les boutons de mode de jeu
-function initModeSelector() {
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (this.classList.contains('active')) return;
-            
-            currentMode = this.dataset.mode;
-            // Met à jour l'apparence des boutons
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Recharge le leaderboard avec le nouveau mode
-            loadLeaderboard();
-            if (localStorage.getItem('userToken')) {
-                loadUserPosition();
-            }
-        });
-    });
-}
-
-// Charge la position de l'utilisateur connecté
 async function loadUserPosition() {
     try {
+        const token = localStorage.getItem('userToken');
+        if (!token) return;
+
         const userId = localStorage.getItem('userId');
-        const response = await fetch(`http://localhost:3000/api/user/rank/${userId}?mode=${currentMode}`);
-        const data = await response.json();
+        const [rankResponse, statsResponse] = await Promise.all([
+            fetch(`http://localhost:3000/api/user/rank/${userId}?mode=${currentMode}`),
+            fetch(`http://localhost:3000/api/user/stats/details?mode=${currentMode}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+        ]);
+
+        const [rankData, statsData] = await Promise.all([
+            rankResponse.json(),
+            statsResponse.json()
+        ]);
 
         let userPositionElement = document.getElementById('userPosition');
         if (!userPositionElement) {
@@ -47,36 +38,44 @@ async function loadUserPosition() {
             );
         }
 
-        const statsResponse = await fetch('http://localhost:3000/api/user/stats/details', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-            }
-        });
-        const statsData = await statsResponse.json();
-
         userPositionElement.innerHTML = `
-            Votre position : #${data.rank}/${data.totalPlayers}
+            Classement #${rankData.rank}/${rankData.totalPlayers}
             <br>
-            Meilleur score : ${statsData.currentStats.bestScore} | 
-            Moyenne : ${statsData.currentStats.averageScore} | 
-            Parties jouées : ${statsData.currentStats.gamesPlayed}
+            Meilleur score ${statsData.currentStats.bestScore} | 
+            Moyenne ${Math.round(statsData.currentStats.averageScore)} |
+            Parties jouées ${statsData.currentStats.gamesPlayed}
         `;
     } catch (err) {
-        console.error('Erreur lors du chargement de la position:', err);
+        console.error('Erreur:', err);
     }
 }
 
-// Charge le leaderboard
+function initModeSelector() {
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.classList.contains('active')) return;
+            currentMode = this.dataset.mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            loadLeaderboard();
+            if (localStorage.getItem('userToken')) {
+                loadUserPosition();
+            }
+        });
+    });
+}
+
 async function loadLeaderboard() {
     try {
         const response = await fetch(`http://localhost:3000/api/user/leaderboard?mode=${currentMode}`);
-        const data = await response.json();
+        if (!response.ok) throw new Error('Erreur de chargement du leaderboard');
         
+        const data = await response.json();
         const scrollableRows = document.querySelector('.scrollable-rows');
         scrollableRows.innerHTML = '';
         
         const currentUserId = localStorage.getItem('userId');
-        
+
         data.leaderboard.forEach((player, index) => {
             const row = document.createElement('div');
             row.className = `player-row ${getRankClass(index)}`;
@@ -89,24 +88,25 @@ async function loadLeaderboard() {
             const tooltip = document.createElement('div');
             tooltip.className = 'tooltip';
             tooltip.innerHTML = `
-                Moyenne: ${player.stats.averageScore}
+                Moyenne: ${Math.round(player.stats.averageScore)}
                 <br>
                 Total des parties: ${player.stats.gamesPlayed}
                 <br>
                 ${player.stats.lastPlayed ? `Dernière partie: ${formatDate(player.stats.lastPlayed)}` : ''}
             `;
 
-            const rankDisplay = index < 3 
-                ? getMedalImage(index, getRankClass(index)) 
-                : `#${index + 1}`;
+            let rankDisplay;
+            if (index < 3) {
+                rankDisplay = `<img src="/img/Medail${getRankClass(index).charAt(0).toUpperCase() + getRankClass(index).slice(1)}.png" alt="${getRankClass(index)}" class="medal ${getRankClass(index)}">`;
+            } else {
+                rankDisplay = `#${index + 1}`;
+            }
 
             row.innerHTML = `
-                <div class="rank">
-                    ${rankDisplay}
-                </div>
+                <div class="rank">${rankDisplay}</div>
                 <div class="player-info">
                     <img src="${getModeIcon(currentMode)}" alt="${currentMode}" class="mode-icon">
-                    <span>${player.username}</span>
+                    <span class="player-name">${player.username}</span>
                 </div>
                 <div class="matches">${player.stats.gamesPlayed}</div>
                 <div class="xp">${player.stats.bestScore}</div>
@@ -117,24 +117,35 @@ async function loadLeaderboard() {
         });
         
         updateTotalPlayers(data.totalPlayers);
-        
     } catch (err) {
-        console.error('Erreur lors du chargement du classement:', err);
+        console.error('Erreur:', err);
+        const scrollableRows = document.querySelector('.scrollable-rows');
+        scrollableRows.innerHTML = '<div class="error-message">Erreur lors du chargement du classement</div>';
     }
 }
 
-// Met à jour le nombre total de joueurs
+function getModeIcon(mode) {
+    const icons = {
+        'france': '/img/francec.png',
+        'mondial': '/img/mondialc.png',
+        'disneyland': '/img/disneyc.png',
+        'nevers': '/img/neversc.png',
+        'versaille': '/img/versaillec.png',
+        'dark': '/img/darkc.png'
+    };
+    return icons[mode] || icons['france'];
+}
+
 function updateTotalPlayers(total) {
     let totalElement = document.querySelector('.total-players');
     if (!totalElement) {
         totalElement = document.createElement('div');
         totalElement.className = 'total-players';
-        document.querySelector('.leaderboard-container').appendChild(totalElement);
+        document.querySelector('.leaderboard-content').appendChild(totalElement);
     }
     totalElement.textContent = `${total} ${total > 1 ? 'joueurs' : 'joueur'}`;
 }
 
-// Retourne la classe CSS selon le rang
 function getRankClass(index) {
     switch(index) {
         case 0: return 'gold';
@@ -144,38 +155,11 @@ function getRankClass(index) {
     }
 }
 
-// Retourne l'image de médaille selon le rang
-function getMedalImage(index, medalClass = '') {
-    const medals = {
-        0: '/img/MedailGold.png',
-        1: '/img/MedailSilver.png',
-        2: '/img/MedailBronze.png'
-    };
-    return `<img src="${medals[index]}" alt="${getRankClass(index)}" class="medal ${medalClass}">`;
-}
-
-// Retourne l'icône du mode de jeu
-function getModeIcon(mode) {
-    const icons = {
-        'france': '/img/francec.png',
-        'mondial': '/img/mondialc.png',
-        'disneyland': '/img/disneyc.png',
-        'nevers': '/img/neversc.png',
-        'versaille': '/img/versaillesc.png',
-        'dark': '/img/darkc.png'
-    };
-    return icons[mode] || icons['france'];
-}
-
-// Formate la date pour l'affichage
 function formatDate(dateString) {
     if (!dateString) return 'Jamais';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        year: 'numeric'
     });
 }

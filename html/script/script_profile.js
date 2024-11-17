@@ -214,12 +214,19 @@ function displayRecentGames(recentGames) {
     container.innerHTML = '';
 
     const modeIcons = {
-        france: '🇫🇷',
-        mondial: '🌍',
-        disneyland: '🎡',
-        nevers: '🏛️',
-        versaille: '👑',
-        dark: '🌙'
+        'France': '🇫🇷',
+        'france': '🇫🇷',
+        'Mondial': '🌍',
+        'mondial': '🌍',
+        'MONDIAL': '🌍',
+        'Disneyland': '🎡',
+        'disneyland': '🎡',
+        'Nevers': '🏛️',
+        'nevers': '🏛️',
+        'Versailles': '👑',
+        'versailles': '👑',
+        'Dark Mode': '🌙',
+        'dark': '🌙'
     };
 
     if (!recentGames || recentGames.length === 0) {
@@ -231,18 +238,19 @@ function displayRecentGames(recentGames) {
         const gameElement = document.createElement('div');
         gameElement.className = 'game-entry';
         
-        // On crée une copie du nom du mode pour pouvoir le modifier
-        let modeName = game.mode;
-        if (modeName === 'dark') {
-            modeName = 'Dark Mode';
+        // Normalisation du nom du mode
+        let displayMode = game.mode;
+        if (displayMode.toLowerCase() === 'dark') {
+            displayMode = 'Dark Mode';
         } else {
-            modeName = modeName.charAt(0).toUpperCase() + modeName.slice(1);
+            // Première lettre en majuscule pour les autres modes
+            displayMode = displayMode.charAt(0).toUpperCase() + displayMode.slice(1).toLowerCase();
         }
         
         gameElement.innerHTML = `
             <div class="game-info">
-                <span class="mode-icon">${modeIcons[game.mode] || '🎮'}</span>
-                <strong>${modeName}</strong>
+                <span class="mode-icon">${modeIcons[game.mode] || modeIcons[displayMode] || '🎮'}</span>
+                <strong>${displayMode}</strong>
                 <span>${new Date(game.date).toLocaleDateString('fr-FR', {
                     day: '2-digit',
                     month: '2-digit',

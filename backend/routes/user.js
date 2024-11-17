@@ -3,22 +3,66 @@ const router = express.Router();
 const auth = require('../middlewares/auth');
 const User = require('../models/User');
 const multer = require('multer');
+const { GAME_MODES } = require('./gameMode');
 
-// Configuration de Multer pour stocker en mémoire uniquement
+function normalizeMode(mode) {
+    const modeMap = {
+        'parc': 'disneyland',
+        'versailles': 'versaille',
+        'versaille': 'versaille',
+        'nevers': 'nevers',
+        'france': 'france',
+        'mondial': 'mondial',
+        'dark': 'dark'
+    };
+
+    const normalizedMode = modeMap[mode] || mode;
+    return `${normalizedMode}Mode`;
+}
+
+function getModeInfo(mode) {
+    const modeMap = {
+        'parc': 'disneyland',
+        'versailles': 'versaille',
+        'versaille': 'versaille',
+        'nevers': 'nevers',
+        'france': 'france',
+        'mondial': 'mondial',
+        'dark': 'dark'
+    };
+
+    const modeEmojis = {
+        'france': '🇫🇷',
+        'mondial': '🌍',
+        'disneyland': '🎡',
+        'versaille': '👑',  
+        'nevers': '🏛️',
+        'dark': '🌙'
+    };
+
+    const normalizedMode = modeMap[mode] || mode;
+    const gameMode = GAME_MODES[normalizedMode];
+    
+    return {
+        key: `${normalizedMode}Mode`,
+        name: GAME_MODES[normalizedMode]?.name || mode,
+        icon: GAME_MODES[normalizedMode]?.icon || null,
+        emoji: modeEmojis[normalizedMode] || ''  // Ajout de l'emoji
+    };
+}
+
+// Configuration de Multer
 const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 2 * 1024 * 1024 // 2MB
+        fileSize: 2 * 1024 * 1024
     },
     fileFilter: function(req, file, cb) {
-        console.log('[Avatar] Type de fichier reçu:', file.mimetype);
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(file.mimetype)) {
-            console.log('[Avatar] Type de fichier rejeté:', file.mimetype);
             return cb(new Error('Format non supporté'));
         }
-        console.log('[Avatar] Type de fichier accepté');
         cb(null, true);
     }
 });
@@ -26,34 +70,25 @@ const upload = multer({
 // Route pour l'upload d'avatar
 router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
     try {
-        console.log('[Avatar] Début du traitement de la requête');
-        
         if (!req.file) {
-            console.log('[Avatar] Aucun fichier reçu');
             return res.status(400).json({ message: 'Aucun fichier uploadé' });
         }
 
         const user = await User.findById(req.userId);
         if (!user) {
-            console.log('[Avatar] Utilisateur non trouvé:', req.userId);
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        // Conversion en base64 et création de l'URL data
         const base64 = req.file.buffer.toString('base64');
         const avatarData = `data:${req.file.mimetype};base64,${base64}`;
         
-        // Sauvegarde dans MongoDB
         user.avatarData = avatarData;
         await user.save();
-        
-        console.log('[Avatar] Avatar sauvegardé avec succès');
 
         res.json({
             success: true,
             avatarUrl: avatarData
         });
-
     } catch (error) {
         console.error('[Avatar] Erreur:', error);
         res.status(500).json({ message: 'Erreur lors de l\'upload' });
@@ -64,8 +99,11 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
 router.get('/leaderboard', async (req, res) => {
     try {
         const { mode } = req.query;
-        const modeKey = mode ? `${mode}Mode` : null;
+        console.log('Mode demandé pour leaderboard:', mode);
         
+        const modeKey = mode ? normalizeMode(mode) : null;
+        console.log('ModeKey pour leaderboard:', modeKey);
+
         let sortCriteria = {};
         let query = {};
 
@@ -82,10 +120,9 @@ router.get('/leaderboard', async (req, res) => {
             .sort(sortCriteria)
             .limit(10);
 
-        const formattedLeaderboard = topPlayers.map((player, index) => {
+        const formattedLeaderboard = topPlayers.map(player => {
             const stats = modeKey && mode !== 'all' ? player.stats[modeKey] : player.stats;
             return {
-                rank: index + 1,
                 _id: player._id,
                 username: player.username,
                 avatarUrl: player.avatarUrl,
@@ -98,22 +135,18 @@ router.get('/leaderboard', async (req, res) => {
             };
         });
 
-        // Calculer les stats globales
-        const globalStats = {
-            topScore: formattedLeaderboard.length > 0 ? formattedLeaderboard[0].stats.bestScore : 0,
-            totalPlayers: await User.countDocuments(query)
-        };
+        const totalPlayers = await User.countDocuments(query);
 
         res.json({
-            totalPlayers: globalStats.totalPlayers,
-            leaderboard: formattedLeaderboard,
-            globalStats
+            totalPlayers,
+            leaderboard: formattedLeaderboard
         });
     } catch (err) {
         console.error('Erreur leaderboard:', err);
         res.status(500).json({ message: 'Erreur serveur' });
     }
 });
+
 
 // Route pour obtenir le profil
 router.get('/profile', auth, async (req, res) => {
@@ -123,18 +156,14 @@ router.get('/profile', auth, async (req, res) => {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        // Créer l'objet de réponse
-        const userResponse = {
+        res.json({
             _id: user._id,
             username: user.username,
             email: user.email,
             stats: user.stats,
             createdAt: user.createdAt,
             avatarUrl: user.avatarData || '/img/default-avatar.webp'
-        };
-
-        console.log('Utilisateur connecté :', user.username);
-        res.json(userResponse);
+        });
     } catch (err) {
         console.error('Erreur profile:', err);
         res.status(500).json({ message: 'Erreur serveur' });
@@ -194,35 +223,20 @@ router.put('/profile', auth, async (req, res) => {
 // Route pour mettre à jour les stats
 router.post('/stats', auth, async (req, res) => {
     try {
-        let { score, mode, gameDetails } = req.body;
-        console.log("Mode reçu:", mode); // Pour debug
+        let { score, mode } = req.body;
+        console.log('Mode original reçu:', mode);
         
-        // Normaliser le mode
-        const modeMapping = {
-            'parc': 'disneyland',
-            'versailles': 'versailles',
-            'versaille': 'versailles',
-            'nevers': 'nevers',
-            'france': 'france',
-            'mondial': 'mondial',
-            'dark': 'dark'
-        };
-        
-        mode = modeMapping[mode] || mode;
-        console.log("Mode normalisé:", mode); // Pour debug
-        
+        const modeInfo = getModeInfo(mode);
+        console.log('ModeInfo:', modeInfo);
+
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        const modeKey = `${mode}Mode`;
-        console.log("ModeKey utilisé:", modeKey); // Pour debug
-
         // Initialisation des stats du mode si elles n'existent pas
-        if (!user.stats[modeKey]) {
-            console.log("Initialisation des stats pour le mode:", modeKey);
-            user.stats[modeKey] = {
+        if (!user.stats[modeInfo.key]) {
+            user.stats[modeInfo.key] = {
                 gamesPlayed: 0,
                 totalScore: 0,
                 bestScore: 0,
@@ -230,45 +244,32 @@ router.post('/stats', auth, async (req, res) => {
             };
         }
 
-        // Mise à jour des stats du mode spécifique
-        user.stats[modeKey].gamesPlayed += 1;
-        user.stats[modeKey].totalScore += score;
-        user.stats[modeKey].averageScore = user.stats[modeKey].totalScore / user.stats[modeKey].gamesPlayed;
-        
-        // Mise à jour du meilleur score seulement si le nouveau score est meilleur
-        if (score > user.stats[modeKey].bestScore) {
-            user.stats[modeKey].bestScore = score;
-            
-            // Mise à jour du meilleur score global si nécessaire
-            if (score > user.stats.bestScore) {
-                user.stats.bestScore = score;
-            }
-        }
+        // Mise à jour des stats du mode
+        user.stats[modeInfo.key].gamesPlayed += 1;
+        user.stats[modeInfo.key].totalScore += score;
+        user.stats[modeInfo.key].averageScore = 
+            Math.round(user.stats[modeInfo.key].totalScore / user.stats[modeInfo.key].gamesPlayed);
+        user.stats[modeInfo.key].bestScore = 
+            Math.max(user.stats[modeInfo.key].bestScore, score);
 
-        // Mise à jour des stats globales
-        user.stats.gamesPlayed += 1;
-        user.stats.totalScore += score;
-        user.stats.averageScore = user.stats.totalScore / user.stats.gamesPlayed;
+        // Mise à jour des stats globales et historique récent
         user.stats.lastPlayedDate = new Date();
-
-        // Ajouter la partie à l'historique récent
         user.stats.recentGames.unshift({
-            mode,
+            mode: modeInfo.name,
+            modeIcon: modeInfo.icon,
+            modeEmoji: modeInfo.emoji, 
             score,
-            date: new Date(),
-            details: gameDetails || {}
+            date: new Date()
         });
 
-        // Garder seulement les 10 dernières parties
         user.stats.recentGames = user.stats.recentGames.slice(0, 10);
 
         await user.save();
-        console.log("Stats sauvegardées avec succès pour le mode:", modeKey);
 
         res.json({
             message: 'Statistiques mises à jour',
             stats: {
-                mode: user.stats[modeKey],
+                mode: user.stats[modeInfo.key],
                 global: {
                     bestScore: user.stats.bestScore,
                     averageScore: user.stats.averageScore,
@@ -348,17 +349,18 @@ router.post('/stats', auth, async (req, res) => {
 });
 
 // Route temporaire pour debug
-router.get('/debug-stats', auth, async (req, res) => {
+router.get('/debug-mode/:mode', auth, async (req, res) => {
     try {
+        const mode = req.params.mode;
+        const modeKey = normalizeMode(mode);
         const user = await User.findById(req.userId);
+        
         res.json({
-            modes: {
-                versailles: user.stats.versaillesMode,
-                versaille: user.stats.versailleMode,
-                disneyland: user.stats.disneylandMode,
-                nevers: user.stats.neversMode
-            },
-            recentGames: user.stats.recentGames
+            originalMode: mode,
+            modeKey: modeKey,
+            modeStats: user.stats[modeKey],
+            allModes: Object.keys(user.stats).filter(key => key.endsWith('Mode')),
+            allStats: user.stats
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -369,7 +371,7 @@ router.get('/debug-stats', auth, async (req, res) => {
 router.get('/rank/:userId', async (req, res) => {
     try {
         const { mode } = req.query;
-        const modeKey = mode ? getModeKey(mode) : null;
+        const modeKey = mode ? normalizeMode(mode) : null;
         
         let sortCriteria = {};
         let query = {};

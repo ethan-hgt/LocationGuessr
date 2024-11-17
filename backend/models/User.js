@@ -45,6 +45,8 @@ const userSchema = new mongoose.Schema({
         darkMode: modeStatsSchema,
         recentGames: [{
             mode: String,
+            modeIcon: String,
+            modeEmoji: String,
             score: Number,
             date: { type: Date, default: Date.now }
         }]

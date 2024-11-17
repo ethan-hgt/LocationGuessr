@@ -95,14 +95,10 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
     }
 });
 
-// Dans routes/user.js, route /leaderboard
 router.get('/leaderboard', async (req, res) => {
     try {
         const { mode } = req.query;
-        console.log('Mode demandé pour leaderboard:', mode);
-        
         const modeKey = mode ? normalizeMode(mode) : null;
-        console.log('ModeKey pour leaderboard:', modeKey);
 
         let sortCriteria = {};
         let query = {};
@@ -116,7 +112,7 @@ router.get('/leaderboard', async (req, res) => {
         }
 
         const topPlayers = await User.find(query)
-            .select('username avatarUrl stats')
+            .select('username avatarData stats') 
             .sort(sortCriteria)
             .limit(10);
 
@@ -125,7 +121,7 @@ router.get('/leaderboard', async (req, res) => {
             return {
                 _id: player._id,
                 username: player.username,
-                avatarUrl: player.avatarUrl,
+                avatarData: player.avatarData, 
                 stats: {
                     bestScore: stats ? stats.bestScore || 0 : 0,
                     averageScore: stats ? Math.round((stats.averageScore || 0) * 10) / 10 : 0,

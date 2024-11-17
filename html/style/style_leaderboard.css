@@ -316,6 +316,63 @@
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
  }
+
+ .player-info {
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+   min-width: 0;
+   overflow: hidden;
+}
+
+/* Nouveaux styles pour l'avatar */
+.player-avatar {
+   width: 45px;
+   height: 45px;
+   border-radius: 50%;
+   object-fit: cover;
+   border: 2px solid rgba(255, 255, 255, 0.2);
+   transition: all 0.3s ease;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.player-row:hover .player-avatar {
+   border-color: rgba(255, 255, 255, 0.4);
+   transform: scale(1.05);
+   box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Styles spéciaux pour les avatars des gagnants */
+.player-row.gold .player-avatar {
+   border-color: rgba(255, 215, 0, 0.4);
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.player-row.silver .player-avatar {
+   border-color: rgba(192, 192, 192, 0.4);
+   box-shadow: 0 0 15px rgba(192, 192, 192, 0.2);
+}
+
+.player-row.bronze .player-avatar {
+   border-color: rgba(205, 127, 50, 0.4);
+   box-shadow: 0 0 15px rgba(205, 127, 50, 0.2);
+}
+
+.player-details {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   min-width: 0;
+   overflow: hidden;
+}
+
+.player-name {
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-weight: 500;
+   color: rgba(255, 255, 255, 0.9);
+}
  
  .scrollable-rows::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
@@ -388,6 +445,19 @@
     }
  }
  
+ @keyframes avatarPulse {
+   0%, 100% { 
+       box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+   }
+   50% { 
+       box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+   }
+}
+
+.player-row:hover .player-avatar {
+   animation: avatarPulse 2s infinite;
+}
+
  .player-row:nth-child(1) { animation-delay: 0.1s; }
  .player-row:nth-child(2) { animation-delay: 0.2s; }
  .player-row:nth-child(3) { animation-delay: 0.3s; }
@@ -426,6 +496,26 @@
         grid-template-columns: 0.5fr 2fr 0.8fr 0.8fr;
     }
  }
+
+ @media (max-width: 768px) {
+   .player-avatar {
+       width: 35px;
+       height: 35px;
+   }
+
+   .player-info {
+       gap: 0.5rem;
+   }
+
+   .player-details {
+       gap: 4px;
+   }
+
+   .mode-icon {
+       width: 24px;
+       height: 24px;
+   }
+}
 
 .leaderboard-container, 
 .leaderboard-content, 

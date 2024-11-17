@@ -102,11 +102,17 @@ async function loadLeaderboard() {
                 rankDisplay = `#${index + 1}`;
             }
 
+            // Utilisation de avatarData avec fallback sur l'image par défaut
+            const avatarSrc = player.avatarData || '/img/default-avatar.webp';
+
             row.innerHTML = `
                 <div class="rank">${rankDisplay}</div>
                 <div class="player-info">
-                    <img src="${getModeIcon(currentMode)}" alt="${currentMode}" class="mode-icon">
-                    <span class="player-name">${player.username}</span>
+                    <img src="${avatarSrc}" alt="Avatar de ${player.username}" class="player-avatar" onerror="this.src='/img/default-avatar.webp'">
+                    <div class="player-details">
+                        <img src="${getModeIcon(currentMode)}" alt="${currentMode}" class="mode-icon">
+                        <span class="player-name">${player.username}</span>
+                    </div>
                 </div>
                 <div class="matches">${player.stats.gamesPlayed}</div>
                 <div class="xp">${player.stats.bestScore}</div>

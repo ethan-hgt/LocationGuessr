@@ -136,7 +136,7 @@ function getModeIcon(mode) {
         'mondial': '/img/mondialc.png',
         'disneyland': '/img/disneyc.png',
         'nevers': '/img/neversc.png',
-        'versaille': '/img/versaillec.png',
+        'versaille': '/img/versaillesc.png',
         'dark': '/img/darkc.png'
     };
     return icons[mode] || icons['france'];

@@ -27,8 +27,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    resetPasswordCode: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
+    },
     avatarData: {
-        type: String,  // Pour stocker l'image en base64 avec le préfixe data:
+        type: String,
         default: null
     },
     stats: {

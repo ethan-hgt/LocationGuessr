@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('login.html')) {
         const inscriptionForm = document.getElementById('inscriptionForm');
         const connexionForm = document.getElementById('connexionForm');
+        const forgotPasswordLink = document.querySelector('.forgot-password');
+        
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPasswordResetPopup();
+            });
+        }
         
         if (inscriptionForm) {
             inscriptionForm.addEventListener('submit', handleInscriptionSubmit);
@@ -45,12 +53,25 @@ function switchTab(tab) {
     }
 }
 
-function showPopup(title, message, type = 'success', redirect = true, redirectUrl = 'accueil.html') {
-    const popup = document.getElementById('customPopup');
+function showPopup(title, message, type = 'success', redirect = false) {
+    let popup = document.getElementById('customPopup');
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'customPopup';
+        popup.className = 'custom-popup';
+        document.body.appendChild(popup);
+        
+        popup.innerHTML = `
+            <div class="popup-content">
+                <box-icon id="popupIcon" class="popup-icon"></box-icon>
+                <h2 id="popupTitle" class="popup-title"></h2>
+                <p id="popupMessage" class="popup-message"></p>
+            </div>
+        `;
+    }
+
     const popupContent = popup.querySelector('.popup-content');
     const popupIcon = document.getElementById('popupIcon');
-
-    if (!popup || !popupIcon) return;
 
     document.getElementById('popupTitle').innerText = title;
     document.getElementById('popupMessage').innerText = message;
@@ -68,29 +89,30 @@ function showPopup(title, message, type = 'success', redirect = true, redirectUr
     }
 
     popup.style.display = 'flex';
+    popup.style.opacity = '0';
+    
     setTimeout(() => {
         popup.style.opacity = '1';
         popupContent.style.transform = 'translateY(0)';
     }, 50);
 
-    const timeout = type === 'error' ? 2000 : 1500;
+    const timeout = type === 'error' ? 3000 : 2000;
 
-    if (redirect && type !== 'error') {
-        setTimeout(() => {
-            closePopup();
-            window.location.href = redirectUrl;
-        }, timeout);
-    } else {
-        setTimeout(() => {
-            closePopup();
-        }, timeout);
-    }
+    setTimeout(() => {
+        closePopup();
+        if (redirect && type === 'success') {
+            window.location.href = 'accueil.html';
+        }
+    }, timeout);
 }
 
 function closePopup() {
     const popup = document.getElementById('customPopup');
+    if (!popup) return;
+
     const popupContent = popup.querySelector('.popup-content');
-    
+    if (!popupContent) return;
+
     popup.style.opacity = '0';
     popupContent.style.transform = 'translateY(-20px)';
     setTimeout(() => {
@@ -136,7 +158,7 @@ async function handleInscriptionSubmit(event) {
         localStorage.setItem('userId', data.user.id);
         localStorage.setItem('isNewUser', 'true');
         
-        showPopup('Bienvenue !', 'Inscription réussie ! Configurons votre profil...', 'success', true, 'profile.html');
+        showPopup('Bienvenue !', 'Inscription réussie !', 'success', true);
         updateHeader();
     } catch (err) {
         console.error(err);
@@ -144,11 +166,70 @@ async function handleInscriptionSubmit(event) {
     }
 }
 
+function showPasswordResetPopup() {
+    if (document.querySelector('.custom-popup')) {
+        document.querySelector('.custom-popup').remove();
+    }
+
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup';
+    popup.style.display = 'flex';
+    popup.innerHTML = `
+        <div class="popup-content">
+            <div class="form-container">
+                <div id="emailStep">
+                    <h2 class="popup-title">Réinitialisation du mot de passe</h2>
+                    <div class="input-container">
+                        <box-icon name="envelope" class="input-icon" color="white"></box-icon>
+                        <input type="email" id="resetEmail" placeholder="Email" required>
+                    </div>
+                    <button type="button" class="submit-button" onclick="handleForgotPassword(this)">Envoyer</button>
+                </div>
+                
+                <div id="codeStep" style="display: none;">
+                    <h2 class="popup-title">Code de vérification</h2>
+                    <p class="popup-message">Veuillez entrer le code reçu par email</p>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="text" id="verificationCode" placeholder="Code à 6 chiffres" required maxlength="6" pattern="[0-9]*">
+                    </div>
+                    <button type="button" class="submit-button" onclick="verifyCode()">Vérifier</button>
+                </div>
+
+                <div id="newPasswordStep" style="display: none;">
+                    <h2 class="popup-title">Nouveau mot de passe</h2>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="password" id="newPassword" placeholder="Nouveau mot de passe" required>
+                        <box-icon name="hide" id="toggleIconNewPass" class="toggle-password" color="white" onclick="toggleNewPassword()"></box-icon>
+                    </div>
+                    <div class="input-container">
+                        <box-icon name="lock" class="input-icon" color="white"></box-icon>
+                        <input type="password" id="confirmNewPassword" placeholder="Confirmer le mot de passe" required>
+                        <box-icon name="hide" id="toggleIconConfirmPass" class="toggle-password" color="white" onclick="toggleConfirmNewPassword()"></box-icon>
+                    </div>
+                    <button type="button" class="submit-button" onclick="resetPassword()">Changer le mot de passe</button>
+                </div>
+            </div>
+            <button type="button" class="close-modal" onclick="this.parentElement.parentElement.remove()">
+                <box-icon name="x" color="white"></box-icon>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(popup);
+
+    const popupContent = popup.querySelector('.popup-content');
+    setTimeout(() => {
+        popupContent.style.transform = 'translateY(0)';
+    }, 50);
+}
+
 async function handleConnexionSubmit(event) {
     event.preventDefault();
     resetErrorStyles();
     const username = document.getElementById('usernameConnexion').value;
     const password = document.getElementById('passwordConnexion').value;
+    const rememberMe = document.getElementById('remember').checked;
 
     try {
         const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -156,7 +237,7 @@ async function handleConnexionSubmit(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, password, rememberMe })
         });
 
         const data = await response.json();
@@ -166,15 +247,133 @@ async function handleConnexionSubmit(event) {
             return;
         }
 
-        localStorage.setItem('userToken', data.token);
-        localStorage.setItem('userFirstName', data.user.username);
-        localStorage.setItem('userId', data.user.id);
+        if (rememberMe) {
+            localStorage.setItem('userToken', data.token);
+            localStorage.setItem('userFirstName', data.user.username);
+            localStorage.setItem('userId', data.user.id);
+        } else {
+            sessionStorage.setItem('userToken', data.token);
+            sessionStorage.setItem('userFirstName', data.user.username);
+            sessionStorage.setItem('userId', data.user.id);
+        }
         
-        showPopup('Succès', 'Connexion réussie !');
+        showPopup('Succès', 'Connexion réussie !', 'success', true);
         updateHeader();
     } catch (err) {
         console.error(err);
         showPopup('Erreur', 'Une erreur est survenue lors de la connexion.', 'error', false);
+    }
+}
+
+async function handleForgotPassword(button) {
+    const email = document.getElementById('resetEmail').value;
+    if (!email) {
+        showPopup('Erreur', 'Veuillez entrer votre email', 'error', false);
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Envoi...';
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('emailStep').style.display = 'none';
+            document.getElementById('codeStep').style.display = 'block';
+            showPopup('Succès', 'Un code de vérification a été envoyé à votre email', 'success', false);
+        } else {
+            showPopup('Erreur', data.message, 'error', false);
+        }
+    } catch (err) {
+        showPopup('Erreur', 'Une erreur est survenue', 'error', false);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Envoyer';
+    }
+}
+
+async function verifyCode() {
+    const code = document.getElementById('verificationCode').value;
+    const email = document.getElementById('resetEmail').value;
+
+    if (!code) {
+        showPopup('Erreur', 'Veuillez entrer le code de vérification', 'error', false);
+        return;
+    }
+
+    if (code.length !== 6) {
+        showPopup('Erreur', 'Le code doit contenir 6 chiffres', 'error', false);
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/verify-reset-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('codeStep').style.display = 'none';
+            document.getElementById('newPasswordStep').style.display = 'block';
+        } else {
+            const input = document.getElementById('verificationCode');
+            input.classList.add('error');
+            input.value = '';
+            showPopup('Code incorrect', 'Veuillez vérifier le code et réessayer', 'error', false);
+            setTimeout(() => input.classList.remove('error'), 3000);
+        }
+    } catch (err) {
+        console.error(err);
+        showPopup('Erreur', 'Une erreur est survenue, veuillez réessayer', 'error', false);
+    }
+}
+
+async function resetPassword() {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmNewPassword').value;
+    const email = document.getElementById('resetEmail').value;
+    const code = document.getElementById('verificationCode').value;
+
+    if (newPassword !== confirmPassword) {
+        showPopup('Erreur', 'Les mots de passe ne correspondent pas', 'error', false);
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        showPopup('Erreur', 'Le mot de passe doit contenir au moins 6 caractères', 'error', false);
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.querySelector('.custom-popup').remove();
+            showPopup('Succès', 'Votre mot de passe a été réinitialisé avec succès', 'success', false);
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            showPopup('Erreur', data.message, 'error', false);
+        }
+    } catch (err) {
+        showPopup('Erreur', 'Une erreur est survenue', 'error', false);
     }
 }
 
@@ -190,9 +389,19 @@ function toggleConfirmPasswordInscription() {
     togglePasswordVisibility('confirmPasswordInscription', 'toggleConfirmIconInscription');
 }
 
+function toggleNewPassword() {
+    togglePasswordVisibility('newPassword', 'toggleIconNewPass');
+}
+
+function toggleConfirmNewPassword() {
+    togglePasswordVisibility('confirmNewPassword', 'toggleIconConfirmPass');
+}
+
 function togglePasswordVisibility(passwordFieldId, toggleIconId) {
     const passwordField = document.getElementById(passwordFieldId);
     const toggleIcon = document.getElementById(toggleIconId);
+    
+    if (!passwordField || !toggleIcon) return;
     
     const isPassword = passwordField.type === "password";
     passwordField.type = isPassword ? "text" : "password";
@@ -205,9 +414,11 @@ function togglePasswordVisibility(passwordFieldId, toggleIconId) {
 }
 
 async function updateHeader() {
-    const userToken = localStorage.getItem('userToken');
-    const userName = localStorage.getItem('userFirstName');
+    const userToken = localStorage.getItem('userToken') || sessionStorage.getItem('userToken');
+    const userName = localStorage.getItem('userFirstName') || sessionStorage.getItem('userFirstName');
     const rightHeader = document.querySelector('.right-header');
+
+    if (!rightHeader) return;
 
     if (userToken && userName) {
         try {
@@ -235,7 +446,7 @@ async function updateHeader() {
                 logout(false);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Erreur lors de la mise à jour du header:', err);
             logout(false);
         }
     } else {
@@ -246,6 +457,8 @@ async function updateHeader() {
 function toggleProfileMenu(event) {
     event.stopPropagation();
     const dropdown = document.getElementById('profileDropdown');
+    if (!dropdown) return;
+    
     dropdown.classList.toggle('show');
 
     document.addEventListener('click', function closeMenu(e) {
@@ -260,13 +473,14 @@ function logout(showMessage = true) {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userFirstName');
     localStorage.removeItem('userId');
+    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem('userFirstName');
+    sessionStorage.removeItem('userId');
+    
     updateHeader();
     
     if (showMessage) {
-        showPopup('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', 'success', false);
-        setTimeout(() => {
-            window.location.href = 'accueil.html';
-        }, 1500);
+        showPopup('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', 'success', true);
     }
 }
 
@@ -277,28 +491,4 @@ function resetErrorStyles() {
     document.querySelectorAll('.error').forEach(function(field) {
         field.classList.remove('error');
     });
-}
-
-function togglePassword() {
-    togglePasswordVisibility('passwordConnexion', 'toggleIconConnexion');
-}
-
-function togglePasswordInscription() {
-    togglePasswordVisibility('passwordInscription', 'toggleIconInscription');
-}
-
-function toggleConfirmPasswordInscription() {
-    togglePasswordVisibility('confirmPasswordInscription', 'toggleConfirmIconInscription');
-}
-
-function togglePasswordVisibility(passwordFieldId, toggleIconId) {
-    const passwordField = document.getElementById(passwordFieldId);
-    const toggleIcon = document.getElementById(toggleIconId);
-    if (passwordField.type === "password") {
-        passwordField.type = "text";
-        toggleIcon.setAttribute('name', 'show');
-    } else {
-        passwordField.type = "password";
-        toggleIcon.setAttribute('name', 'hide');
-    }
 }

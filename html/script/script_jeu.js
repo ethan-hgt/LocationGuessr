@@ -283,10 +283,15 @@ function loadRound() {
                     showRoadLabels: false
                 });
 
-                panorama.addListener('pano_changed', function() {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    savePreviousPosition();
-                });
+                const checkStreetViewReady = setInterval(() => {
+                    if (panorama.getStatus() === google.maps.StreetViewStatus.OK && panorama.getPano()) {
+                        clearInterval(checkStreetViewReady);
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        savePreviousPosition();
+
+                        startTimer();
+                    }
+                }, 100);
 
                 resetRoundElements();
             } else {
@@ -297,6 +302,7 @@ function loadRound() {
 
     tryPosition();
 }
+
 
 function setupPanorama(position) {
     correctPoint = { lat: position.lat(), lng: position.lng() };

@@ -8,10 +8,7 @@ WORKDIR /usr/src/app/backend
 RUN npm install
 
 WORKDIR /usr/src/app
-
 COPY . .
-
-RUN mkdir -p /usr/src/app/img
 
 EXPOSE 3000
 

@@ -21,21 +21,23 @@ let modeDeJeu = localStorage.getItem('gameMode') || 'mondial';
 console.log("Mode de jeu actuel:", modeDeJeu); 
 const totalRounds = 5;
 
+//Normalise le mode de jeu en fonction d'une correspondance prédéfinie pour gérer les erreurs de frappe ou de compatibilité.
 function normalizeGameMode(mode) {
     const modeMapping = {
         'parc': 'disneyland',
         'versailles': 'versailles',
-        'versaille': 'versailles',   // Pour la compatibilité
+        'versaille': 'versailles',
         'nevers': 'nevers',
         'france': 'france',
         'mondial': 'mondial',
         'dark': 'dark'
     };
     const normalizedMode = modeMapping[mode] || mode;
-    console.log("Mode normalisé:", mode, "->", normalizedMode); // Pour debug
+    console.log("Mode normalisé:", mode, "->", normalizedMode);
     return normalizedMode;
 }
 
+//Enregistre le score final du joueur dans la base de données via une API sécurisée
 async function saveScore(finalScore) {
     const token = AuthUtils.getAuthToken();
     if (!token) {
@@ -82,7 +84,7 @@ async function saveScore(finalScore) {
         return false;
     }
 }
-
+//Initialise le jeu en vérifiant l'authentification, charge la carte, et prépare les paramètres de la première manche
 async function initialize() {
     const token = AuthUtils.getAuthToken();
     console.log("Token trouvé:", token ? "oui" : "non");
@@ -123,6 +125,7 @@ async function initialize() {
     }
 }
 
+//Génère une position aléatoire dans des zones prédéfinies en France pour le mode de jeu France
 function getRandomPositionInFrance() {
     const zones = [
         { minLat: 48.7, maxLat: 50.9, minLng: -4.5, maxLng: 2.5 },
@@ -180,6 +183,7 @@ const versaillesBounds = {
 
 let usedVersaillesPositions = [];
 
+//Génère une position aléatoire dans les limites définies de Versailles tout en évitant les positions déjà utilisées
 function getRandomPositionInVersailles() {
     let lat, lng, position;
     do {
@@ -192,6 +196,7 @@ function getRandomPositionInVersailles() {
     return { lat, lng };
 }
 
+//Génère une position aléatoire dans les limites définies de Nevers tout en évitant les positions déjà utilisées.
 function getRandomPositionInNevers() {
     let lat, lng, position;
     do {
@@ -204,6 +209,7 @@ function getRandomPositionInNevers() {
     return { lat, lng };
 }
 
+//Vérifie la disponibilité d'un panorama Google Street View pour une position donnée
 function checkPhotoSphereAvailable(position, callback) {
     streetViewService.getPanorama({ location: position, radius: 50 }, (data, status) => {
         if (status === google.maps.StreetViewStatus.OK && data && data.links.length === 0) {
@@ -213,6 +219,8 @@ function checkPhotoSphereAvailable(position, callback) {
         }
     });
 }
+
+//Ajoute un effet de lampe torche avec des overlays dynamiques autour du curseur pour le mode 'dark'.
 function setupLampModeOverlay() {
     const overlay1 = document.createElement('div');
     const overlay2 = document.createElement('div');
@@ -244,6 +252,7 @@ if (modeDeJeu === 'dark') {
     setupLampModeOverlay();
 }
 
+//Génère une position aléatoire dans les limites d'un parc en évitant les positions déjà utilisées.
 function getRandomPositionInPark(bounds, usedPositionsArray) {
     let lat, lng, position;
 
@@ -257,6 +266,7 @@ function getRandomPositionInPark(bounds, usedPositionsArray) {
     return { lat, lng };
 }
 
+//Retourne une position aléatoire en fonction du mode de jeu sélectionné
 function getRandomPosition() {
     if (modeDeJeu === 'versailles') return getRandomPositionInVersailles();
     if (modeDeJeu === 'nevers') return getRandomPositionInNevers();
@@ -267,6 +277,7 @@ function getRandomPosition() {
     return { lat, lng };
 }
 
+//Vérifie si un panorama Google Street View est disponible pour une position donnée avec une distance spécifiée
 function checkStreetViewAvailable(position, callback) {
     streetViewService.getPanorama({ location: position, radius: 5000 }, (data, status) => {
         if (status === google.maps.StreetViewStatus.OK && data.links && data.links.length > 0) {
@@ -276,6 +287,8 @@ function checkStreetViewAvailable(position, callback) {
         }
     });
 }
+
+//Charge une nouvelle manche en positionnant le joueur dans un panorama Street View valide et en réinitialisant les paramètres nécessaires
 function loadRound() {
     document.getElementById('loadingOverlay').style.display = 'flex';
     timeRemaining = 120;
@@ -287,7 +300,7 @@ function loadRound() {
             if (available) {
                 correctPoint = { lat: position.lat(), lng: position.lng() };
                 initialPosition = correctPoint;
-                previousPositions = [];  // Réinitialiser l'historique des positions
+                previousPositions = [];
 
                 panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
                     position: correctPoint,
@@ -302,7 +315,6 @@ function loadRound() {
                     showRoadLabels: false
                 });
 
-                // Ajouter le listener pour undoMove
                 panorama.addListener('position_changed', () => {
                     const position = panorama.getPosition();
                     if (position) {
@@ -311,7 +323,6 @@ function loadRound() {
                             lng: position.lng()
                         };
                         
-                        // Vérifier si la position est différente de la dernière
                         const lastPos = previousPositions[previousPositions.length - 1];
                         if (!lastPos || 
                             newPos.lat !== lastPos.lat || 
@@ -326,7 +337,7 @@ function loadRound() {
                         clearInterval(checkStreetViewReady);
                         document.getElementById('loadingOverlay').style.display = 'none';
                         
-                        // Sauvegarder la position initiale
+                        // Sauvegarde la position initiale
                         if (previousPositions.length === 0) {
                             previousPositions.push({
                                 lat: correctPoint.lat,
@@ -348,7 +359,7 @@ function loadRound() {
     tryPosition();
 }
 
-
+//Configure le panorama Street View pour une position donnée et réinitialise les éléments de la manche.
 function setupPanorama(position) {
     correctPoint = { lat: position.lat(), lng: position.lng() };
     initialPosition = correctPoint;
@@ -374,6 +385,8 @@ function setupPanorama(position) {
 
     resetRoundElements();
 }
+
+//Démarre le chronomètre pour la manche en mettant à jour l'affichage et en réduisant le temps restant à intervalles réguliers.
 function startTimer() {
     timeRemaining = 120;
     updateTimerDisplay();
@@ -391,6 +404,7 @@ function startTimer() {
     progressBar.style.width = '100%';
 }
 
+//Met à jour l'affichage du chronomètre et gère les styles en fonction du temps restant.
 function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
@@ -412,10 +426,12 @@ function updateTimerDisplay() {
     }
 }
 
+//Met à jour l'affichage du compteur de manches.
 function updateRoundCounter() {
     document.getElementById('roundCounter').textContent = `Manche: ${currentRound + 1}/${totalRounds}`;
 }
 
+//Réinitialise les éléments de la manche, y compris les marqueurs, les boutons, et les lignes de la carte
 function resetRoundElements() {
     if (userMarker) userMarker.remove();
     if (correctMarker) correctMarker.remove();
@@ -431,11 +447,12 @@ function resetRoundElements() {
     document.getElementById('showMapBtn').textContent = 'Ouvrir la Carte';
 }
 
+//Calcule le score basé sur la distance entre la position du joueur et le point correct, adapté au mode de jeu
 function calculateScore(distance) {
     let roundScore;
     if (modeDeJeu === 'parc' || modeDeJeu === 'nevers' || modeDeJeu === 'versailles') {
         // Pour les petites zones (en mètres)
-        if (distance <= 5) roundScore = 1000; // Score parfait si moins de 5 mètres
+        if (distance <= 5) roundScore = 1000;
         else if (distance <= 10) roundScore = 999 - (distance - 5);
         else if (distance <= 50) roundScore = 900 - (distance - 10) * 3;
         else if (distance <= 100) roundScore = 780 - (distance - 50) * 3;
@@ -461,6 +478,8 @@ function calculateScore(distance) {
     
     return roundScore;
 }
+
+//Valide le choix du joueur, calcule la distance, le score, et affiche les résultats de la manche
 function validateChoice() {
     if (choiceValidated || !userMarker || isProcessingRound) return;
     isProcessingRound = true;
@@ -510,6 +529,7 @@ function validateChoice() {
     isProcessingRound = false;
 }
 
+//Valide automatiquement le choix du joueur lorsque le temps est écoulé.
 function autoValidateChoice() {
     if (isProcessingRound) return;
     choiceValidated = true;
@@ -524,6 +544,7 @@ function autoValidateChoice() {
     }
 }
 
+//Passe à la manche suivante ou termine le jeu si toutes les manches sont complétées.
 function nextRound() {
     if (!choiceValidated) return;
 
@@ -539,6 +560,8 @@ function nextRound() {
         startTimer();
     }
 }
+
+//Affiche les résultats finaux, enregistre le score et propose des options pour redémarrer ou quitter.
 async function endGame() {
     const resultOverlay = document.getElementById('resultOverlay');
     resultOverlay.innerHTML = "";
@@ -549,7 +572,6 @@ async function endGame() {
     const title = document.createElement("h1");
     title.textContent = "Résultat de la partie";
 
-    // Calculer le score final en multipliant par 5 pour avoir sur 5000
     const finalScore = Math.floor(totalScore / totalRounds * 5);
 
     const score = document.createElement("p");
@@ -594,6 +616,7 @@ async function endGame() {
     }
 }
 
+//Redémarre le jeu en réinitialisant tous les paramètres et les scores
 function restartGame() {
     currentRound = 0;
     totalScore = 0;
@@ -614,6 +637,8 @@ function restartGame() {
     startTimer();
     loadRound();
 }
+
+//Centre la carte entre deux points pour ajuster l'affichage et la navigation.
 function centerMapBetweenPoints(pointA, pointB) {
     const bounds = new mapboxgl.LngLatBounds();
     bounds.extend([pointA.lng, pointA.lat]);
@@ -631,6 +656,7 @@ function centerMapBetweenPoints(pointA, pointB) {
     map.fitBounds(bounds, fitOptions);
 }
 
+//Dessine une ligne sur la carte entre deux points pour représenter la distance entre eux.
 function drawLineBetweenPoints(pointA, pointB) {
     if (map.getSource('line-source')) removeLine();
 
@@ -663,6 +689,7 @@ function drawLineBetweenPoints(pointA, pointB) {
     });
 }
 
+//Supprime la ligne existante sur la carte si elle est présente.
 function removeLine() {
     if (map.getLayer('line-layer')) {
         map.removeLayer('line-layer');
@@ -716,6 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+//Crée et configure la carte Mapbox pour le mode de jeu sélectionné.
 function createMap() {
     const mapOptions = {
         container: 'map',
@@ -742,6 +770,7 @@ function createMap() {
     map.on('click', onMapClick);
 }
 
+//Bascule entre la vue de la carte et celle de Street View
 function toggleMap() {
     const pano = document.getElementById('pano');
     const mapContainer = document.getElementById('mapContainer');
@@ -753,6 +782,7 @@ function toggleMap() {
     map.resize();
 }
 
+//Ajoute un marqueur sur la carte à la position cliquée par l'utilisateur et active le bouton de validation
 function onMapClick(e) {
     if (choiceValidated) return;
     if (userMarker) userMarker.remove();
@@ -765,11 +795,13 @@ function onMapClick(e) {
     document.getElementById('validateChoiceBtn').classList.remove('disabled-button');
 }
 
+//Ajuste le zoom dans Street View en fonction de la direction spécifiée
 function adjustZoom(direction) {
     const currentZoom = panorama.getZoom();
     panorama.setZoom(currentZoom + direction);
 }
 
+//Enregistre la position actuelle dans l'historique des déplacements pour permettre un retour en arrière
 function savePreviousPosition() {
     const currentPosition = panorama.getPosition();
     if (currentPosition) {
@@ -777,6 +809,7 @@ function savePreviousPosition() {
     }
 }
 
+//Repositionne le joueur à la position précédente enregistrée dans l'historique des déplacements.
 function undoMove() {
     if (previousPositions.length > 1) {
         previousPositions.pop();
@@ -785,10 +818,12 @@ function undoMove() {
     }
 }
 
+//Repositionne le joueur à la position initiale de la manche
 function resetToInitialPosition() {
     panorama.setPosition(new google.maps.LatLng(initialPosition.lat, initialPosition.lng));
 }
 
+//Affiche ou masque le menu des paramètres en ajustant sa visibilité et son opacité
 function toggleSettings() {
     const settingsOverlay = document.getElementById('settingsOverlay');
     if (settingsOverlay) {

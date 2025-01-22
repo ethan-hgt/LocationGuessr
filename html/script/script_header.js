@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Animation des liens
     const headerLinks = document.querySelectorAll('.header-link');
     headerLinks.forEach(link => {
         link.addEventListener('mouseenter', () => {
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Marquer le lien actif
     const currentLocation = window.location.href;
     headerLinks.forEach(link => {
         if (link.href === currentLocation) {
@@ -20,59 +22,81 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gestion du menu profil
-    document.addEventListener('click', function(event) {
-        const dropdown = document.querySelector('.profile-dropdown');
-        const userProfile = document.querySelector('.user-profile');
-        
-        if (dropdown && userProfile) {
-            if (userProfile.contains(event.target)) {
-                dropdown.classList.toggle('show');
-            } else {
-                dropdown.classList.remove('show');
-            }
-        }
-    });
+    // Initialisation du header
+    updateHeader();
 });
 
-// Function pour mettre à jour le header avec l'avatar
-async function updateHeaderWithAvatar() {
-    const token = localStorage.getItem('userToken');
-    const userName = localStorage.getItem('userFirstName');
-    const rightHeader = document.querySelector('.right-header');
+async function updateHeader() {
+    try {
+        const token = AuthUtils.getAuthToken();
+        const userName = AuthUtils.getUsername();
+        const rightHeader = document.querySelector('.right-header');
 
-    if (token && userName) {
-        try {
-            const response = await fetch('http://localhost:3000/api/user/profile', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+        if (!rightHeader) return;
+
+        if (token && userName) {
+            try {
+                const response = await fetch('http://localhost:3000/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Token invalide');
                 }
-            });
 
-            if (response.ok) {
                 const userData = await response.json();
-                const avatarUrl = userData.avatarUrl || '/public/default-avatar.webp';
+                
+                // Mettre à jour le stockage si le nom a changé
+                if (userData.username !== userName) {
+                    if (localStorage.getItem('userToken')) {
+                        localStorage.setItem('userFirstName', userData.username);
+                    }
+                    if (sessionStorage.getItem('userToken')) {
+                        sessionStorage.setItem('userFirstName', userData.username);
+                    }
+                }
+
                 rightHeader.innerHTML = `
-                    <div class="user-profile">
-                        <img src="${avatarUrl}" alt="Avatar" class="header-avatar">
-                        <span class="header-username">${userName}</span>
-                        <div class="profile-dropdown">
+                    <div class="user-profile" onclick="toggleProfileMenu(event)">
+                        <img src="${userData.avatarUrl || '/img/default-avatar.webp'}" alt="Avatar" class="header-avatar">
+                        <span class="header-username">${userData.username}</span>
+                        <div class="profile-dropdown" id="profileDropdown">
                             <a href="profile.html">Mon Profil</a>
-                            <a href="#" class="logout-option" onclick="logout(); return false;">Déconnexion</a>
+                            <a href="#" onclick="logout(); return false;" class="logout-option">Déconnexion</a>
                         </div>
                     </div>
                 `;
-            } else {
-                logout(false);
+            } catch (error) {
+                console.error('Erreur de vérification:', error);
+                AuthUtils.clearAuth();
+                rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
             }
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour du header:', error);
-            logout(false);
+        } else {
+            rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
         }
-    } else {
-        rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
+    } catch (error) {
+        console.error('Erreur dans updateHeader:', error);
     }
 }
 
-// Appeler la fonction au chargement
-document.addEventListener('DOMContentLoaded', updateHeaderWithAvatar);
+function toggleProfileMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    if (!dropdown) return;
+    
+    dropdown.classList.toggle('show');
+
+    // Fermer le menu si on clique ailleurs
+    document.addEventListener('click', function closeMenu(e) {
+        if (!e.target.closest('.user-profile')) {
+            dropdown.classList.remove('show');
+            document.removeEventListener('click', closeMenu);
+        }
+    });
+}
+
+// Exporter pour l'utilisation globale
+window.updateHeader = updateHeader;
+window.toggleProfileMenu = toggleProfileMenu;

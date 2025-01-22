@@ -1,20 +1,21 @@
+// script_leaderboard.js
 let currentMode = 'france';
 
 document.addEventListener('DOMContentLoaded', function() {
     updateHeader();
     initModeSelector();
     loadLeaderboard();
-    if (localStorage.getItem('userToken')) {
+    if (AuthUtils.getAuthToken()) {
         loadUserPosition();
     }
 });
 
 async function loadUserPosition() {
     try {
-        const token = localStorage.getItem('userToken');
+        const token = AuthUtils.getAuthToken();
         if (!token) return;
 
-        const userId = localStorage.getItem('userId');
+        const userId = AuthUtils.getUserId();
         const [rankResponse, statsResponse] = await Promise.all([
             fetch(`http://localhost:3000/api/user/rank/${userId}?mode=${currentMode}`),
             fetch(`http://localhost:3000/api/user/stats/details?mode=${currentMode}`, {
@@ -58,7 +59,7 @@ function initModeSelector() {
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             loadLeaderboard();
-            if (localStorage.getItem('userToken')) {
+            if (AuthUtils.getAuthToken()) {
                 loadUserPosition();
             }
         });
@@ -74,7 +75,7 @@ async function loadLeaderboard() {
         const scrollableRows = document.querySelector('.scrollable-rows');
         scrollableRows.innerHTML = '';
         
-        const currentUserId = localStorage.getItem('userId');
+        const currentUserId = AuthUtils.getUserId();
 
         data.leaderboard.forEach((player, index) => {
             const row = document.createElement('div');

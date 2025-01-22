@@ -248,8 +248,14 @@ router.post('/stats', auth, async (req, res) => {
         user.stats[modeInfo.key].bestScore = 
             Math.max(user.stats[modeInfo.key].bestScore, score);
 
-        // Mise à jour des stats globales et historique récent
+        // Mise à jour des stats globales
+        user.stats.gamesPlayed = (user.stats.gamesPlayed || 0) + 1;
+        user.stats.totalScore = (user.stats.totalScore || 0) + score;
+        user.stats.averageScore = Math.round(user.stats.totalScore / user.stats.gamesPlayed);
+        user.stats.bestScore = Math.max(user.stats.bestScore || 0, score);
         user.stats.lastPlayedDate = new Date();
+
+        // Mise à jour de l'historique récent
         user.stats.recentGames.unshift({
             mode: modeInfo.name,
             modeIcon: modeInfo.icon,
@@ -272,70 +278,6 @@ router.post('/stats', auth, async (req, res) => {
                     gamesPlayed: user.stats.gamesPlayed
                 }
             }
-        });
-
-    } catch (err) {
-        console.error('Erreur lors de la mise à jour des stats:', err);
-        res.status(500).json({ message: 'Erreur serveur lors de la mise à jour des statistiques' });
-    }
-});
-
-// Route pour obtenir le classement
-router.post('/stats', auth, async (req, res) => {
-    try {
-        let { score, mode } = req.body;
-        console.log('Mode reçu:', mode);
-        
-        // Conversion du mode si nécessaire
-        if (mode === 'lampe') {
-            mode = 'dark';
-        }
-
-        const user = await User.findById(req.userId);
-        if (!user) {
-            return res.status(404).json({ message: 'Utilisateur non trouvé' });
-        }
-
-        const modeKey = `${mode}Mode`;
-        console.log('ModeKey:', modeKey);
-
-        // Mise à jour des stats globales
-        user.stats.gamesPlayed += 1;
-        user.stats.totalScore += score;
-        user.stats.averageScore = user.stats.totalScore / user.stats.gamesPlayed;
-        user.stats.bestScore = Math.max(user.stats.bestScore, score);
-        user.stats.lastPlayedDate = new Date();
-
-        // Initialisation des stats du mode si elles n'existent pas
-        if (!user.stats[modeKey]) {
-            user.stats[modeKey] = {
-                gamesPlayed: 0,
-                totalScore: 0,
-                bestScore: 0,
-                averageScore: 0
-            };
-        }
-
-        // Mise à jour des stats du mode spécifique
-        user.stats[modeKey].gamesPlayed += 1;
-        user.stats[modeKey].totalScore += score;
-        user.stats[modeKey].averageScore = user.stats[modeKey].totalScore / user.stats[modeKey].gamesPlayed;
-        user.stats[modeKey].bestScore = Math.max(user.stats[modeKey].bestScore, score);
-
-        // Ajouter la partie à l'historique récent avec le bon nom de mode
-        user.stats.recentGames.unshift({
-            mode: mode, // Utilisez le mode converti
-            score,
-            date: new Date()
-        });
-
-        user.stats.recentGames = user.stats.recentGames.slice(0, 10);
-
-        await user.save();
-
-        res.json({
-            message: 'Statistiques mises à jour',
-            stats: user.stats
         });
 
     } catch (err) {

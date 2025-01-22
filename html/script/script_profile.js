@@ -3,15 +3,38 @@ let userStats = null;
 let notificationTimeout;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!localStorage.getItem('userToken')) {
-        window.location.href = 'login.html';
-        return;
-    }
+    try {
+        console.log("Début chargement profil");
+        await updateHeader();
+        
+        const token = AuthUtils.getAuthToken();
+        if (!token) {
+            console.log("Pas de token, redirection vers login");
+            window.location.href = 'login.html';
+            return;
+        }
 
-    await loadUserProfile();
-    setupEventListeners();
-    initializeTabs();
-    await loadUserStats();
+        console.log("Token trouvé, vérification nouvel utilisateur");
+        const isNewUser = sessionStorage.getItem('isNewUser') || localStorage.getItem('isNewUser');
+        if (isNewUser) {
+            showNotification('Bienvenue sur votre profil !', 'success');
+            sessionStorage.removeItem('isNewUser');
+            localStorage.removeItem('isNewUser');
+        }
+
+        console.log("Chargement des données utilisateur");
+        await Promise.all([
+            loadUserProfile(),
+            loadUserStats()
+        ]);
+        
+        setupEventListeners();
+        initializeTabs();
+
+    } catch (error) {
+        console.error("Erreur lors de l'initialisation:", error);
+        showNotification('Erreur lors du chargement du profil', 'error');
+    }
 });
 
 function setupEventListeners() {
@@ -102,26 +125,34 @@ async function handleAvatarChange(event) {
 
 async function loadUserProfile() {
     try {
-        const token = localStorage.getItem('userToken');
+        const token = AuthUtils.getAuthToken();
+        console.log("Chargement profil - token présent:", !!token);
+
         const response = await fetch(`${API_URL}/user/profile`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
-        if (!response.ok) throw new Error('Erreur de chargement du profil');
+        if (!response.ok) {
+            console.error("Erreur API:", response.status);
+            throw new Error('Erreur de chargement du profil');
+        }
 
         const userData = await response.json();
-        displayUserData(userData);
+        console.log("Données utilisateur reçues");
+        await displayUserData(userData);
+
     } catch (error) {
+        console.error("Erreur loadUserProfile:", error);
         showNotification('Erreur lors du chargement du profil', 'error');
     }
 }
 
 async function loadUserStats() {
     try {
-        const token = localStorage.getItem('userToken');
-        console.log('Token:', token); // Vérifier le token
+        const token = AuthUtils.getAuthToken();
+        console.log("Chargement stats - token présent:", !!token);
 
         const response = await fetch(`${API_URL}/user/stats/details`, {
             headers: {
@@ -129,81 +160,127 @@ async function loadUserStats() {
             }
         });
 
-        console.log('Response status:', response.status); // Vérifier le statut de la réponse
-
-        if (!response.ok) throw new Error('Erreur de chargement des statistiques');
+        if (!response.ok) {
+            throw new Error('Erreur de chargement des statistiques');
+        }
 
         const statsData = await response.json();
-        console.log('Données reçues de l\'API (complètes):', statsData);
-        console.log('Stats actuelles:', statsData.currentStats); // Vérifier les stats
+        console.log("Stats reçues:", statsData);
 
-        displayStats(statsData.currentStats);
+        if (statsData && statsData.currentStats) {
+            displayStats(statsData.currentStats);
+        } else {
+            console.error("Format de données invalide:", statsData);
+        }
+
     } catch (error) {
-        console.error('Erreur complète:', error);
+        console.error("Erreur loadUserStats:", error);
         showNotification('Erreur lors du chargement des statistiques', 'error');
     }
 }
 
-async function displayUserData(userData) {
-    document.getElementById('username').textContent = userData.username;
-    document.getElementById('editUsername').value = userData.username;
-    document.getElementById('editEmail').value = userData.email || '';
-    
-    // Gestion de l'avatar
-    const profileAvatar = document.getElementById('profileAvatar');
-    if (userData.avatarUrl) {
-        profileAvatar.src = userData.avatarUrl;
-        
-        // Mettre à jour aussi l'avatar dans le header si présent
-        const headerAvatar = document.querySelector('.header-avatar');
-        if (headerAvatar) {
-            headerAvatar.src = userData.avatarUrl;
-        }
-    } else {
-        profileAvatar.src = '/img/default-avatar.webp';
-    }
+function displayUserData(userData) {
+    try {
+        const elements = {
+            username: document.getElementById('username'),
+            editUsername: document.getElementById('editUsername'),
+            editEmail: document.getElementById('editEmail'),
+            profileAvatar: document.getElementById('profileAvatar'),
+            joinDate: document.getElementById('joinDate')
+        };
 
-    if (userData.createdAt) {
-        const joinDate = new Date(userData.createdAt).toLocaleDateString('fr-FR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        // Vérifier que tous les éléments existent
+        Object.entries(elements).forEach(([key, element]) => {
+            if (!element) {
+                console.error(`Élément manquant: ${key}`);
+            }
         });
-        document.getElementById('joinDate').textContent = joinDate;
-    } else {
-        document.getElementById('joinDate').textContent = 'Date inconnue';
+
+        if (elements.username) elements.username.textContent = userData.username;
+        if (elements.editUsername) elements.editUsername.value = userData.username;
+        if (elements.editEmail) elements.editEmail.value = userData.email || '';
+
+        // Gestion de l'avatar
+        if (elements.profileAvatar) {
+            elements.profileAvatar.src = userData.avatarUrl || '/img/default-avatar.webp';
+            
+            // Mettre à jour l'avatar du header si présent
+            const headerAvatar = document.querySelector('.header-avatar');
+            if (headerAvatar) {
+                headerAvatar.src = userData.avatarUrl || '/img/default-avatar.webp';
+            }
+        }
+
+        // Gestion de la date d'inscription
+        if (elements.joinDate) {
+            if (userData.createdAt) {
+                const joinDate = new Date(userData.createdAt).toLocaleDateString('fr-FR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                elements.joinDate.textContent = joinDate;
+            } else {
+                elements.joinDate.textContent = 'Date inconnue';
+            }
+        }
+    } catch (error) {
+        console.error('Erreur dans displayUserData:', error);
     }
 }
 
 function displayStats(stats) {
-    document.getElementById('gamesPlayed').textContent = stats.gamesPlayed || 0;
-    document.getElementById('bestScore').textContent = stats.bestScore || 0;
-    document.getElementById('averageScore').textContent = Math.round(stats.averageScore || 0);
+    try {
+        // Vérifier si les stats sont définies
+        if (!stats) {
+            console.error('Stats non définies');
+            return;
+        }
 
-    const modes = [
-        { id: 'france', name: 'France', icon: '🇫🇷' },
-        { id: 'mondial', name: 'Mondial', icon: '🌍' },
-        { id: 'disneyland', name: 'Disneyland', icon: '🎡' },
-        { id: 'nevers', name: 'Nevers', icon: '🏛️' },
-        { id: 'versaille', name: 'Versailles', icon: '👑' },
-        { id: 'dark', name: 'Dark Mode', icon: '🌙' }
-    ];
+        // Mettre à jour les statistiques globales
+        const elements = {
+            gamesPlayed: document.getElementById('gamesPlayed'),
+            bestScore: document.getElementById('bestScore'),
+            averageScore: document.getElementById('averageScore')
+        };
 
-    modes.forEach(mode => {
-        const modeKey = `${mode.id}Mode`;
-        const modeStats = stats[modeKey] || { gamesPlayed: 0, averageScore: 0, bestScore: 0 };
+        // Vérifier et mettre à jour chaque élément
+        if (elements.gamesPlayed) elements.gamesPlayed.textContent = stats.gamesPlayed || '0';
+        if (elements.bestScore) elements.bestScore.textContent = stats.bestScore || '0';
+        if (elements.averageScore) elements.averageScore.textContent = Math.round(stats.averageScore || 0);
 
-        const modeElement = document.getElementById(`${mode.id}ModeGames`);
-        const avgElement = document.getElementById(`${mode.id}ModeAvg`);
-        const topElement = document.getElementById(`${mode.id}ModeTop`);
+        // Définir les modes de jeu
+        const modes = [
+            { id: 'france', name: 'France', icon: '🇫🇷' },
+            { id: 'mondial', name: 'Mondial', icon: '🌍' },
+            { id: 'disneyland', name: 'Disneyland', icon: '🎡' },
+            { id: 'nevers', name: 'Nevers', icon: '🏛️' },
+            { id: 'versaille', name: 'Versailles', icon: '👑' },
+            { id: 'dark', name: 'Dark Mode', icon: '🌙' }
+        ];
 
-        if (modeElement) modeElement.textContent = modeStats.gamesPlayed;
-        if (avgElement) avgElement.textContent = Math.round(modeStats.averageScore || 0);
-        if (topElement) topElement.textContent = modeStats.bestScore;
-    });
+        // Mettre à jour les stats pour chaque mode
+        modes.forEach(mode => {
+            const modeKey = `${mode.id}Mode`;
+            const modeStats = stats[modeKey] || { gamesPlayed: 0, averageScore: 0, bestScore: 0 };
 
-    if (stats.recentGames) {
-        displayRecentGames(stats.recentGames);
+            const modeElements = {
+                games: document.getElementById(`${mode.id}ModeGames`),
+                avg: document.getElementById(`${mode.id}ModeAvg`),
+                top: document.getElementById(`${mode.id}ModeTop`)
+            };
+
+            if (modeElements.games) modeElements.games.textContent = modeStats.gamesPlayed || '0';
+            if (modeElements.avg) modeElements.avg.textContent = Math.round(modeStats.averageScore || 0);
+            if (modeElements.top) modeElements.top.textContent = modeStats.bestScore || '0';
+        });
+
+        // Afficher les parties récentes si disponibles
+        if (stats.recentGames) {
+            displayRecentGames(stats.recentGames);
+        }
+    } catch (error) {
+        console.error('Erreur dans displayStats:', error);
     }
 }
 

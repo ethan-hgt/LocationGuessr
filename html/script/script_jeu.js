@@ -37,7 +37,7 @@ function normalizeGameMode(mode) {
 }
 
 async function saveScore(finalScore) {
-    const token = localStorage.getItem('userToken');
+    const token = AuthUtils.getAuthToken();
     if (!token) {
         window.location.href = 'login.html';
         return;
@@ -45,7 +45,7 @@ async function saveScore(finalScore) {
     
     const normalizedScore = Math.floor(finalScore);
     const normalizedMode = normalizeGameMode(modeDeJeu);
-    console.log("Sauvegarde du score pour le mode:", normalizedMode); // Pour debug
+    console.log("Sauvegarde du score pour le mode:", normalizedMode);
 
     try {
         const response = await fetch('http://localhost:3000/api/user/stats', {
@@ -68,7 +68,7 @@ async function saveScore(finalScore) {
         });
         
         const data = await response.json();
-        console.log("Réponse du serveur:", data); // Pour debug
+        console.log("Réponse du serveur:", data);
         
         if (response.ok) {
             console.log("Score sauvegardé avec succès!");
@@ -83,25 +83,44 @@ async function saveScore(finalScore) {
     }
 }
 
-function initialize() {
-    const token = localStorage.getItem('userToken');
+async function initialize() {
+    const token = AuthUtils.getAuthToken();
+    console.log("Token trouvé:", token ? "oui" : "non");
+
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
 
-    createMap();
-    loadRound();
-    updateRoundCounter();
-    startTimer();
-    document.getElementById('validateChoiceBtn').disabled = true;
-    document.getElementById('validateChoiceBtn').classList.add('disabled-button');
+    try {
+        const response = await fetch('http://localhost:3000/api/user/profile', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-    document.getElementById('zoomIn').onclick = () => adjustZoom(1);
-    document.getElementById('zoomOut').onclick = () => adjustZoom(-1);
-    document.getElementById('undoMove').onclick = undoMove;
-    document.getElementById('settings').onclick = toggleSettings;
-    document.getElementById('resetPosition').onclick = resetToInitialPosition;
+        if (!response.ok) {
+            throw new Error('Token invalide');
+        }
+
+        createMap();
+        loadRound();
+        updateRoundCounter();
+        startTimer();
+        
+        document.getElementById('validateChoiceBtn').disabled = true;
+        document.getElementById('validateChoiceBtn').classList.add('disabled-button');
+        document.getElementById('zoomIn').onclick = () => adjustZoom(1);
+        document.getElementById('zoomOut').onclick = () => adjustZoom(-1);
+        document.getElementById('undoMove').onclick = undoMove;
+        document.getElementById('settings').onclick = toggleSettings;
+        document.getElementById('resetPosition').onclick = resetToInitialPosition;
+
+    } catch (error) {
+        console.error('Erreur d\'authentification:', error);
+        AuthUtils.clearAuth(); // nettoyer les tokens invalides
+        window.location.href = 'login.html';
+    }
 }
 
 function getRandomPositionInFrance() {
@@ -268,7 +287,7 @@ function loadRound() {
             if (available) {
                 correctPoint = { lat: position.lat(), lng: position.lng() };
                 initialPosition = correctPoint;
-                previousPositions = [];
+                previousPositions = [];  // Réinitialiser l'historique des positions
 
                 panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
                     position: correctPoint,
@@ -283,11 +302,37 @@ function loadRound() {
                     showRoadLabels: false
                 });
 
+                // Ajouter le listener pour undoMove
+                panorama.addListener('position_changed', () => {
+                    const position = panorama.getPosition();
+                    if (position) {
+                        const newPos = {
+                            lat: position.lat(),
+                            lng: position.lng()
+                        };
+                        
+                        // Vérifier si la position est différente de la dernière
+                        const lastPos = previousPositions[previousPositions.length - 1];
+                        if (!lastPos || 
+                            newPos.lat !== lastPos.lat || 
+                            newPos.lng !== lastPos.lng) {
+                            previousPositions.push(newPos);
+                        }
+                    }
+                });
+
                 const checkStreetViewReady = setInterval(() => {
                     if (panorama.getStatus() === google.maps.StreetViewStatus.OK && panorama.getPano()) {
                         clearInterval(checkStreetViewReady);
                         document.getElementById('loadingOverlay').style.display = 'none';
-                        savePreviousPosition();
+                        
+                        // Sauvegarder la position initiale
+                        if (previousPositions.length === 0) {
+                            previousPositions.push({
+                                lat: correctPoint.lat,
+                                lng: correctPoint.lng
+                            });
+                        }
 
                         startTimer();
                     }
@@ -540,14 +585,12 @@ async function endGame() {
     resultOverlay.style.alignItems = 'center';
     resultOverlay.style.justifyContent = 'center';
 
-    if (finalScore > 0) {
-        const saved = await saveScore(finalScore);
-        if (!saved) {
-            const errorDiv = document.createElement('p');
-            errorDiv.textContent = "Erreur lors de la sauvegarde du score.";
-            errorDiv.style.color = 'red';
-            resultContent.appendChild(errorDiv);
-        }
+    const saved = await saveScore(finalScore);
+    if (!saved) {
+        const errorDiv = document.createElement('p');
+        errorDiv.textContent = "Erreur lors de la sauvegarde du score.";
+        errorDiv.style.color = 'red';
+        resultContent.appendChild(errorDiv);
     }
 }
 

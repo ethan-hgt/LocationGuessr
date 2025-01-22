@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Initialisation de la page de login");
     updateHeader();
     
     if (window.location.pathname.includes('login.html')) {
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Fonctions de gestion des formulaires
 function fadeInForm(form, show) {
     if (show) {
         form.style.display = 'flex';
@@ -53,6 +55,7 @@ function switchTab(tab) {
     }
 }
 
+// Fonctions de popup
 function showPopup(title, message, type = 'success', redirect = false) {
     let popup = document.getElementById('customPopup');
     if (!popup) {
@@ -120,8 +123,10 @@ function closePopup() {
     }, 300);
 }
 
+// Fonctions d'authentification
 async function handleInscriptionSubmit(event) {
     event.preventDefault();
+    
     const username = document.getElementById('usernameInscription').value;
     const email = document.getElementById('emailInscription').value;
     const password = document.getElementById('passwordInscription').value;
@@ -138,6 +143,7 @@ async function handleInscriptionSubmit(event) {
     }
 
     try {
+        console.log("Tentative d'inscription...");
         const response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
             headers: {
@@ -153,19 +159,64 @@ async function handleInscriptionSubmit(event) {
             return;
         }
 
-        localStorage.setItem('userToken', data.token);
-        localStorage.setItem('userFirstName', data.user.username);
-        localStorage.setItem('userId', data.user.id);
-        localStorage.setItem('isNewUser', 'true');
+        console.log("Inscription réussie, stockage des données");
+        AuthUtils.storeAuth(data, false);
+        sessionStorage.setItem('isNewUser', 'true');
         
+        await updateHeader();
         showPopup('Bienvenue !', 'Inscription réussie !', 'success', true);
-        updateHeader();
+        
+        setTimeout(() => {
+            window.location.href = 'accueil.html';
+        }, 2000);
+
     } catch (err) {
-        console.error(err);
+        console.error('Erreur inscription:', err);
         showPopup('Erreur', 'Une erreur est survenue lors de l\'inscription.', 'error', false);
     }
 }
 
+async function handleConnexionSubmit(event) {
+    event.preventDefault();
+    resetErrorStyles();
+    const username = document.getElementById('usernameConnexion').value;
+    const password = document.getElementById('passwordConnexion').value;
+    const rememberMe = document.getElementById('remember').checked;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, rememberMe })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showPopup('Erreur', data.message || 'Identifiants invalides', 'error', false);
+            return;
+        }
+
+        AuthUtils.clearAuth(); // Nettoie les deux storages
+        AuthUtils.storeAuth(data, rememberMe); // Stock dans le bon storage
+
+        // Debug pour vérification
+        console.log("Stockage des données dans:", rememberMe ? "localStorage" : "sessionStorage");
+        console.log("Token dans sessionStorage:", sessionStorage.getItem('userToken'));
+        console.log("Token dans localStorage:", localStorage.getItem('userToken'));
+
+        await updateHeader();
+        showPopup('Succès', 'Connexion réussie !', 'success', true);
+        
+    } catch (err) {
+        console.error('Erreur de connexion:', err);
+        showPopup('Erreur', 'Une erreur est survenue lors de la connexion.', 'error', false);
+    }
+}
+
+// Fonctions de réinitialisation du mot de passe
 function showPasswordResetPopup() {
     if (document.querySelector('.custom-popup')) {
         document.querySelector('.custom-popup').remove();
@@ -222,47 +273,6 @@ function showPasswordResetPopup() {
     setTimeout(() => {
         popupContent.style.transform = 'translateY(0)';
     }, 50);
-}
-
-async function handleConnexionSubmit(event) {
-    event.preventDefault();
-    resetErrorStyles();
-    const username = document.getElementById('usernameConnexion').value;
-    const password = document.getElementById('passwordConnexion').value;
-    const rememberMe = document.getElementById('remember').checked;
-
-    try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password, rememberMe })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            showPopup('Erreur', data.message || 'Identifiants invalides', 'error', false);
-            return;
-        }
-
-        if (rememberMe) {
-            localStorage.setItem('userToken', data.token);
-            localStorage.setItem('userFirstName', data.user.username);
-            localStorage.setItem('userId', data.user.id);
-        } else {
-            sessionStorage.setItem('userToken', data.token);
-            sessionStorage.setItem('userFirstName', data.user.username);
-            sessionStorage.setItem('userId', data.user.id);
-        }
-        
-        showPopup('Succès', 'Connexion réussie !', 'success', true);
-        updateHeader();
-    } catch (err) {
-        console.error(err);
-        showPopup('Erreur', 'Une erreur est survenue lors de la connexion.', 'error', false);
-    }
 }
 
 async function handleForgotPassword(button) {
@@ -377,6 +387,7 @@ async function resetPassword() {
     }
 }
 
+// Fonctions de gestion des mots de passe
 function togglePassword() {
     togglePasswordVisibility('passwordConnexion', 'toggleIconConnexion');
 }
@@ -413,44 +424,59 @@ function togglePasswordVisibility(passwordFieldId, toggleIconId) {
     }, 200);
 }
 
+// Fonctions de gestion du header et du profil
 async function updateHeader() {
-    const userToken = localStorage.getItem('userToken') || sessionStorage.getItem('userToken');
-    const userName = localStorage.getItem('userFirstName') || sessionStorage.getItem('userFirstName');
-    const rightHeader = document.querySelector('.right-header');
+    try {
+        const token = AuthUtils.getAuthToken();
+        const userName = AuthUtils.getUsername();
+        const rightHeader = document.querySelector('.right-header');
 
-    if (!rightHeader) return;
+        if (!rightHeader) return;
 
-    if (userToken && userName) {
-        try {
-            const response = await fetch('http://localhost:3000/api/user/profile', {
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
+        if (token && userName) {
+            try {
+                const response = await fetch('http://localhost:3000/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Token invalide');
                 }
-            });
 
-            if (response.ok) {
                 const userData = await response.json();
-                const avatarUrl = userData.avatarUrl || '/img/default-avatar.webp';
                 
+                // Mettre à jour le stockage si le nom a changé
+                if (userData.username !== userName) {
+                    if (localStorage.getItem('userToken')) {
+                        localStorage.setItem('userFirstName', userData.username);
+                    }
+                    if (sessionStorage.getItem('userToken')) {
+                        sessionStorage.setItem('userFirstName', userData.username);
+                    }
+                }
+
                 rightHeader.innerHTML = `
                     <div class="user-profile" onclick="toggleProfileMenu(event)">
-                        <img src="${avatarUrl}" alt="Avatar" class="header-avatar">
-                        <span class="header-username">${userName}</span>
+                        <img src="${userData.avatarUrl || '/img/default-avatar.webp'}" alt="Avatar" class="header-avatar">
+                        <span class="header-username">${userData.username}</span>
                         <div class="profile-dropdown" id="profileDropdown">
                             <a href="profile.html">Mon Profil</a>
                             <a href="#" onclick="logout(); return false;" class="logout-option">Déconnexion</a>
                         </div>
                     </div>
                 `;
-            } else {
-                logout(false);
+            } catch (error) {
+                console.error('Erreur de vérification:', error);
+                AuthUtils.clearAuth();
+                rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
             }
-        } catch (err) {
-            console.error('Erreur lors de la mise à jour du header:', err);
-            logout(false);
+        } else {
+            rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
         }
-    } else {
-        rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
+    } catch (error) {
+        console.error('Erreur dans updateHeader:', error);
     }
 }
 
@@ -470,13 +496,7 @@ function toggleProfileMenu(event) {
 }
 
 function logout(showMessage = true) {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userFirstName');
-    localStorage.removeItem('userId');
-    sessionStorage.removeItem('userToken');
-    sessionStorage.removeItem('userFirstName');
-    sessionStorage.removeItem('userId');
-    
+    AuthUtils.clearAuth();
     updateHeader();
     
     if (showMessage) {

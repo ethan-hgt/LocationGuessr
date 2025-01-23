@@ -1,183 +1,276 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Politique de confidentialité - LocationGuessr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style/style_header.css"> 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style/style_header.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
     <script src="script/script_login.js"></script>
-    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico">
+    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-        body {
-            background: linear-gradient(to bottom, #1A1A1A, transparent),
-                radial-gradient(at 25.775842699982388% 39.0053357311203%, hsla(0, 0%, 10.196078431372548%, 1) 0%, hsla(0, 0%, 10.196078431372548%, 0) 100%),
-                radial-gradient(at 22.798620893034116% 89.40838373202618%, hsla(0, 0%, 16.862745098039216%, 1) 0%, hsla(0, 0%, 16.862745098039216%, 0) 100%),
-                radial-gradient(at 59.84388338557851% 69.0529804330226%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1) 0%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0) 100%),
-                radial-gradient(at 2.795092232733243% 84.44780297608656%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 1) 0%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 0) 100%),
-                radial-gradient(at 56.52838229139141% 10.195594785331108%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%),
-                radial-gradient(at 53.55594647706753% 57.11127746610837%, hsla(0, 0%, 10.196078431372548%, 1) 0%, hsla(0, 0%, 10.196078431372548%, 0) 100%),
-                radial-gradient(at 91.74418994302263% 91.84107248447081%, hsla(0, 0%, 16.862745098039216%, 1) 0%, hsla(0, 0%, 16.862745098039216%, 0) 100%),
-                radial-gradient(at 25.49956661008076% 72.88347003199107%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1) 0%, hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0) 100%),
-                radial-gradient(at 72.64797999970362% 27.63424868519354%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 1) 0%, hsla(140.35714285714286, 48.275862068965516%, 22.745098039215687%, 0) 100%),
-                #1A1A1A;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-            color: #fff;
-            padding: 20px;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+      body {
+        background: linear-gradient(to bottom, #1a1a1a, transparent),
+          radial-gradient(
+            at 25.775842699982388% 39.0053357311203%,
+            hsla(0, 0%, 10.196078431372548%, 1) 0%,
+            hsla(0, 0%, 10.196078431372548%, 0) 100%
+          ),
+          radial-gradient(
+            at 22.798620893034116% 89.40838373202618%,
+            hsla(0, 0%, 16.862745098039216%, 1) 0%,
+            hsla(0, 0%, 16.862745098039216%, 0) 100%
+          ),
+          radial-gradient(
+            at 59.84388338557851% 69.0529804330226%,
+            hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1)
+              0%,
+            hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0)
+              100%
+          ),
+          radial-gradient(
+            at 2.795092232733243% 84.44780297608656%,
+            hsla(
+                140.35714285714286,
+                48.275862068965516%,
+                22.745098039215687%,
+                1
+              )
+              0%,
+            hsla(
+                140.35714285714286,
+                48.275862068965516%,
+                22.745098039215687%,
+                0
+              )
+              100%
+          ),
+          radial-gradient(
+            at 56.52838229139141% 10.195594785331108%,
+            hsla(0, 0%, 0%, 1) 0%,
+            hsla(0, 0%, 0%, 0) 100%
+          ),
+          radial-gradient(
+            at 53.55594647706753% 57.11127746610837%,
+            hsla(0, 0%, 10.196078431372548%, 1) 0%,
+            hsla(0, 0%, 10.196078431372548%, 0) 100%
+          ),
+          radial-gradient(
+            at 91.74418994302263% 91.84107248447081%,
+            hsla(0, 0%, 16.862745098039216%, 1) 0%,
+            hsla(0, 0%, 16.862745098039216%, 0) 100%
+          ),
+          radial-gradient(
+            at 25.49956661008076% 72.88347003199107%,
+            hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 1)
+              0%,
+            hsla(208.98876404494382, 77.3913043478261%, 22.54901960784314%, 0)
+              100%
+          ),
+          radial-gradient(
+            at 72.64797999970362% 27.63424868519354%,
+            hsla(
+                140.35714285714286,
+                48.275862068965516%,
+                22.745098039215687%,
+                1
+              )
+              0%,
+            hsla(
+                140.35714285714286,
+                48.275862068965516%,
+                22.745098039215687%,
+                0
+              )
+              100%
+          ),
+          #1a1a1a;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: #fff;
+        padding: 20px;
+        overflow-x: hidden;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
 
-        p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            opacity: 0;
-            animation: fadeIn 1s ease-in forwards;
-        }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        opacity: 0;
+        animation: fadeIn 1s ease-in forwards;
+      }
 
-        a {
-            color: #0078d4;;
-            text-decoration: none;
-        }
+      a {
+        color: #0078d4;
+        text-decoration: none;
+      }
 
-        a:hover {
-            text-decoration: underline;
-        }
+      a:hover {
+        text-decoration: underline;
+      }
 
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
         }
+        100% {
+          opacity: 1;
+        }
+      }
 
-        footer {
-            background-color: #222;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            color: #fff;
-            width: 100%;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            box-sizing: border-box;
-        }
+      footer {
+        background-color: #222;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        color: #fff;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        box-sizing: border-box;
+      }
 
-        .left-footer, .right-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .left-footer,
+      .right-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .footer-link {
-            font-size: 16px;
-            margin-right: 40px;
-            color: #c0c0c0;
-            text-decoration: none;
-            transition: transform 0.3s ease, color 0.3s ease, font-weight 0.3s ease;
-            background-color: transparent;
-            padding: 5px;
-            display: inline-block;
-            text-align: center;
-        }
+      .footer-link {
+        font-size: 16px;
+        margin-right: 40px;
+        color: #c0c0c0;
+        text-decoration: none;
+        transition: transform 0.3s ease, color 0.3s ease, font-weight 0.3s ease;
+        background-color: transparent;
+        padding: 5px;
+        display: inline-block;
+        text-align: center;
+      }
 
-        .footer-link.active, .footer-link:hover {
-            transform: scale(1.05);
-            color: #fff;
-            text-decoration: none; 
-        }
+      .footer-link.active,
+      .footer-link:hover {
+        transform: scale(1.05);
+        color: #fff;
+        text-decoration: none;
+      }
 
-        .header-link.active, .header-link:hover {
-            transform: scale(1.05);
-            color: #fff;
-            text-decoration: none; 
-        }
+      .header-link.active,
+      .header-link:hover {
+        transform: scale(1.05);
+        color: #fff;
+        text-decoration: none;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <header>
-        <div class="left-header">
-            <a href="accueil.html">
-                <img src="../img/plane.png" alt="icône" class="header-icon" draggable="false">
-            </a>
-            <a href="play.html" class="header-link">Jouer</a>
-            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
-            <a href="/html/aboutUs.html" class="header-link">À propos</a>
-        </div>
-        <div class="right-header">
-            <a href="login.html" class="header-link">Connexion</a>
-        </div>
+      <div class="left-header">
+        <a href="accueil.html">
+          <img
+            src="../img/plane.png"
+            alt="icône"
+            class="header-icon"
+            draggable="false"
+          />
+        </a>
+        <a href="play.html" class="header-link">Jouer</a>
+        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+        <a href="/html/aboutUs.html" class="header-link">À propos</a>
+      </div>
+      <div class="right-header">
+        <a href="login.html" class="header-link">Connexion</a>
+      </div>
     </header>
 
     <div class="container">
-        <h1>Politique de confidentialité</h1>
-        <p>Votre vie privée est importante pour nous. Chez LocationGuessr, nous respectons votre vie privée et nous nous engageons à protéger les informations personnelles que vous pourriez nous fournir en utilisant notre site Web.</p>
-        <p>Nous ne collectons des informations que lorsque vous nous les fournissez volontairement. Cela peut inclure votre adresse e-mail, votre nom d'utilisateur ou d'autres détails nécessaires pour améliorer votre expérience sur notre site Web.</p>
-        <p>Nous ne vendrons jamais vos données personnelles à des tiers, sauf si la loi l'exige. Pour plus de détails, veuillez consulter notre politique de confidentialité complète.</p>
-        <p>Si vous avez des questions ou des préoccupations concernant la manière dont nous gérons vos informations personnelles, n'hésitez pas à <a href="contact.html">nous contacter</a>.</p>
+      <h1>Politique de confidentialité</h1>
+      <p>
+        Votre vie privée est importante pour nous. Chez LocationGuessr, nous
+        respectons votre vie privée et nous nous engageons à protéger les
+        informations personnelles que vous pourriez nous fournir en utilisant
+        notre site Web.
+      </p>
+      <p>
+        Nous ne collectons des informations que lorsque vous nous les fournissez
+        volontairement. Cela peut inclure votre adresse e-mail, votre nom
+        d'utilisateur ou d'autres détails nécessaires pour améliorer votre
+        expérience sur notre site Web.
+      </p>
+      <p>
+        Nous ne vendrons jamais vos données personnelles à des tiers, sauf si la
+        loi l'exige. Pour plus de détails, veuillez consulter notre politique de
+        confidentialité complète.
+      </p>
+      <p>
+        Si vous avez des questions ou des préoccupations concernant la manière
+        dont nous gérons vos informations personnelles, n'hésitez pas à
+        <a href="contact.html">nous contacter</a>.
+      </p>
     </div>
 
     <footer>
-        <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Politique de confidentialité</a>
-            <a href="terms.html" class="footer-link">Termes et conditions</a>
-            <a href="contact.html" class="footer-link">Nous contacter</a>
-        </div>
-        <div class="right-footer">
-            <span class="footer-link">© 2025 LocationGuessr</span>
-        </div>
+      <div class="left-footer">
+        <a href="privacy.html" class="footer-link"
+          >Politique de confidentialité</a
+        >
+        <a href="terms.html" class="footer-link">Termes et conditions</a>
+        <a href="contact.html" class="footer-link">Nous contacter</a>
+      </div>
+      <div class="right-footer">
+        <span class="footer-link">© 2025 LocationGuessr</span>
+      </div>
     </footer>
 
     <script>
-        const footerLinks = document.querySelectorAll('.footer-link');
+      const footerLinks = document.querySelectorAll(".footer-link");
 
-const currentLocation = window.location.href;
+      const currentLocation = window.location.href;
 
-footerLinks.forEach(link => {
-    if (link.href === currentLocation) {
-        link.classList.add('active');
-    }
-});
-
+      footerLinks.forEach((link) => {
+        if (link.href === currentLocation) {
+          link.classList.add("active");
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

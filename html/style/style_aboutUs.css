@@ -1,233 +1,262 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(to bottom, #1A1A1A, transparent),
-                radial-gradient(at 25.8% 39%, hsla(0, 0%, 10%, 1) 0%, hsla(0, 0%, 10%, 0) 100%),
-                radial-gradient(at 22.8% 89.4%, hsla(0, 0%, 16.8%, 1) 0%, hsla(0, 0%, 16.8%, 0) 100%),
-                radial-gradient(at 59.8% 69.1%, hsla(209, 77%, 22.5%, 1) 0%, hsla(209, 77%, 22.5%, 0) 100%),
-                radial-gradient(at 2.8% 84.4%, hsla(140, 48%, 22.7%, 1) 0%, hsla(140, 48%, 22.7%, 0) 100%),
-                #1A1A1A;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: #e0e0e0;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to bottom, #1a1a1a, transparent),
+    radial-gradient(
+      at 25.8% 39%,
+      hsla(0, 0%, 10%, 1) 0%,
+      hsla(0, 0%, 10%, 0) 100%
+    ),
+    radial-gradient(
+      at 22.8% 89.4%,
+      hsla(0, 0%, 16.8%, 1) 0%,
+      hsla(0, 0%, 16.8%, 0) 100%
+    ),
+    radial-gradient(
+      at 59.8% 69.1%,
+      hsla(209, 77%, 22.5%, 1) 0%,
+      hsla(209, 77%, 22.5%, 0) 100%
+    ),
+    radial-gradient(
+      at 2.8% 84.4%,
+      hsla(140, 48%, 22.7%, 1) 0%,
+      hsla(140, 48%, 22.7%, 0) 100%
+    ),
+    #1a1a1a;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #e0e0e0;
 }
 
 .conteneur-principal {
-    width: 100%;
-    max-width: 1200px;
-    margin: 100px auto 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 100px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 100px auto 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
 }
 
 .section-accueil {
-    text-align: center;
-    margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .titre-accueil {
-    font-size: 4.5vw;
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    margin-bottom: 10px;
+  font-size: 4.5vw;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  margin-bottom: 10px;
 }
 
 .sous-titre-accueil {
-    font-size: 1.5vw;
-    color: #b0b0b0;
-    margin-bottom: 20px;
+  font-size: 1.5vw;
+  color: #b0b0b0;
+  margin-bottom: 20px;
 }
 
 .section-globe-interactif {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 800px;
-    margin: -5% auto 80px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin: -5% auto 80px;
 }
 
 #globe-interactif {
-    width: 100%;
-    height: 500px;
+  width: 100%;
+  height: 500px;
 }
 
 .titre-section {
-    font-size: 3vw;
-    color: #ffffff;
-    text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #444;
-    display: inline-block;
-    padding-bottom: 8px;
+  font-size: 3vw;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #444;
+  display: inline-block;
+  padding-bottom: 8px;
 }
 
 .texte-section {
-    text-align: center;
-    font-size: 1.5vw;
-    line-height: 1.7;
-    margin: 0 auto;
-    max-width: 800px;
+  text-align: center;
+  font-size: 1.5vw;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: 800px;
 }
 
-.section-fonctionnalites, .section-technologies, .section-mission, .section-equipe {
-    margin-bottom: 80px;
-    padding: 20px;
+.section-fonctionnalites,
+.section-technologies,
+.section-mission,
+.section-equipe {
+  margin-bottom: 80px;
+  padding: 20px;
 }
 
-.liste-fonctionnalites, .liste-technologies {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 30px;
+.liste-fonctionnalites,
+.liste-technologies {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
-.element-fonctionnalite, .element-technologie {
-    background-color: transparent;
-    border: 1px solid rgba(192, 192, 192, 0.6);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    width: 300px;
-    height: 250px;
-    position: relative;
+.element-fonctionnalite,
+.element-technologie {
+  background-color: transparent;
+  border: 1px solid rgba(192, 192, 192, 0.6);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  width: 300px;
+  height: 250px;
+  position: relative;
 }
 
-.element-fonctionnalite:hover, .element-technologie:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.8);
+.element-fonctionnalite:hover,
+.element-technologie:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
-.icone-fonctionnalite, .icone-technologie {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 20px;
+.icone-fonctionnalite,
+.icone-technologie {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
 }
 
-.description-fonctionnalite, .element-technologie p {
-    font-size: 1.1vw;
-    color: #e0e0e0;
-    margin-top: 10px;
-    line-height: 1.5;
+.description-fonctionnalite,
+.element-technologie p {
+  font-size: 1.1vw;
+  color: #e0e0e0;
+  margin-top: 10px;
+  line-height: 1.5;
 }
 
 .tech-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    perspective: 1000px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
 }
 
-.tech-front, .tech-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    transition: transform 0.6s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
+.tech-front,
+.tech-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
 }
 
 .tech-front {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .tech-back {
-    color: #ffffff;
-    transform: rotateY(180deg);
-    text-align: center;
+  color: #ffffff;
+  transform: rotateY(180deg);
+  text-align: center;
 }
 
 .element-technologie:hover .tech-front {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .element-technologie:hover .tech-back {
-    transform: rotateY(0);
+  transform: rotateY(0);
 }
 
 .section-cta {
-    text-align: center;
-    margin-top: 80px;
-    margin-bottom: 250px;
+  text-align: center;
+  margin-top: 80px;
+  margin-bottom: 250px;
 }
 
 .bouton-cta {
-    background-color: #0078d4;
-    color: #ffffff;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.5vw;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 15px rgba(0, 120, 212, 0.5);
+  background-color: #0078d4;
+  color: #ffffff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.5vw;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 120, 212, 0.5);
 }
 
 .bouton-cta:hover {
-    background-color: #005bb5;
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 91, 181, 0.5);
+  background-color: #005bb5;
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 91, 181, 0.5);
 }
 
 .bouton-cta:active {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 /* Responsivité */
 @media (max-width: 1024px) and (min-width: 769px) {
-    .titre-accueil {
-        font-size: 48px;
-    }
+  .titre-accueil {
+    font-size: 48px;
+  }
 
-    .sous-titre-accueil {
-        font-size: 28px;
-    }
+  .sous-titre-accueil {
+    font-size: 28px;
+  }
 
-    .titre-section {
-        font-size: 28px;
-    }
+  .titre-section {
+    font-size: 28px;
+  }
 
-    .texte-section {
-        font-size: 20px;
-    }
+  .texte-section {
+    font-size: 20px;
+  }
 
-    .description-fonctionnalite, .element-technologie p {
-        font-size: 18px;
-    }
+  .description-fonctionnalite,
+  .element-technologie p {
+    font-size: 18px;
+  }
 
-    .bouton-cta {
-        font-size: 24px;
-    }
+  .bouton-cta {
+    font-size: 24px;
+  }
 }
 
 @media (max-width: 768px) {
-    .titre-accueil {
-        font-size: 40px;
-    }
+  .titre-accueil {
+    font-size: 40px;
+  }
 
-    .sous-titre-accueil {
-        font-size: 24px;
-    }
+  .sous-titre-accueil {
+    font-size: 24px;
+  }
 
-    .titre-section, .description-fonctionnalite, .element-technologie p {
-        font-size: 20px;
-    }
+  .titre-section,
+  .description-fonctionnalite,
+  .element-technologie p {
+    font-size: 20px;
+  }
 
-    .texte-section {
-        font-size: 18px;
-    }
+  .texte-section {
+    font-size: 18px;
+  }
 
-    .bouton-cta {
-        font-size: 22px;
-    }
+  .bouton-cta {
+    font-size: 22px;
+  }
 }

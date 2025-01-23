@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Profil - LocationGuessr</title>
-    <link rel="stylesheet" href="style/style_header.css">
     <link rel="stylesheet" href="style/style_profile.css">
+    <link rel="stylesheet" href="style/style_header.css">
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
-    <script src="script/script_login.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico">
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="left-header">
             <a href="accueil.html">
@@ -23,28 +23,24 @@
             <a href="Leaderboard.html" class="header-link">Classement</a>
             <a href="aboutUs.html" class="header-link">À propos</a>
         </div>
-        <div class="right-header">
-            <!-- Sera rempli dynamiquement par le script -->
-        </div>
+        <div class="right-header"></div>
     </header>
 
+    <!-- Main Content -->
     <main class="profile-container">
         <div class="profile-content">
-            <h1 class="profile-title">Mon Profil</h1>
-            
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="avatar-container">
-                        <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
-                        <div class="avatar-overlay">
-                            <i class='bx bx-camera'></i>
-                            <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
-                        </div>
+            <!-- Profile Header Section -->
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
+                    <div class="avatar-overlay">
+                        <i class='bx bx-camera'></i>
+                        <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
                     </div>
-                    <h2 id="username">Chargement...</h2>
-                    <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
                 </div>
-
+                <h2 id="username">Chargement...</h2>
+                <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
+                
                 <div class="stats-overview">
                     <div class="stat-card">
                         <i class='bx bx-game'></i>
@@ -62,122 +58,248 @@
                         <p id="averageScore">0</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="info">Informations</button>
-                    <button class="tab-btn" data-tab="stats">Statistiques</button>
-                </div>
+            <!-- Tab Navigation -->
+            <div class="tab-container">
+                <div class="tab-slider"></div>
+                <button class="tab-button active" data-tab="stats">Statistiques</button>
+                <button class="tab-button" data-tab="security">Sécurité</button>
+            </div>
 
-                <div class="tab-content active" id="info-content">
-                    <form id="profileForm" class="profile-form">
-                        <div class="form-group">
-                            <label for="editUsername">Nom d'utilisateur</label>
-                            <input type="text" id="editUsername" name="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editEmail">Email</label>
-                            <input type="email" id="editEmail" name="email" required>
-                        </div>
-                        <div class="password-section">
-                            <h3>Changer le mot de passe</h3>
-                            <div class="form-group">
-                                <label for="currentPassword">Mot de passe actuel</label>
-                                <div class="password-input">
-                                    <input type="password" id="currentPassword" name="currentPassword">
-                                    <i class='bx bx-hide toggle-password'></i>
+            <!-- Statistics Tab Content -->
+            <div id="stats-content" class="tab-content active">
+                <div class="detailed-stats">
+                    <div class="stats-section">
+                        <h3>Statistiques par mode</h3>
+                        <div class="mode-stats">
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">🇫🇷</span>
+                                    <h4>Mode France</h4>
                                 </div>
+                                <p>Parties jouées : <span id="franceModeGames">0</span></p>
+                                <p>Score moyen : <span id="franceModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="franceModeTop">0</span></p>
                             </div>
-                            <div class="form-group">
-                                <label for="newPassword">Nouveau mot de passe</label>
-                                <div class="password-input">
-                                    <input type="password" id="newPassword" name="newPassword">
-                                    <i class='bx bx-hide toggle-password'></i>
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">🌍</span>
+                                    <h4>Mode Mondial</h4>
                                 </div>
+                                <p>Parties jouées : <span id="mondialModeGames">0</span></p>
+                                <p>Score moyen : <span id="mondialModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="mondialModeTop">0</span></p>
                             </div>
-                        </div>
-                        <button type="submit" class="save-btn">Sauvegarder les modifications</button>
-                    </form>
-                </div>
-
-                <div class="tab-content" id="stats-content">
-                    <div class="detailed-stats">
-                        <div class="stats-section">
-                            <h3>Statistiques par mode</h3>
-                            <div class="mode-stats">
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">🇫🇷</span>
-                                        <h4>Mode France</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="franceModeGames">0</span></p>
-                                    <p>Score moyen : <span id="franceModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="franceModeTop">0</span></p>
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">🎡</span>
+                                    <h4>Mode Disneyland</h4>
                                 </div>
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">🌍</span>
-                                        <h4>Mode Mondial</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="mondialModeGames">0</span></p>
-                                    <p>Score moyen : <span id="mondialModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="mondialModeTop">0</span></p>
-                                </div>
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">🎡</span>
-                                        <h4>Mode Disneyland</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="disneylandModeGames">0</span></p>
-                                    <p>Score moyen : <span id="disneylandModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="disneylandModeTop">0</span></p>
-                                </div>
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">🏛️</span>
-                                        <h4>Mode Nevers</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="neversModeGames">0</span></p>
-                                    <p>Score moyen : <span id="neversModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="neversModeTop">0</span></p>
-                                </div>
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">👑</span>
-                                        <h4>Mode Versailles</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="versailleModeGames">0</span></p>
-                                    <p>Score moyen : <span id="versailleModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="versailleModeTop">0</span></p>
-                                </div>
-                                <div class="mode-stat">
-                                    <div class="mode-header">
-                                        <span class="mode-icon">🌙</span>
-                                        <h4>Mode Dark</h4>
-                                    </div>
-                                    <p>Parties jouées : <span id="darkModeGames">0</span></p>
-                                    <p>Score moyen : <span id="darkModeAvg">0</span></p>
-                                    <p>Meilleur score : <span id="darkModeTop">0</span></p>
-                                </div>
+                                <p>Parties jouées : <span id="disneylandModeGames">0</span></p>
+                                <p>Score moyen : <span id="disneylandModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="disneylandModeTop">0</span></p>
                             </div>
-                        </div>
-                        <div class="stats-section">
-                            <h3>Historique récent</h3>
-                            <div class="recent-games" id="recentGames">
-                                <!-- Sera rempli dynamiquement -->
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">🏛️</span>
+                                    <h4>Mode Nevers</h4>
+                                </div>
+                                <p>Parties jouées : <span id="neversModeGames">0</span></p>
+                                <p>Score moyen : <span id="neversModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="neversModeTop">0</span></p>
+                            </div>
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">👑</span>
+                                    <h4>Mode Versailles</h4>
+                                </div>
+                                <p>Parties jouées : <span id="versailleModeGames">0</span></p>
+                                <p>Score moyen : <span id="versailleModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="versailleModeTop">0</span></p>
+                            </div>
+                            <div class="mode-stat">
+                                <div class="mode-header">
+                                    <span class="mode-icon">🌙</span>
+                                    <h4>Mode Dark</h4>
+                                </div>
+                                <p>Parties jouées : <span id="darkModeGames">0</span></p>
+                                <p>Score moyen : <span id="darkModeAvg">0</span></p>
+                                <p>Meilleur score : <span id="darkModeTop">0</span></p>
                             </div>
                         </div>
                     </div>
+                    <div class="stats-section">
+                        <h3>Historique récent</h3>
+                        <div class="recent-games" id="recentGames"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tab Content -->
+            <div id="security-content" class="tab-content">
+                <div class="form-section">
+                    <h3>Informations du compte</h3>
+                    <div class="input-container">
+                        <i class='bx bx-user input-icon'></i>
+                        <input type="text" id="editUsername" placeholder="Nom d'utilisateur">
+                    </div>
+                    <div class="input-container">
+                        <i class='bx bx-envelope input-icon'></i>
+                        <input type="email" id="editEmail" placeholder="Email">
+                    </div>
+                    <button class="submit-button" onclick="updateProfile()">
+                        <i class='bx bx-save'></i>
+                        Mettre à jour le profil
+                    </button>
+                    <button class="submit-button" onclick="showModal('changePasswordModal')" style="margin-top: 1rem;">
+                        <i class='bx bx-lock-alt'></i>
+                        Changer le mot de passe
+                    </button>
+                </div>
+
+                <div class="danger-zone">
+                    <h3>Zone dangereuse</h3>
+                    <button class="danger-button" onclick="showModal('resetStatsModal')">
+                        <i class='bx bx-reset'></i>
+                        Réinitialiser les statistiques
+                    </button>
+                    <button class="danger-button" onclick="showModal('deleteAccountModal')">
+                        <i class='bx bx-trash'></i>
+                        Supprimer le compte
+                    </button>
+                    <button class="danger-button" onclick="logout()">
+                        <i class='bx bx-log-out'></i>
+                        Se déconnecter
+                    </button>
+               </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <!-- Change Password Modal -->
+<div class="custom-popup" id="changePasswordModal">
+    <div class="popup-content">
+        <button class="close-modal" onclick="closeModal('changePasswordModal')">
+            <i class='bx bx-x'></i>
+        </button>
+        <div class="form-container">
+            <div id="emailStep">
+                <h2 class="popup-title">Changement de mot de passe</h2>
+                <p class="popup-message">Pour changer votre mot de passe, veuillez d'abord confirmer votre email</p>
+                <div class="input-container">
+                    <i class='bx bx-envelope input-icon'></i>
+                    <input type="email" id="confirmEmail" placeholder="Confirmez votre email" required>
+                </div>
+                <button class="submit-button" onclick="sendPasswordChangeCode()">
+                    <i class='bx bx-envelope'></i>
+                    Envoyer le code
+                </button>
+            </div>
+            
+            <div id="codeStep" style="display: none;">
+                <h2 class="popup-title">Vérification</h2>
+                <p class="popup-message">Entrez le code reçu par email</p>
+                <div class="input-container">
+                    <i class='bx bx-check-circle input-icon'></i>
+                    <input type="text" id="passwordVerificationCode" placeholder="Code à 6 chiffres" maxlength="6">
+                </div>
+                <button class="submit-button" onclick="verifyChangePasswordCode()">
+                    <i class='bx bx-check'></i>
+                    Vérifier
+                </button>
+            </div>
+
+            <div id="newPasswordStep" style="display: none;">
+                <h2 class="popup-title">Nouveau mot de passe</h2>
+                <p class="popup-message">Choisissez votre nouveau mot de passe</p>
+                <div class="input-container">
+                    <i class='bx bx-lock input-icon'></i>
+                    <input type="password" id="currentPassword" placeholder="Mot de passe actuel">
+                    <i class='bx bx-hide toggle-password'></i>
+                </div>
+                <div class="input-container">
+                    <i class='bx bx-lock-alt input-icon'></i>
+                    <input type="password" id="newPassword" placeholder="Nouveau mot de passe">
+                    <i class='bx bx-hide toggle-password'></i>
+                </div>
+                <button class="submit-button" onclick="updatePassword()">
+                    <i class='bx bx-check'></i>
+                    Changer le mot de passe
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Delete Account Modal -->
+    <div class="custom-popup" id="deleteAccountModal">
+        <div class="popup-content">
+            <button class="close-modal" onclick="closeModal('deleteAccountModal')">
+                <i class='bx bx-x'></i>
+            </button>
+            <div class="modal-body">
+                <i class='bx bx-trash popup-icon error'></i>
+                <h2 class="popup-title">Supprimer le compte</h2>
+                <p class="popup-message">Cette action est irréversible. Un code de vérification sera envoyé à votre email.</p>
+                <button class="submit-button" onclick="initiateAccountDeletion()">
+                    <i class='bx bx-trash-alt'></i>
+                    Continuer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Stats Modal -->
+    <div class="custom-popup" id="resetStatsModal">
+        <div class="popup-content">
+            <button class="close-modal" onclick="closeModal('resetStatsModal')">
+                <i class='bx bx-x'></i>
+            </button>
+            <div class="modal-body">
+                <i class='bx bx-reset popup-icon error'></i>
+                <h2 class="popup-title">Réinitialiser les statistiques</h2>
+                <p class="popup-message">Cette action effacera toutes vos statistiques. Un code de vérification sera envoyé à votre email.</p>
+                <button class="submit-button" onclick="initiateStatsReset()">
+                    <i class='bx bx-reset'></i>
+                    Continuer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div class="custom-popup" id="verificationModal">
+        <div class="popup-content">
+            <button class="close-modal" onclick="closeModal('verificationModal')">
+                <i class='bx bx-x'></i>
+            </button>
+            <div class="modal-body">
+                <i class='bx bx-check-circle popup-icon'></i>
+                <h2 class="popup-title">Vérification</h2>
+                <p class="popup-message">Veuillez entrer le code de vérification envoyé à votre email.</p>
+                <div class="form-container">
+                    <div class="input-container">
+                        <i class='bx bx-check-circle input-icon'></i>
+                        <input type="text" id="verificationCode" placeholder="Code de vérification" maxlength="6">
+                    </div>
+                    <button class="submit-button" onclick="verifyCode()">
+                        <i class='bx bx-check'></i>
+                        Vérifier
+                    </button>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
+    <!-- Notification -->
     <div id="notification" class="notification">
         <i class='bx bx-check-circle'></i>
         <span id="notificationMessage"></span>
     </div>
 
-    <script src="script/script_header.js"></script>
+    <!-- Scripts -->
     <script src="script/script_profile.js"></script>
 </body>
 </html>

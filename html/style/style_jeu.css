@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -24,7 +25,7 @@ body, html {
 .loading-text {
   color: #fff;
   font-size: 20px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -43,7 +44,8 @@ body, html {
   font-family: Arial, sans-serif;
 }
 
-#pano, #mapContainer {
+#pano,
+#mapContainer {
   position: absolute;
   top: 0;
   left: 0;
@@ -117,7 +119,7 @@ body, html {
   font-size: 18px;
   font-weight: 500;
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -144,7 +146,7 @@ body, html {
   font-size: 18px;
   font-weight: 500;
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   z-index: 2;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
@@ -188,7 +190,7 @@ body, html {
   text-align: center;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   max-width: 400px;
   width: 90%;
   animation: fadeInUp 0.5s ease;
@@ -233,7 +235,6 @@ body, html {
 .result-buttons button:hover {
   background: linear-gradient(145deg, #666, #7a7a7a);
   transform: translateY(-2px);
-
 }
 
 .result-buttons button:active {
@@ -258,9 +259,7 @@ body, html {
 
 .restart-icon:active {
   transform: scale(0.95);
-
 }
-
 
 /* Animation Keyframes */
 @keyframes fadeIn {
@@ -282,10 +281,6 @@ body, html {
     transform: translateY(0);
   }
 }
-
-
-
-
 
 #validateChoiceBtn.disabled-button {
   background-color: #777;
@@ -349,24 +344,37 @@ body, html {
   visibility: visible;
 }
 
-#settings .bx, #resetPosition .bx, #undoMove .bx, #controls .bx, #zoomIn .bx {
+#settings .bx,
+#resetPosition .bx,
+#undoMove .bx,
+#controls .bx,
+#zoomIn .bx {
   font-size: 24px;
   color: #fbf9f9;
   transition: transform 0.2s;
 }
 
-#settings:hover .bx, #resetPosition:hover .bx {
+#settings:hover .bx,
+#resetPosition:hover .bx {
   animation: tada 1s;
 }
 
 @keyframes tada {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: scale(0.9) rotate(-3deg);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: scale(0.9) rotate(3deg);
   }
 }
@@ -409,7 +417,6 @@ body, html {
   font-size: 24px;
   font-weight: 600;
 }
-
 
 .settings-option {
   margin-top: 10%;
@@ -476,7 +483,7 @@ body, html {
   bottom: 0;
   background-color: #ccc;
   border-radius: 34px;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -488,7 +495,7 @@ body, html {
   bottom: 3px;
   background-color: white;
   border-radius: 50%;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
@@ -591,5 +598,3 @@ input:checked + .slider:before {
 .confirm-button:hover {
   background: #444;
 }
-
-

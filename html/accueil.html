@@ -1,124 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Accueil - LocationGuessr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/style_accueil.css">
-    <link rel="stylesheet" href="style/style_header.css">
-    <link rel="stylesheet" href="style/style_footer.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style/style_accueil.css" />
+    <link rel="stylesheet" href="style/style_header.css" />
+    <link rel="stylesheet" href="style/style_footer.css" />
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
     <script src="script/script_login.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/html/script/script_accueil.js"></script>
-    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico">
-</head>
+    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico" />
+  </head>
 
-<body>
+  <body>
     <header>
-        <div class="left-header">
-            <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
-            </a>
-            <a href="play.html" class="header-link">Jouer</a>
-            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
-            <a href="/html/aboutUs.html" class="header-link">À propos</a>
-        </div>
-        <div class="right-header">
-            <a href="login.html" class="header-link">Connexion</a>
-        </div>
+      <div class="left-header">
+        <a href="accueil.html">
+          <img
+            src="../img/plane.png"
+            alt="icon"
+            class="header-icon"
+            draggable="false"
+          />
+        </a>
+        <a href="play.html" class="header-link">Jouer</a>
+        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+        <a href="/html/aboutUs.html" class="header-link">À propos</a>
+      </div>
+      <div class="right-header">
+        <a href="login.html" class="header-link">Connexion</a>
+      </div>
     </header>
 
     <div class="image-container">
-        <img src="/background.jpeg" class="background-section" draggable="false">
-        <img src="../img/carte.png" class="carte" draggable="false">
-        <div class="titre">
-            <h1>Explorez, devinez et maîtrisez le monde.</h1>
-        </div>
+      <img
+        src="/background.jpeg"
+        class="background-section"
+        draggable="false"
+      />
+      <img src="../img/carte.png" class="carte" draggable="false" />
+      <div class="titre">
+        <h1>Explorez, devinez et maîtrisez le monde.</h1>
+      </div>
     </div>
 
     <button class="play" id="playButton">Jouer</button>
 
     <div class="explorer hidden">
-        <div class="text-planet">
-            <h1>Explorez le monde</h1>
-            <p>On vous dépose partout : de la ville de Nevers aux magnifiques plages de Bali.</p>
-        </div>
-        <div class="image-planet">
-            <img src="/img/planet.png" alt="Globe" class="globe-image" draggable="false">
-        </div>
+      <div class="text-planet">
+        <h1>Explorez le monde</h1>
+        <p>
+          On vous dépose partout : de la ville de Nevers aux magnifiques plages
+          de Bali.
+        </p>
+      </div>
+      <div class="image-planet">
+        <img
+          src="/img/planet.png"
+          alt="Globe"
+          class="globe-image"
+          draggable="false"
+        />
+      </div>
     </div>
 
-    <hr class="custom-hr">
+    <hr class="custom-hr" />
 
     <div class="compete hidden">
-        <div class="text-compete">
-            <h1>Défiez-vous</h1>
-            <p>Testez vos capacités contre plusieurs joueurs en local.</p>
-        </div>
-        <div class="image-compete">
-            <img src="/img/compete.png" alt="compete" class="compete-image" draggable="false">
-        </div>
+      <div class="text-compete">
+        <h1>Défiez-vous</h1>
+        <p>Testez vos capacités contre plusieurs joueurs en local.</p>
+      </div>
+      <div class="image-compete">
+        <img
+          src="/img/compete.png"
+          alt="compete"
+          class="compete-image"
+          draggable="false"
+        />
+      </div>
     </div>
 
     <div class="faq-section">
-        <h2 class="faq-title">FOIRE AUX QUESTIONS</h2>
-        <hr class="faq-line">
+      <h2 class="faq-title">FOIRE AUX QUESTIONS</h2>
+      <hr class="faq-line" />
     </div>
 
     <div class="faq-container hidden">
-        <div class="faq-item">
-            <div class="faq-question">
-                <h3>Qu'est-ce que LocationGuessr ?</h3>
-                <span class="faq-toggle">+</span>
-            </div>
-            <div class="faq-answer">
-                <p>LocationGuessr est un jeu de géographie dans lequel vous êtes déposé quelque part dans le monde dans un panorama de rue, et votre mission est de trouver des indices qui vous permettront de deviner votre position sur la carte du monde.</p>
-            </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Qu'est-ce que LocationGuessr ?</h3>
+          <span class="faq-toggle">+</span>
         </div>
+        <div class="faq-answer">
+          <p>
+            LocationGuessr est un jeu de géographie dans lequel vous êtes déposé
+            quelque part dans le monde dans un panorama de rue, et votre mission
+            est de trouver des indices qui vous permettront de deviner votre
+            position sur la carte du monde.
+          </p>
+        </div>
+      </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <h3>Comment jouer ?</h3>
-                <span class="faq-toggle">+</span>
-            </div>
-            <div class="faq-answer">
-                <p>Il vous suffit de créer un compte ou de vous connecter, puis de cliquer sur "Play".</p>
-            </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Comment jouer ?</h3>
+          <span class="faq-toggle">+</span>
         </div>
+        <div class="faq-answer">
+          <p>
+            Il vous suffit de créer un compte ou de vous connecter, puis de
+            cliquer sur "Play".
+          </p>
+        </div>
+      </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <h3>Est-ce que ma progression est sauvegardée ?</h3>
-                <span class="faq-toggle">+</span>
-            </div>
-            <div class="faq-answer">
-                <p>Oui, votre progression sera sauvegardée localement.</p>
-            </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Est-ce que ma progression est sauvegardée ?</h3>
+          <span class="faq-toggle">+</span>
         </div>
+        <div class="faq-answer">
+          <p>Oui, votre progression sera sauvegardée localement.</p>
+        </div>
+      </div>
     </div>
-    
+
     <div id="popup" class="popup">
-        <div class="popup-content">
-            <span id="closePopup" class="close">&times;</span>
-            <h2>Vous devez vous connecter</h2>
-            <p>Créez un compte ou connectez-vous pour jouer.</p>
-            <button id="loginBtn" class="submit-button">Connexion</button>
-        </div>
+      <div class="popup-content">
+        <span id="closePopup" class="close">&times;</span>
+        <h2>Vous devez vous connecter</h2>
+        <p>Créez un compte ou connectez-vous pour jouer.</p>
+        <button id="loginBtn" class="submit-button">Connexion</button>
+      </div>
     </div>
 
     <script src="/html/script/script_footer.js"></script>
     <footer>
-        <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Politique de confidentialité</a>
-            <a href="terms.html" class="footer-link">Termes et conditions</a>
-            <a href="contact.html" class="footer-link">Nous contacter</a>
-        </div>
-        <div class="right-footer">
-            <span class="footer-link">© 2025 LocationGuessr</span>
-        </div>
+      <div class="left-footer">
+        <a href="privacy.html" class="footer-link"
+          >Politique de confidentialité</a
+        >
+        <a href="terms.html" class="footer-link">Termes et conditions</a>
+        <a href="contact.html" class="footer-link">Nous contacter</a>
+      </div>
+      <div class="right-footer">
+        <span class="footer-link">© 2025 LocationGuessr</span>
+      </div>
     </footer>
-</body>
+  </body>
 </html>

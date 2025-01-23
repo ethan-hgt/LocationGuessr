@@ -1,63 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nous Contacter - LocationGuessr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/html/style/style_contact.css">
-    <link rel="stylesheet" href="/html/style/style_footer.css">
-    <link rel="stylesheet" href="/html/style/style_header.css">
-    <link rel="stylesheet" href="/html/style/style_accueil.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/html/style/style_contact.css" />
+    <link rel="stylesheet" href="/html/style/style_footer.css" />
+    <link rel="stylesheet" href="/html/style/style_header.css" />
+    <link rel="stylesheet" href="/html/style/style_accueil.css" />
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
     <script src="script/script_login.js"></script>
-    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico">
-</head>
+    <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico" />
+  </head>
 
-<body>
+  <body>
     <header>
-        <div class="left-header">
-            <a href="accueil.html">
-                <img src="../img/plane.png" alt="icon" class="header-icon" draggable="false">
-            </a>
-            <a href="play.html" class="header-link">Jouer</a>
-            <a href="/html/Leaderboard.html" class="header-link">Classement</a>
-            <a href="/html/aboutUs.html" class="header-link">À propos</a>
-        </div>
-        <div class="right-header">
-            <a href="login.html" class="header-link">Connexion</a>
-        </div>
+      <div class="left-header">
+        <a href="accueil.html">
+          <img
+            src="../img/plane.png"
+            alt="icon"
+            class="header-icon"
+            draggable="false"
+          />
+        </a>
+        <a href="play.html" class="header-link">Jouer</a>
+        <a href="/html/Leaderboard.html" class="header-link">Classement</a>
+        <a href="/html/aboutUs.html" class="header-link">À propos</a>
+      </div>
+      <div class="right-header">
+        <a href="login.html" class="header-link">Connexion</a>
+      </div>
     </header>
 
     <main class="contact-container">
-        <h1>Contactez-nous</h1>
-        <form class="contact-form" action="#" method="post">
-            <div class="form-group">
-                <label for="name">Nom</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="submit-button">Envoyer</button>
-        </form>
+      <h1>Contactez-nous</h1>
+      <form class="contact-form" action="#" method="post">
+        <div class="form-group">
+          <label for="name">Nom</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="submit-button">Envoyer</button>
+      </form>
     </main>
 
     <footer>
-        <div class="left-footer">
-            <a href="privacy.html" class="footer-link">Politique de confidentialité</a>
-            <a href="terms.html" class="footer-link">Termes et conditions</a>
-            <a href="contact.html" class="footer-link">Nous contacter</a>
-        </div>
-        <div class="right-footer">
-            <span class="footer-link">© 2025 LocationGuessr</span>
-        </div>
+      <div class="left-footer">
+        <a href="privacy.html" class="footer-link"
+          >Politique de confidentialité</a
+        >
+        <a href="terms.html" class="footer-link">Termes et conditions</a>
+        <a href="contact.html" class="footer-link">Nous contacter</a>
+      </div>
+      <div class="right-footer">
+        <span class="footer-link">© 2025 LocationGuessr</span>
+      </div>
     </footer>
-</body>
+  </body>
 </html>

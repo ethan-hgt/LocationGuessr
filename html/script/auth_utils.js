@@ -1,21 +1,28 @@
 class AuthUtils {
   static getAuthToken() {
-    // Inverser l'ordre - vérifier sessionStorage en PREMIER
-    const sessionToken = sessionStorage.getItem("userToken");
-    if (sessionToken) return sessionToken;
-    return localStorage.getItem("userToken");
+    const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 > Date.now()) {
+          return token;
+        }
+        this.clearAuth();
+        return null;
+      } catch {
+        this.clearAuth();
+        return null;
+      }
+    }
+    return null;
   }
 
   static getUserId() {
-    const sessionId = sessionStorage.getItem("userId");
-    if (sessionId) return sessionId;
-    return localStorage.getItem("userId");
+    return localStorage.getItem("userId") || sessionStorage.getItem("userId");
   }
 
   static getUsername() {
-    const sessionName = sessionStorage.getItem("userFirstName");
-    if (sessionName) return sessionName;
-    return localStorage.getItem("userFirstName");
+    return localStorage.getItem("userFirstName") || sessionStorage.getItem("userFirstName");
   }
 
   static async verifyToken() {
@@ -28,35 +35,84 @@ class AuthUtils {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.ok;
+
+      if (!response.ok) {
+        this.clearAuth();
+        return false;
+      }
+
+      const data = await response.json();
+      // Mettre à jour les informations utilisateur si nécessaire
+      this.updateUserInfo(data);
+      return true;
     } catch {
+      this.clearAuth();
       return false;
     }
   }
 
   static clearAuth() {
-    // Nettoyer les deux storages
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("userFirstName");
-    localStorage.removeItem("userId");
-    sessionStorage.removeItem("userToken");
-    sessionStorage.removeItem("userFirstName");
-    sessionStorage.removeItem("userId");
+    [localStorage, sessionStorage].forEach(storage => {
+      storage.removeItem("userToken");
+      storage.removeItem("userFirstName");
+      storage.removeItem("userId");
+      storage.removeItem("refreshToken");
+    });
   }
 
   static isAuthenticated() {
-    return this.getAuthToken() !== null;
+    const token = this.getAuthToken();
+    return token !== null;
   }
 
   static storeAuth(data, rememberMe = false) {
-    // Nettoyer d'abord les deux storages
     this.clearAuth();
-
-    // Puis stocker dans le storage approprié
     const storage = rememberMe ? localStorage : sessionStorage;
+    
     storage.setItem("userToken", data.token);
     storage.setItem("userFirstName", data.user.username);
     storage.setItem("userId", data.user.id);
+    if (data.refreshToken) {
+      storage.setItem("refreshToken", data.refreshToken);
+    }
+  }
+
+  static updateUserInfo(userData) {
+    const storage = localStorage.getItem("userToken") ? localStorage : sessionStorage;
+    if (storage && userData.username) {
+      storage.setItem("userFirstName", userData.username);
+    }
+  }
+
+  static async refreshTokenIfNeeded() {
+    const token = this.getAuthToken();
+    if (!token) return false;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Rafraîchir si le token expire dans moins de 5 minutes
+      if (payload.exp * 1000 - Date.now() < 300000) {
+        const refreshToken = localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken");
+        if (refreshToken) {
+          const response = await fetch("http://localhost:3000/api/auth/refresh-token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            this.storeAuth(data, localStorage.getItem("userToken") !== null);
+            return true;
+          }
+        }
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <!-- Meta tags et liens CSS/JS -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Profil - LocationGuessr</title>
@@ -13,7 +14,7 @@
     <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico">
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header avec navigation -->
     <header>
         <div class="left-header">
             <a href="accueil.html">
@@ -26,11 +27,12 @@
         <div class="right-header"></div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Container principal du profil -->
     <main class="profile-container">
         <div class="profile-content">
-            <!-- Profile Header Section -->
+            <!-- Section header du profil avec avatar et stats globales -->
             <div class="profile-header">
+                <!-- Avatar avec overlay pour upload -->
                 <div class="avatar-container">
                     <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
                     <div class="avatar-overlay">
@@ -41,6 +43,7 @@
                 <h2 id="username">Chargement...</h2>
                 <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
                 
+                <!-- Statistiques globales -->
                 <div class="stats-overview">
                     <div class="stat-card">
                         <i class='bx bx-game'></i>
@@ -60,15 +63,16 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
+            <!-- Navigation par onglets -->
             <div class="tab-container">
                 <div class="tab-slider"></div>
                 <button class="tab-button active" data-tab="stats">Statistiques</button>
                 <button class="tab-button" data-tab="security">Sécurité</button>
             </div>
 
-            <!-- Statistics Tab Content -->
+            <!-- Onglet Statistiques -->
             <div id="stats-content" class="tab-content active">
+                <!-- Stats détaillées par mode -->
                 <div class="detailed-stats">
                     <div class="stats-section">
                         <h3>Statistiques par mode</h3>
@@ -129,6 +133,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Historique des parties -->
                     <div class="stats-section">
                         <h3>Historique récent</h3>
                         <div class="recent-games" id="recentGames"></div>
@@ -136,8 +141,9 @@
                 </div>
             </div>
 
-            <!-- Security Tab Content -->
+            <!-- Onglet Sécurité -->
             <div id="security-content" class="tab-content">
+                <!-- Formulaire de modification profil -->
                 <div class="form-section">
                     <h3>Informations du compte</h3>
                     <div class="input-container">
@@ -158,6 +164,7 @@
                     </button>
                 </div>
 
+                <!-- Zone de danger (suppression, reset) -->
                 <div class="danger-zone">
                     <h3>Zone dangereuse</h3>
                     <button class="danger-button" onclick="showModal('resetStatsModal')">
@@ -175,65 +182,65 @@
                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-    <!-- Change Password Modal -->
-<div class="custom-popup" id="changePasswordModal">
-    <div class="popup-content">
-        <button class="close-modal" onclick="closeModal('changePasswordModal')">
-            <i class='bx bx-x'></i>
-        </button>
-        <div class="form-container">
-            <div id="emailStep">
-                <h2 class="popup-title">Changement de mot de passe</h2>
-                <p class="popup-message">Pour changer votre mot de passe, veuillez d'abord confirmer votre email</p>
-                <div class="input-container">
-                    <i class='bx bx-envelope input-icon'></i>
-                    <input type="email" id="confirmEmail" placeholder="Confirmez votre email" required>
+    <!-- Modales de confirmation -->
+    <!-- Changement mot de passe -->
+    <div class="custom-popup" id="changePasswordModal">
+        <div class="popup-content">
+            <button class="close-modal" onclick="closeModal('changePasswordModal')">
+                <i class='bx bx-x'></i>
+            </button>
+            <div class="form-container">
+                <div id="emailStep">
+                    <h2 class="popup-title">Changement de mot de passe</h2>
+                    <p class="popup-message">Pour changer votre mot de passe, veuillez d'abord confirmer votre email</p>
+                    <div class="input-container">
+                        <i class='bx bx-envelope input-icon'></i>
+                        <input type="email" id="confirmEmail" placeholder="Confirmez votre email" required>
+                    </div>
+                    <button class="submit-button" onclick="sendPasswordChangeCode()">
+                        <i class='bx bx-envelope'></i>
+                        Envoyer le code
+                    </button>
                 </div>
-                <button class="submit-button" onclick="sendPasswordChangeCode()">
-                    <i class='bx bx-envelope'></i>
-                    Envoyer le code
-                </button>
-            </div>
-            
-            <div id="codeStep" style="display: none;">
-                <h2 class="popup-title">Vérification</h2>
-                <p class="popup-message">Entrez le code reçu par email</p>
-                <div class="input-container">
-                    <i class='bx bx-check-circle input-icon'></i>
-                    <input type="text" id="passwordVerificationCode" placeholder="Code à 6 chiffres" maxlength="6">
+                
+                <div id="codeStep" style="display: none;">
+                    <h2 class="popup-title">Vérification</h2>
+                    <p class="popup-message">Entrez le code reçu par email</p>
+                    <div class="input-container">
+                        <i class='bx bx-check-circle input-icon'></i>
+                        <input type="text" id="passwordVerificationCode" placeholder="Code à 6 chiffres" maxlength="6">
+                    </div>
+                    <button class="submit-button" onclick="verifyChangePasswordCode()">
+                        <i class='bx bx-check'></i>
+                        Vérifier
+                    </button>
                 </div>
-                <button class="submit-button" onclick="verifyChangePasswordCode()">
-                    <i class='bx bx-check'></i>
-                    Vérifier
-                </button>
-            </div>
 
-            <div id="newPasswordStep" style="display: none;">
-                <h2 class="popup-title">Nouveau mot de passe</h2>
-                <p class="popup-message">Choisissez votre nouveau mot de passe</p>
-                <div class="input-container">
-                    <i class='bx bx-lock input-icon'></i>
-                    <input type="password" id="currentPassword" placeholder="Mot de passe actuel">
-                    <i class='bx bx-hide toggle-password'></i>
+                <div id="newPasswordStep" style="display: none;">
+                    <h2 class="popup-title">Nouveau mot de passe</h2>
+                    <p class="popup-message">Choisissez votre nouveau mot de passe</p>
+                    <div class="input-container">
+                        <i class='bx bx-lock input-icon'></i>
+                        <input type="password" id="currentPassword" placeholder="Mot de passe actuel">
+                        <i class='bx bx-hide toggle-password'></i>
+                    </div>
+                    <div class="input-container">
+                        <i class='bx bx-lock-alt input-icon'></i>
+                        <input type="password" id="newPassword" placeholder="Nouveau mot de passe">
+                        <i class='bx bx-hide toggle-password'></i>
+                    </div>
+                    <button class="submit-button" onclick="updatePassword()">
+                        <i class='bx bx-check'></i>
+                        Changer le mot de passe
+                    </button>
                 </div>
-                <div class="input-container">
-                    <i class='bx bx-lock-alt input-icon'></i>
-                    <input type="password" id="newPassword" placeholder="Nouveau mot de passe">
-                    <i class='bx bx-hide toggle-password'></i>
-                </div>
-                <button class="submit-button" onclick="updatePassword()">
-                    <i class='bx bx-check'></i>
-                    Changer le mot de passe
-                </button>
             </div>
         </div>
     </div>
-</div>
 
-    <!-- Delete Account Modal -->
+    <!-- Suppression compte -->
     <div class="custom-popup" id="deleteAccountModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('deleteAccountModal')">
@@ -251,7 +258,7 @@
         </div>
     </div>
 
-    <!-- Reset Stats Modal -->
+    <!-- Reset stats -->
     <div class="custom-popup" id="resetStatsModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('resetStatsModal')">
@@ -269,7 +276,7 @@
         </div>
     </div>
 
-    <!-- Verification Modal -->
+    <!-- Vérification code -->
     <div class="custom-popup" id="verificationModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('verificationModal')">
@@ -293,7 +300,7 @@
         </div>
     </div>
 
-    <!-- Notification -->
+    <!-- Notification toast -->
     <div id="notification" class="notification">
         <i class='bx bx-check-circle'></i>
         <span id="notificationMessage"></span>

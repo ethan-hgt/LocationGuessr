@@ -1,3 +1,4 @@
+// Initialisation des formulaires et des événements
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Initialisation de la page de login");
   updateHeader();
@@ -25,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Fonctions de gestion des formulaires
+// Gère l'animation des formulaires
 function fadeInForm(form, show) {
   if (show) {
     form.style.display = "flex";
@@ -39,6 +40,7 @@ function fadeInForm(form, show) {
   }
 }
 
+// Switch entre connexion et inscription
 function switchTab(tab) {
   const inscriptionForm = document.getElementById("inscriptionForm");
   const connexionForm = document.getElementById("connexionForm");
@@ -55,7 +57,7 @@ function switchTab(tab) {
   }
 }
 
-// Fonctions de popup
+// Gestion des popups de notification
 function showPopup(title, message, type = "success", redirect = false) {
   let popup = document.getElementById("customPopup");
   if (!popup) {
@@ -123,7 +125,7 @@ function closePopup() {
   }, 300);
 }
 
-// Fonctions d'authentification
+// Handler d'inscription
 async function handleInscriptionSubmit(event) {
   event.preventDefault();
 
@@ -192,6 +194,7 @@ async function handleInscriptionSubmit(event) {
   }
 }
 
+// Handler de connexion 
 async function handleConnexionSubmit(event) {
   event.preventDefault();
   resetErrorStyles();
@@ -244,6 +247,50 @@ async function handleConnexionSubmit(event) {
       "error",
       false
     );
+  }
+}
+
+// Reset du mot de passe oublié
+// Envoie un code de vérification à l'email fourni
+async function handleForgotPassword(button) {
+  const email = document.getElementById("resetEmail").value;
+  if (!email) {
+    showPopup("Erreur", "Veuillez entrer votre email", "error", false);
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Envoi...";
+
+  try {
+    const response = await fetch(
+      "http://localhost:3000/api/auth/forgot-password",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById("emailStep").style.display = "none";
+      document.getElementById("codeStep").style.display = "block";
+      showPopup(
+        "Succès",
+        "Un code de vérification a été envoyé à votre email",
+        "success",
+        false
+      );
+    } else {
+      showPopup("Erreur", data.message, "error", false);
+    }
+  } catch (err) {
+    showPopup("Erreur", "Une erreur est survenue", "error", false);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Envoyer";
   }
 }
 
@@ -304,48 +351,6 @@ function showPasswordResetPopup() {
   setTimeout(() => {
     popupContent.style.transform = "translateY(0)";
   }, 50);
-}
-
-async function handleForgotPassword(button) {
-  const email = document.getElementById("resetEmail").value;
-  if (!email) {
-    showPopup("Erreur", "Veuillez entrer votre email", "error", false);
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "Envoi...";
-
-  try {
-    const response = await fetch(
-      "http://localhost:3000/api/auth/forgot-password",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (response.ok) {
-      document.getElementById("emailStep").style.display = "none";
-      document.getElementById("codeStep").style.display = "block";
-      showPopup(
-        "Succès",
-        "Un code de vérification a été envoyé à votre email",
-        "success",
-        false
-      );
-    } else {
-      showPopup("Erreur", data.message, "error", false);
-    }
-  } catch (err) {
-    showPopup("Erreur", "Une erreur est survenue", "error", false);
-  } finally {
-    button.disabled = false;
-    button.textContent = "Envoyer";
-  }
 }
 
 async function verifyCode() {

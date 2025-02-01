@@ -1,3 +1,5 @@
+// Point d'entrée principal du backend
+// Configure Express, CORS, MongoDB et les routes API
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,11 +10,11 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
+// Config de base
 app.use(cors());
 app.use(express.json());
 
-// Configuration des chemins statiques avec logs de débogage
+// Routes statiques et API
 app.use("/img", (req, res, next) => {
   console.log("[Static] Accès aux images:", req.url);
   express.static(path.join(__dirname, "../img"))(req, res, next);
@@ -58,7 +60,7 @@ app.get("/api/modes", (req, res) => {
   res.json(modes);
 });
 
-// Connexion MongoDB avec options améliorées
+// Connexion MongoDB avec configs optimisées
 mongoose
   .connect(process.env.MONGODB_URI, {
     autoIndex: true,
@@ -77,7 +79,7 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Gestionnaire d'erreurs global amélioré
+// Gestion centralisée des erreurs
 app.use((err, req, res, next) => {
   console.error("[Error] Type:", err.name);
   console.error("[Error] Message:", err.message);

@@ -1,8 +1,11 @@
+// Middleware d'authentification
+// Vérifie le token JWT et ajoute l'utilisateur à la requête
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const auth = async (req, res, next) => {
   try {
+    // Récupère le token du header Authorization
     const token = req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {

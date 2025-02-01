@@ -6,7 +6,7 @@ const { GAME_MODES } = require("./gameMode");
 const nodemailer = require("nodemailer");
 const auth = require("../middlewares/auth");
 
-// Configuration du transporteur email
+// Config pour l'envoi des mails (reset password, etc)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Middleware de validation d'email
+// Vérifie si l'email a un format valide
 const validateEmail = (req, res, next) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(req.body.email)) {
@@ -24,7 +24,8 @@ const validateEmail = (req, res, next) => {
   next();
 };
 
-// Route d'inscription
+// Inscription d'un nouveau joueur
+// Crée le compte et initialise toutes les stats à 0
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -97,7 +98,8 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Route de connexion
+// Connexion des joueurs
+// Vérifie les identifiants et renvoie le token JWT
 router.post("/login", async (req, res) => {
   try {
     const { username, password, rememberMe } = req.body;
@@ -163,7 +165,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Route pour demander le code de réinitialisation
+// Reset du mdp via email
+// Envoie un code à 6 chiffres qui expire après 15min
 router.post("/forgot-password", validateEmail, async (req, res) => {
   try {
     const { email } = req.body;
@@ -400,7 +403,8 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
-// Suppression de compte avec vérification email
+// Suppression de compte
+// Nécessite une confirmation par email pour éviter les erreurs
 router.post("/delete-account", auth, async (req, res) => {
   try {
     const user = await User.findById(req.userId);
@@ -461,6 +465,8 @@ router.post("/confirm-delete-account", auth, async (req, res) => {
   }
 });
 
+// Reset des stats
+// Remet tous les scores et moyennes à 0
 router.post("/reset-stats", auth, async (req, res) => {
   try {
     const user = await User.findById(req.userId);

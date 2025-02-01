@@ -5,6 +5,8 @@ const User = require("../models/User");
 const multer = require("multer");
 const { GAME_MODES } = require("./gameMode");
 
+// Fonction utilitaire pour normaliser les noms de modes
+// Ex: "parc" -> "disneylandMode"
 function normalizeMode(mode) {
   const modeMap = {
     parc: "disneyland",
@@ -51,7 +53,8 @@ function getModeInfo(mode) {
   };
 }
 
-// Configuration de Multer
+// Config pour la gestion des avatars
+// Limite: 2MB, formats: JPG/PNG/WebP
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
@@ -67,7 +70,8 @@ const upload = multer({
   },
 });
 
-// Route pour l'upload d'avatar
+// Upload d'avatar
+// Converti l'image en base64 pour stockage dans MongoDB
 router.post("/avatar", auth, upload.single("avatar"), async (req, res) => {
   try {
     if (!req.file) {
@@ -95,6 +99,8 @@ router.post("/avatar", auth, upload.single("avatar"), async (req, res) => {
   }
 });
 
+// Récup du leaderboard
+// Trié par meilleur score, limité aux 10 meilleurs
 router.get("/leaderboard", async (req, res) => {
   try {
     const { mode } = req.query;
@@ -347,7 +353,8 @@ router.get("/rank/:userId", async (req, res) => {
   }
 });
 
-// Route pour obtenir les stats détaillées d'un joueur
+// Stats détaillées d'un joueur
+// Pour la page profil avec toutes les stats par mode
 router.get("/stats/details", auth, async (req, res) => {
   try {
     const user = await User.findById(req.userId);

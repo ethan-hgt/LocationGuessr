@@ -1,10 +1,13 @@
+// Configuration de l'API et variables globales
 const API_URL = "http://localhost:3000/api";
 let userStats = null;
 let notificationTimeout;
 let isRequestInProgress = false;
 let lastRequestTime = 0;
-const COOLDOWN_TIME = 60000;
+const COOLDOWN_TIME = 60000; // Cooldown de 1 minute entre les requêtes
 
+// Initialisation de la page profil
+// Vérifie l'authentification et charge les données utilisateur
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     console.log("Début chargement profil");
@@ -37,24 +40,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+// Configuration des écouteurs d'événements pour les interactions utilisateur
 function setupEventListeners() {
-  // Garder le code existant
+  // Upload d'avatar lors du clic sur l'overlay
   document.querySelector(".avatar-overlay").addEventListener("click", () => {
     document.getElementById("avatarInput").click();
   });
 
-  document
-    .getElementById("avatarInput")
-    .addEventListener("change", handleAvatarChange);
-  document
-    .querySelector(".submit-button")
-    .addEventListener("click", updateProfile);
+  // Gestion des changements d'avatar et mises à jour de profil
+  document.getElementById("avatarInput").addEventListener("change", handleAvatarChange);
+  document.querySelector(".submit-button").addEventListener("click", updateProfile);
 
+  // Toggle visibilité des mots de passe
   document.querySelectorAll(".toggle-password").forEach((icon) => {
     icon.addEventListener("click", togglePasswordVisibility);
   });
 }
 
+// Initialisation des onglets avec animation du slider
 function initializeTabs() {
   const tabButtons = document.querySelectorAll(".tab-button");
   const slider = document.querySelector(".tab-slider");
@@ -67,10 +70,10 @@ function initializeTabs() {
   });
 }
 
-// Ajouter en haut avec les autres variables globales
+// Variable pour suivre si on fait une suppression ou un reset des stats
 let currentAction = null;
 
-// Ajouter les nouvelles fonctions pour la gestion des modales
+// Gestion des modales de confirmation
 function showModal(modalId) {
   document.getElementById(modalId).style.display = "flex";
 }
@@ -79,6 +82,8 @@ function closeModal(modalId) {
   document.getElementById(modalId).style.display = "none";
 }
 
+// Mise à jour du mot de passe 
+// Vérifie le code envoyé par email et met à jour le mot de passe
 async function updatePassword() {
   const email = document.getElementById("confirmEmail").value;
   const code = document.getElementById("verificationCode").value;
@@ -129,6 +134,8 @@ async function updatePassword() {
   }
 }
 
+// Process de suppression de compte
+// Envoie un code de vérification par email avec cooldown
 async function initiateAccountDeletion() {
   if (isRequestInProgress) {
     showNotification("Une demande est déjà en cours", "error");
@@ -165,6 +172,8 @@ async function initiateAccountDeletion() {
   }
 }
 
+// Process de reset des statistiques 
+// Envoie un code de vérification par email avec cooldown
 async function initiateStatsReset() {
   if (isRequestInProgress) {
     showNotification("Une demande est déjà en cours", "error");
@@ -201,6 +210,8 @@ async function initiateStatsReset() {
   }
 }
 
+// Vérification des codes reçus par email
+// Gère à la fois la suppression de compte et le reset des stats
 async function verifyCode() {
   const code = document.getElementById("verificationCode").value;
 
@@ -257,6 +268,9 @@ async function verifyCode() {
     document.getElementById("verificationCode").value = ""; // Reset du champ en cas d'erreur
   }
 }
+
+// Gestion des modification de mot de passe
+// Envoi du code de vérification par email
 async function sendPasswordChangeCode() {
   const email = document.getElementById("confirmEmail").value;
 
@@ -291,6 +305,7 @@ async function sendPasswordChangeCode() {
   }
 }
 
+// Vérification du code pour changement de mot de passe
 async function verifyChangePasswordCode() {
   const email = document.getElementById("confirmEmail").value;
   const code = document.getElementById("verificationCode").value;
@@ -327,6 +342,7 @@ function logout() {
   window.location.href = "login.html";
 }
 
+// Navigation entre les onglets
 function switchTab(tabId) {
   document
     .querySelectorAll(".tab-button")
@@ -351,6 +367,7 @@ function switchTab(tabId) {
   }
 }
 
+// Gestion du changement d'avatar
 async function handleAvatarChange(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -405,6 +422,8 @@ async function handleAvatarChange(event) {
   }
 }
 
+// Chargement des données du profil utilisateur
+// Récupère les infos de base (username, email, avatar...)
 async function loadUserProfile() {
   try {
     const token = AuthUtils.getAuthToken();
@@ -430,6 +449,8 @@ async function loadUserProfile() {
   }
 }
 
+// Chargement des statistiques détaillées
+// Récupère les stats globales et par mode de jeu
 async function loadUserStats() {
   try {
     const token = AuthUtils.getAuthToken();
@@ -459,6 +480,8 @@ async function loadUserStats() {
   }
 }
 
+// Affichage des données utilisateur dans l'interface
+// Met à jour tous les champs du profil
 function displayUserData(userData) {
   try {
     const elements = {
@@ -513,6 +536,8 @@ function displayUserData(userData) {
   }
 }
 
+// Affichage des statistiques dans l'interface
+// Met à jour les compteurs globaux et par mode
 function displayStats(stats) {
   try {
     // Vérifier si les stats sont définies
@@ -578,6 +603,8 @@ function displayStats(stats) {
   }
 }
 
+// Affichage de l'historique des parties
+// Liste des 10 dernières parties avec icônes par mode
 function displayRecentGames(recentGames) {
   const container = document.getElementById("recentGames");
   if (!container) return;
@@ -641,6 +668,8 @@ function displayRecentGames(recentGames) {
   });
 }
 
+// Mise à jour des infos de profil
+// Gère la mise à jour du username, email et mot de passe
 async function updateProfile() {
   const formData = {
     username: document.getElementById("editUsername").value,
@@ -692,6 +721,8 @@ async function updateProfile() {
   }
 }
 
+// Système de notification avec auto-hide
+// Types: success, error, info
 function showNotification(message, type = "success") {
   const notification = document.getElementById("notification");
   const messageEl = document.getElementById("notificationMessage");
@@ -718,6 +749,9 @@ function showNotification(message, type = "success") {
     notification.classList.remove("show");
   }, 3000);
 }
+
+// Gestion de la visibilité des mots de passe
+// Toggle entre affichage en clair et masqué
 function togglePasswordVisibility(event) {
   const icon = event.target;
   const input = icon.parentElement.querySelector("input");

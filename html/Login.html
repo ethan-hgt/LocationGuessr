@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
+    <!-- Import des styles et scripts -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Connexion / Inscription</title>
@@ -15,6 +16,7 @@
     <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico" />
   </head>
   <body>
+    <!-- Header avec navigation -->
     <header>
       <div class="left-header">
         <a href="accueil.html">
@@ -29,9 +31,11 @@
       </div>
     </header>
 
+    <!-- Container principal avec formulaires -->
     <div class="main-container">
       <div class="auth-container">
         <div class="form-container">
+          <!-- Navigation entre connexion/inscription -->
           <div class="tab-container">
             <div class="tab-slider"></div>
             <button
@@ -50,7 +54,9 @@
             </button>
           </div>
 
+          <!-- Formulaire de connexion -->
           <form id="connexionForm" class="auth-form">
+            <!-- Champs de connexion -->
             <div class="input-container">
               <box-icon name="user" class="input-icon" color="white"></box-icon>
               <input
@@ -77,6 +83,7 @@
               ></box-icon>
             </div>
 
+            <!-- Options (Se souvenir / Mot de passe oublié) -->
             <div class="options-container">
               <div class="remember-me">
                 <input type="checkbox" id="remember" />
@@ -87,6 +94,7 @@
               </p>
             </div>
 
+            <!-- Bouton et lien d'inscription -->
             <button type="submit" class="submit-button">Connexion</button>
 
             <div class="register-text">
@@ -99,7 +107,9 @@
             </div>
           </form>
 
+          <!-- Formulaire d'inscription -->
           <form id="inscriptionForm" class="auth-form" style="display: none">
+            <!-- Champs d'inscription -->
             <div class="input-container">
               <box-icon name="user" class="input-icon" color="white"></box-icon>
               <input
@@ -160,6 +170,7 @@
       </div>
     </div>
 
+    <!-- Popup de notification -->
     <div id="customPopup" class="custom-popup">
       <div class="popup-content">
         <box-icon

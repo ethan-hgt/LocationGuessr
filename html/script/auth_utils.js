@@ -1,4 +1,8 @@
+// Classe utilitaire pour gérer l'authentification
+// Gère les tokens JWT et le stockage des données utilisateur
 class AuthUtils {
+  // Récupère le token d'auth du storage
+  // Vérifie aussi si le token n'est pas expiré
   static getAuthToken() {
     const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
     if (token) {
@@ -17,6 +21,7 @@ class AuthUtils {
     return null;
   }
 
+  // Helpers pour récupérer les infos utilisateur
   static getUserId() {
     return localStorage.getItem("userId") || sessionStorage.getItem("userId");
   }
@@ -25,6 +30,7 @@ class AuthUtils {
     return localStorage.getItem("userFirstName") || sessionStorage.getItem("userFirstName");
   }
 
+  // Vérifie si le token est toujours valide côté serveur
   static async verifyToken() {
     const token = this.getAuthToken();
     if (!token) return false;
@@ -51,6 +57,7 @@ class AuthUtils {
     }
   }
 
+  // Nettoie toutes les données d'auth du storage
   static clearAuth() {
     [localStorage, sessionStorage].forEach(storage => {
       storage.removeItem("userToken");
@@ -60,11 +67,9 @@ class AuthUtils {
     });
   }
 
-  static isAuthenticated() {
-    const token = this.getAuthToken();
-    return token !== null;
-  }
-
+  // Stocke les données d'auth dans le bon storage
+  // rememberMe = true -> localStorage
+  // rememberMe = false -> sessionStorage
   static storeAuth(data, rememberMe = false) {
     this.clearAuth();
     const storage = rememberMe ? localStorage : sessionStorage;
@@ -77,6 +82,7 @@ class AuthUtils {
     }
   }
 
+  // Met à jour les infos utilisateur dans le storage
   static updateUserInfo(userData) {
     const storage = localStorage.getItem("userToken") ? localStorage : sessionStorage;
     if (storage && userData.username) {
@@ -84,6 +90,7 @@ class AuthUtils {
     }
   }
 
+  // Rafraîchit automatiquement le token avant expiration
   static async refreshTokenIfNeeded() {
     const token = this.getAuthToken();
     if (!token) return false;

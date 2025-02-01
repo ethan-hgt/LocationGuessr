@@ -1,5 +1,7 @@
+// Mode de jeu actuel pour le classement
 let currentMode = "france";
 
+// Initialisation de la page
 document.addEventListener("DOMContentLoaded", function () {
   updateHeader();
   initModeSelector();
@@ -57,6 +59,7 @@ async function loadUserPosition() {
   }
 }
 
+// Initialise les boutons de sélection de mode
 function initModeSelector() {
   document.querySelectorAll(".mode-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -74,6 +77,7 @@ function initModeSelector() {
   });
 }
 
+// Charge et affiche le classement pour le mode sélectionné
 async function loadLeaderboard() {
   try {
     const response = await fetch(
@@ -155,6 +159,7 @@ async function loadLeaderboard() {
   }
 }
 
+// Récupère l'icône correspondant à chaque mode de jeu 
 function getModeIcon(mode) {
   const icons = {
     france: "/img/francec.png",
@@ -167,16 +172,17 @@ function getModeIcon(mode) {
   return icons[mode] || icons["france"];
 }
 
-function updateTotalPlayers(total) {
-  let totalElement = document.querySelector(".total-players");
-  if (!totalElement) {
-    totalElement = document.createElement("div");
-    totalElement.className = "total-players";
-    document.querySelector(".leaderboard-content").appendChild(totalElement);
-  }
-  totalElement.textContent = `${total} ${total > 1 ? "joueurs" : "joueur"}`;
+// Formate les dates pour l'affichage
+function formatDate(dateString) {
+  if (!dateString) return "Jamais";
+  return new Date(dateString).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }
 
+// Style spécial pour les 3 premiers du classement
 function getRankClass(index) {
   switch (index) {
     case 0:
@@ -190,11 +196,12 @@ function getRankClass(index) {
   }
 }
 
-function formatDate(dateString) {
-  if (!dateString) return "Jamais";
-  return new Date(dateString).toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+function updateTotalPlayers(total) {
+  let totalElement = document.querySelector(".total-players");
+  if (!totalElement) {
+    totalElement = document.createElement("div");
+    totalElement.className = "total-players";
+    document.querySelector(".leaderboard-content").appendChild(totalElement);
+  }
+  totalElement.textContent = `${total} ${total > 1 ? "joueurs" : "joueur"}`;
 }

@@ -1,10 +1,13 @@
+// Configuration de multer pour les avatars
+// Gère l'upload des images de profil avec vérifications
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
 console.log("[Avatar Config] Initialisation du middleware uploadAvatar");
 
-// Configuration du stockage
+// Accepte que les images < 2MB
+// Formats supportés: JPG, PNG, WebP
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(

@@ -1,3 +1,5 @@
+// Configuration des différents modes de jeu
+// Définit les noms, icônes et paramètres de chaque mode
 const GAME_MODES = {
   france: {
     name: "France",
@@ -31,6 +33,7 @@ const GAME_MODES = {
   },
 };
 
+// Fonctions utilitaires pour la gestion des modes
 const validateGameMode = (mode) => {
   return GAME_MODES.hasOwnProperty(mode);
 };

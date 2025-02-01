@@ -10,9 +10,10 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Config de base
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "..")));
 
 // Routes statiques et API
 app.use("/img", (req, res, next) => {
@@ -60,9 +61,16 @@ app.get("/api/modes", (req, res) => {
   res.json(modes);
 });
 
+// Route pour servir l'application frontend
+app.get("/", (req, res) => {
+  res.redirect("/html/accueil.html");
+});
+
 // Connexion MongoDB avec configs optimisées
 mongoose
   .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     autoIndex: true,
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,

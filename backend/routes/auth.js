@@ -578,4 +578,84 @@ router.post("/confirm-reset-stats", auth, async (req, res) => {
   }
 });
 
+// Route pour rafraîchir le token JWT
+// Permet d'éviter les déconnexions fréquentes
+router.post("/refresh-token", async (req, res) => {
+  try {
+    // Récupérer le token depuis les headers
+    const authToken = req.header("Authorization")?.replace("Bearer ", "");
+    // Ou depuis le body si nécessaire
+    const { refreshToken } = req.body;
+
+    if (!authToken && !refreshToken) {
+      return res.status(400).json({ 
+        message: "Token de rafraîchissement ou token d'authentification manquant"
+      });
+    }
+
+    let userId;
+
+    // Si on a un token d'authentification, essayer de l'utiliser
+    if (authToken) {
+      try {
+        const decoded = jwt.verify(authToken, process.env.JWT_SECRET, {
+          ignoreExpiration: true // Important: accepter les tokens expirés
+        });
+        userId = decoded.userId;
+      } catch (error) {
+        if (error.name !== 'TokenExpiredError') {
+          // Si erreur autre que l'expiration, rejeter
+          return res.status(401).json({ 
+            message: "Token d'authentification invalide",
+            error: error.name
+          });
+        }
+        // Sinon, on continue avec le refresh token
+      }
+    }
+
+    // Si pas d'userId obtenu et qu'on a un refresh token, l'utiliser
+    if (!userId && refreshToken) {
+      try {
+        // Ici on pourrait implémenter une vraie logique de refresh token
+        // Pour l'instant on vérifie juste qu'il n'est pas vide
+        if (!refreshToken.trim()) {
+          return res.status(401).json({ message: "Refresh token invalide" });
+        }
+      } catch (err) {
+        return res.status(401).json({ message: "Refresh token invalide" });
+      }
+    }
+
+    // Trouver l'utilisateur
+    const user = userId ? await User.findById(userId) : null;
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Générer un nouveau token
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "24h", // Expiration standard
+    });
+
+    // Générer aussi un nouveau refresh token si nécessaire
+    // Dans une implémentation complète, vous stockeriez ce token dans la BDD
+    const newRefreshToken = refreshToken || Math.random().toString(36).substring(2);
+
+    res.json({
+      token,
+      refreshToken: newRefreshToken,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        stats: user.stats,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur refresh token:", error);
+    res.status(500).json({ message: "Erreur lors du rafraîchissement du token" });
+  }
+});
+
 module.exports = router;

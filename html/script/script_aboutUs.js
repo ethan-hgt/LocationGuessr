@@ -98,3 +98,14 @@ if (boutonAppelAction) {
     boutonAppelAction.style.transform = "scale(1)";
   });
 }
+
+function redirectBasedOnAuth() {
+  const token = AuthUtils.getAuthToken(); // Récupère le token, s'il existe
+  if (token) {
+    // L'utilisateur est connecté : redirige vers accueil.html
+    window.location.href = "accueil.html";
+  } else {
+    // L'utilisateur n'est pas connecté : redirige vers login.html
+    window.location.href = "login.html";
+  }
+}

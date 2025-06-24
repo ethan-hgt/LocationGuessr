@@ -1,0 +1,102 @@
+/* Points d'ancrage principaux */
+/* 
+ * Mobile: 320px - 480px
+ * Tablette: 481px - 768px
+ * Tablette paysage: 769px - 992px
+ * Desktop: 993px - 1200px
+ * Grand écran: 1201px et plus
+ */
+
+/* Variables globales */
+:root {
+  --mobile-padding: 15px;
+  --tablet-padding: 25px;
+  --desktop-padding: 40px;
+}
+
+/* Règles responsives globales */
+@media (max-width: 1200px) {
+  html {
+    font-size: 95%;
+  }
+}
+
+@media (max-width: 992px) {
+  html {
+    font-size: 90%;
+  }
+  
+  .container, 
+  .section-container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0 var(--tablet-padding);
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 85%;
+  }
+  
+  body {
+    padding-top: 50px;
+  }
+  
+  .container, 
+  .section-container {
+    width: 95%;
+    padding: 0 var(--mobile-padding);
+  }
+  
+  /* Règles générales pour les grilles et flex containers */
+  .grid-container {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .flex-container {
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 80%;
+  }
+  
+  body {
+    padding-top: 45px;
+  }
+  
+  h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.2rem !important;
+  }
+  
+  p, span, button, a {
+    font-size: 0.95rem !important;
+  }
+  
+  /* Marges et rembourrages adaptés */
+  .container, 
+  .section-container {
+    padding: 0 calc(var(--mobile-padding) - 5px);
+  }
+}
+
+/* Règles d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+} 

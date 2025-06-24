@@ -1,10 +1,9 @@
 footer {
   background-color: #222;
-  padding: 10px 20px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
   color: #fff;
   width: 100%;
   position: relative;
@@ -12,18 +11,17 @@ footer {
   left: 0;
   z-index: 1000;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .left-footer {
   display: flex;
   align-items: center;
-  white-space: nowrap;
-  gap: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .footer-link {
-  font-size: 16px;
+  font-size: 14px;
   color: #c0c0c0;
   text-decoration: none;
   background-color: transparent;
@@ -47,14 +45,13 @@ footer {
 }
 
 .right-footer {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
 }
 
 .right-footer .footer-link {
   transition: none;
+  font-size: 12px;
 }
 
 .right-footer .footer-link:hover {
@@ -62,31 +59,70 @@ footer {
   color: #c0c0c0;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
+  footer {
+    padding: 12px 15px;
+  }
+  
+  .left-footer {
+    gap: 15px;
+  }
+  
+  .footer-link {
+    font-size: 13px;
+  }
+  
+  .right-footer .footer-link {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
   footer {
     flex-direction: column;
-    align-items: flex-start;
-    height: auto;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 10px;
   }
 
-  .left-footer,
-  .right-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+  .left-footer {
+    justify-content: center;
     width: 100%;
-    position: static;
-    transform: none;
-    margin-bottom: 10px;
-  }
-
-  .footer-link {
-    font-size: 14px;
+    gap: 12px;
   }
 
   .right-footer {
-    align-items: flex-start;
-    right: 0;
-    top: auto;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .footer-link {
+    font-size: 12px;
+    padding: 4px;
+  }
+  
+  .right-footer .footer-link {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    padding: 10px 5px;
+  }
+  
+  .left-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .footer-link {
+    padding: 3px;
+    font-size: 11px;
+  }
+  
+  .right-footer .footer-link {
+    font-size: 9px;
   }
 }

@@ -24,7 +24,82 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialisation du header
   updateHeader();
+  
+  // Initialisation du menu mobile
+  initMobileMenu();
 });
+
+// Fonction pour initialiser et gérer le menu mobile
+function initMobileMenu() {
+  // Injection du menu burger et du conteneur mobile dans le header
+  const header = document.querySelector('header');
+  const leftHeader = document.querySelector('.left-header');
+  
+  if (!header || !leftHeader) return;
+  
+  // Création du bouton burger s'il n'existe pas déjà
+  if (!document.querySelector('.burger-menu')) {
+    const burgerButton = document.createElement('div');
+    burgerButton.className = 'burger-menu';
+    burgerButton.innerHTML = `
+      <span></span>
+      <span></span>
+      <span></span>
+    `;
+    leftHeader.appendChild(burgerButton);
+    
+    // Création du menu mobile s'il n'existe pas déjà
+    if (!document.querySelector('.mobile-menu')) {
+      const mobileMenu = document.createElement('div');
+      mobileMenu.className = 'mobile-menu';
+      
+      // Récupérer tous les liens du header sauf le premier (logo)
+      const headerLinks = document.querySelectorAll('.left-header .header-link');
+      headerLinks.forEach((link, index) => {
+        if (index > 0) { // Ignorer le premier lien (généralement le logo)
+          const clonedLink = link.cloneNode(true);
+          mobileMenu.appendChild(clonedLink);
+        }
+      });
+      
+      // Ajouter le lien de connexion au menu mobile si présent dans le header
+      const loginLink = document.querySelector('.right-header .header-link');
+      if (loginLink) {
+        const clonedLoginLink = loginLink.cloneNode(true);
+        mobileMenu.appendChild(clonedLoginLink);
+      }
+      
+      header.after(mobileMenu);
+    }
+    
+    // Gestion des événements pour le menu burger
+    burgerButton.addEventListener('click', toggleMobileMenu);
+  }
+}
+
+// Fonction pour basculer l'état du menu mobile
+function toggleMobileMenu() {
+  const burgerMenu = document.querySelector('.burger-menu');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  
+  if (!burgerMenu || !mobileMenu) return;
+  
+  burgerMenu.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+  
+  // Empêcher le défilement de la page lorsque le menu est ouvert
+  document.body.style.overflow = burgerMenu.classList.contains('active') ? 'hidden' : '';
+  
+  // Fermer le menu si on clique sur un lien
+  const mobileLinks = mobileMenu.querySelectorAll('.header-link');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      burgerMenu.classList.remove('active');
+      mobileMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  });
+}
 
 // État de chargement du header pour éviter les mises à jour multiples
 let isHeaderUpdating = false;
@@ -164,3 +239,4 @@ function toggleProfileMenu(event) {
 // Exporter pour l'utilisation globale
 window.updateHeader = updateHeader;
 window.toggleProfileMenu = toggleProfileMenu;
+window.toggleMobileMenu = toggleMobileMenu;

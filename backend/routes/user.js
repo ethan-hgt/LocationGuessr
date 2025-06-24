@@ -264,9 +264,14 @@ router.post("/stats", auth, async (req, res) => {
     user.stats.bestScore = Math.max(user.stats.bestScore || 0, score);
     user.stats.lastPlayedDate = new Date();
 
+    // Nettoyer l'historique existant pour corriger les anciens noms de modes
+    user.stats.recentGames = user.stats.recentGames.filter(game => {
+      return ['france', 'mondial', 'disneyland', 'nevers', 'versaille', 'dark'].includes(game.mode);
+    });
+
     // Mise à jour de l'historique récent
     user.stats.recentGames.unshift({
-      mode: modeInfo.name,
+      mode: mode, // Utiliser le mode original (clé courte) au lieu de modeInfo.name
       modeIcon: modeInfo.icon,
       modeEmoji: modeInfo.emoji,
       score,
@@ -440,6 +445,36 @@ router.get("/stats/details", auth, async (req, res) => {
     });
   } catch (err) {
     console.error("Erreur stats details:", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+// Route temporaire pour nettoyer les données corrompues
+router.post("/cleanup-recent-games", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    console.log("Avant nettoyage:", user.stats.recentGames.length, "jeux");
+    
+    // Nettoyer l'historique en gardant seulement les modes valides
+    const validModes = ['france', 'mondial', 'disneyland', 'nevers', 'versaille', 'dark'];
+    user.stats.recentGames = user.stats.recentGames.filter(game => {
+      return validModes.includes(game.mode);
+    });
+
+    console.log("Après nettoyage:", user.stats.recentGames.length, "jeux");
+
+    await user.save();
+
+    res.json({
+      message: "Historique nettoyé avec succès",
+      recentGamesCount: user.stats.recentGames.length
+    });
+  } catch (err) {
+    console.error("Erreur lors du nettoyage:", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });

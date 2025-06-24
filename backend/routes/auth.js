@@ -98,14 +98,14 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Connexion des joueurs
+// Connexion des joueurs simplifiée
 // Vérifie les identifiants et renvoie le token JWT
 router.post("/login", async (req, res) => {
   try {
-    const { username, password, rememberMe } = req.body;
+    const { username, password } = req.body;
 
-    // Trouver l'utilisateur
-    const user = await User.findOne({ username });
+    // Trouver l'utilisateur et inclure le mot de passe
+    const user = await User.findOne({ username }).select('+password');
     if (!user) {
       console.log(
         `Tentative de connexion échouée: utilisateur ${username} non trouvé`
@@ -141,10 +141,9 @@ router.post("/login", async (req, res) => {
       await user.save();
     }
 
-    // Créer le token JWT
-    const expiresIn = rememberMe ? "7d" : "24h";
+    // Créer le token JWT avec durée fixe de 24h
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn,
+      expiresIn: "24h",
     });
 
     console.log(`Connexion réussie: ${username}`);
@@ -297,7 +296,7 @@ router.post("/forgot-password", validateEmail, async (req, res) => {
 router.post("/change-password", auth, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId).select('+password');
 
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -369,7 +368,7 @@ router.post("/reset-password", async (req, res) => {
       email,
       resetPasswordCode: code,
       resetPasswordExpires: { $gt: Date.now() },
-    });
+    }).select('+password');
 
     if (!user) {
       return res.status(400).json({ message: "Code invalide ou expiré." });

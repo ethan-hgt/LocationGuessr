@@ -3,7 +3,7 @@ let currentMode = "france";
 
 // Initialisation de la page
 document.addEventListener("DOMContentLoaded", function () {
-  updateHeader();
+  updateHeaderDisplay();
   initModeSelector();
   loadLeaderboard();
   if (AuthUtils.getAuthToken()) {

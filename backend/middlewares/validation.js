@@ -40,7 +40,7 @@ const validateRegistration = [
   handleValidationErrors
 ];
 
-// Validation pour la connexion
+// Validation simplifiée pour la connexion
 const validateLogin = [
   body('username')
     .trim()

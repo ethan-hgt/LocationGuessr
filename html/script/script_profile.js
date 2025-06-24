@@ -11,7 +11,7 @@ const COOLDOWN_TIME = 60000; // Cooldown de 1 minute entre les requêtes
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     console.log("Début chargement profil");
-    await updateHeader();
+    updateHeaderDisplay();
 
     const token = AuthUtils.getAuthToken();
     if (!token) {

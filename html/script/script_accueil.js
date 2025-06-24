@@ -24,10 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Ajoute un écouteur d'événement au clic sur le bouton "Jouer"
     document.getElementById("playButton").addEventListener("click", function () {
-        const userFirstName = localStorage.getItem("userFirstName");
-
-        // Vérifie si le prénom de l'utilisateur est stocké dans le localStorage
-        if (userFirstName) {
+        // Utilise AuthUtils pour vérifier l'authentification
+        if (AuthUtils.isLoggedIn()) {
             window.location.href = "play.html";
         } else {
             popup.classList.add("show");

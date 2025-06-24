@@ -68,9 +68,7 @@ app.get("/", (req, res) => {
 
 // Connexion MongoDB avec configs optimisées
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/locationguessr-test', {
     autoIndex: true,
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
@@ -144,8 +142,14 @@ process.on("SIGTERM", () => {
     });
 });
 
-app.listen(port, () => {
-  console.log(`[Server] Démarré sur le port ${port}`);
-  console.log("[Server] Chemins statiques configurés:");
-  console.log("  - Images:", path.join(__dirname, "../img"));
-});
+// Exporter l'app pour les tests
+module.exports = app;
+
+// Démarrer le serveur seulement si ce fichier est exécuté directement
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`[Server] Démarré sur le port ${port}`);
+    console.log("[Server] Chemins statiques configurés:");
+    console.log("  - Images:", path.join(__dirname, "../img"));
+  });
+}

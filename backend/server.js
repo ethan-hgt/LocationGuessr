@@ -5,14 +5,75 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 const multer = require("multer");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const compression = require("compression");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Middleware de compression pour optimiser les performances
+app.use(compression());
+
+// Configuration de sécurité adaptée au développement
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://api.mapbox.com", "https://unpkg.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://api.mapbox.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://maps.googleapis.com", "https://api.mapbox.com", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://lottie.host"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'", "https://api.mapbox.com", "https://maps.googleapis.com"],
+      frameSrc: ["'self'", "https://maps.googleapis.com"],
+      workerSrc: ["'self'", "blob:"],
+      childSrc: ["'self'", "blob:"]
+    }
+  } : false, // Désactiver CSP en développement pour éviter les blocages HTTP/HTTPS
+  crossOriginEmbedderPolicy: false, // Nécessaire pour Google Street View
+  crossOriginOpenerPolicy: false
+}));
+
+// Rate limiting adapté en local
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // 1000 requêtes en dev, 100 en prod
+  message: {
+    error: "Trop de requêtes, veuillez réessayer plus tard.",
+    retryAfter: "15 minutes"
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+// Rate limiting spécial pour l'authentification
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 5 : 50, // 50 tentatives en dev, 5 en prod
+  message: {
+    error: "Trop de tentatives de connexion, veuillez réessayer plus tard."
+  },
+  skipSuccessfulRequests: true,
+});
+
+// Sanitisation des données MongoDB (protection injection NoSQL)
+app.use(mongoSanitize());
+
+// CORS configuré pour le développement local
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://votre-domaine.com'] 
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware standard
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, "..")));
 
 // Routes statiques et API
@@ -21,8 +82,8 @@ app.use("/img", (req, res, next) => {
   express.static(path.join(__dirname, "../img"))(req, res, next);
 });
 
-// Routes
-app.use("/api/auth", require("./routes/auth"));
+// Routes avec protection spécifique
+app.use("/api/auth", authLimiter, require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
 
 // Route de test

@@ -23,10 +23,12 @@ describe('Security Headers Tests', () => {
   test('should have security headers enabled', async () => {
     const response = await request(app).get('/test');
     
+    // Vérifier les headers de sécurité ajoutés par Helmet
     expect(response.headers).toHaveProperty('x-frame-options');
     expect(response.headers).toHaveProperty('x-content-type-options');
-    expect(response.headers).toHaveProperty('x-xss-protection');
+    expect(response.headers).toHaveProperty('x-dns-prefetch-control');
     expect(response.headers).toHaveProperty('referrer-policy');
+    expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
   });
 
   test('should have proper CORS configuration', async () => {

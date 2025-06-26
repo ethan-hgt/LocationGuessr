@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <!-- Import des styles et scripts -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Connexion / Inscription</title>
@@ -17,7 +16,6 @@
     <link rel="icon" type="image/vnd.icon" href="/img/favicon.ico" />
   </head>
   <body>
-    <!-- Header avec navigation -->
     <header>
       <div class="left-header">
         <a href="accueil.html">
@@ -32,7 +30,6 @@
       </div>
     </header>
 
-    <!-- Menu mobile -->
     <div class="mobile-menu">
       <a href="play.html" class="header-link">Jouer</a>
       <a href="leaderboard.html" class="header-link">Classement</a>
@@ -40,11 +37,9 @@
       <a href="login.html" class="header-link active">Connexion</a>
     </div>
 
-    <!-- Container principal avec formulaires -->
     <div class="main-container">
       <div class="auth-container">
         <div class="form-container">
-          <!-- Navigation entre connexion/inscription -->
           <div class="tab-container">
             <div class="tab-slider"></div>
             <button
@@ -63,9 +58,7 @@
             </button>
           </div>
 
-          <!-- Formulaire de connexion -->
           <form id="connexionForm" class="auth-form">
-            <!-- Champs de connexion -->
             <div class="input-container">
               <box-icon name="user" class="input-icon" color="white"></box-icon>
               <input
@@ -92,14 +85,12 @@
               ></box-icon>
             </div>
 
-            <!-- Options (Mot de passe oublié) -->
             <div class="options-container">
               <p class="forgot-password" onclick="showPasswordResetPopup()">
                 Mot de passe oublié ?
               </p>
             </div>
 
-            <!-- Bouton et lien d'inscription -->
             <button type="submit" class="submit-button">Connexion</button>
 
             <div class="register-text">
@@ -112,9 +103,7 @@
             </div>
           </form>
 
-          <!-- Formulaire d'inscription -->
           <form id="inscriptionForm" class="auth-form" style="display: none">
-            <!-- Champs d'inscription -->
             <div class="input-container">
               <box-icon name="user" class="input-icon" color="white"></box-icon>
               <input
@@ -175,7 +164,6 @@
       </div>
     </div>
 
-    <!-- Popup de notification -->
     <div id="customPopup" class="custom-popup">
       <div class="popup-content">
         <box-icon

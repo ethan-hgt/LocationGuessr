@@ -35,12 +35,9 @@
         <a href="aboutUs.html" class="header-link">À propos</a>
     </div>
 
-    <!-- Container principal du profil -->
     <main class="profile-container">
         <div class="profile-content">
-            <!-- Section header du profil avec avatar et stats globales -->
             <div class="profile-header">
-                <!-- Avatar avec overlay pour upload -->
                 <div class="avatar-container">
                     <img id="profileAvatar" src="/img/default-avatar.webp" alt="Photo de profil" class="profile-avatar">
                     <div class="avatar-overlay">
@@ -51,7 +48,6 @@
                 <h2 id="username">Chargement...</h2>
                 <p class="join-date">Membre depuis : <span id="joinDate">Chargement...</span></p>
                 
-                <!-- Statistiques globales -->
                 <div class="stats-overview">
                     <div class="stat-card">
                         <i class='bx bx-game'></i>
@@ -71,16 +67,13 @@
                 </div>
             </div>
 
-            <!-- Navigation par onglets -->
             <div class="tab-container">
                 <div class="tab-slider"></div>
                 <button class="tab-button active" data-tab="stats">Statistiques</button>
                 <button class="tab-button" data-tab="security">Sécurité</button>
             </div>
 
-            <!-- Onglet Statistiques -->
             <div id="stats-content" class="tab-content active">
-                <!-- Stats détaillées par mode -->
                 <div class="detailed-stats">
                     <div class="stats-section">
                         <h3>Statistiques par mode</h3>
@@ -141,7 +134,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Historique des parties -->
                     <div class="stats-section">
                         <h3>Historique récent</h3>
                         <div class="recent-games" id="recentGames"></div>
@@ -149,9 +141,7 @@
                 </div>
             </div>
 
-            <!-- Onglet Sécurité -->
             <div id="security-content" class="tab-content">
-                <!-- Formulaire de modification profil -->
                 <div class="form-section">
                     <h3>Informations du compte</h3>
                     <div class="input-container">
@@ -172,7 +162,6 @@
                     </button>
                 </div>
 
-                <!-- Zone de danger (suppression, reset) -->
                 <div class="danger-zone">
                     <h3>Zone dangereuse</h3>
                     <button class="danger-button" onclick="showModal('resetStatsModal')">
@@ -192,8 +181,6 @@
         </div>
     </main>
 
-    <!-- Modales de confirmation -->
-    <!-- Changement mot de passe -->
     <div class="custom-popup" id="changePasswordModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('changePasswordModal')">
@@ -248,7 +235,6 @@
         </div>
     </div>
 
-    <!-- Suppression compte -->
     <div class="custom-popup" id="deleteAccountModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('deleteAccountModal')">
@@ -265,8 +251,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Reset stats -->
+        
     <div class="custom-popup" id="resetStatsModal">
         <div class="popup-content">
             <button class="close-modal" onclick="closeModal('resetStatsModal')">

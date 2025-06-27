@@ -19,10 +19,10 @@ async function loadUserPosition() {
     const userId = AuthUtils.getUserId();
     const [rankResponse, statsResponse] = await Promise.all([
       fetch(
-        `http://localhost:3000/api/user/rank/${userId}?mode=${currentMode}`
+        `${CONFIG.API_BASE_URL}/user/rank/${userId}?mode=${currentMode}`
       ),
       fetch(
-        `http://localhost:3000/api/user/stats/details?mode=${currentMode}`,
+        `${CONFIG.API_BASE_URL}/user/stats/details?mode=${currentMode}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -81,7 +81,7 @@ function initModeSelector() {
 async function loadLeaderboard() {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/user/leaderboard?mode=${currentMode}`
+      `${CONFIG.API_BASE_URL}/user/leaderboard?mode=${currentMode}`
     );
     if (!response.ok) throw new Error("Erreur de chargement du leaderboard");
 

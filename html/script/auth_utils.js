@@ -1,7 +1,9 @@
 // Classe utilitaire simplifiée pour gérer l'authentification
 // Gestion simple des tokens JWT avec sessionStorage uniquement
 class AuthUtils {
-  static API_BASE_URL = "http://localhost:3000/api";
+  static get API_BASE_URL() {
+    return window.CONFIG ? window.CONFIG.API_BASE_URL : "http://localhost:3000/api";
+  }
 
   // Récupère le token d'auth du sessionStorage uniquement
   static getAuthToken() {

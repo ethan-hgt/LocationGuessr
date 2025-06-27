@@ -50,7 +50,7 @@ async function saveScore(finalScore) {
   console.log("Sauvegarde du score pour le mode:", normalizedMode);
 
   try {
-    const response = await fetch("http://localhost:3000/api/user/stats", {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/user/stats`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +95,7 @@ async function initialize() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/user/profile", {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

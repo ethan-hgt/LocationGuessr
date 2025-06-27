@@ -21,7 +21,7 @@ async function updateHeaderDisplay() {
     let avatarSrc = "/img/default-avatar.webp";
     
     try {
-      const response = await fetch("http://localhost:3000/api/user/profile", {
+      const response = await fetch(`${CONFIG.API_BASE_URL}/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

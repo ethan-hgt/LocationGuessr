@@ -140,7 +140,7 @@ async function handleConnexionSubmit(event) {
 
   try {
     console.log("Tentative de connexion...");
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+          const response = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -208,7 +208,7 @@ async function handleInscriptionSubmit(event) {
 
   try {
     console.log("Tentative d'inscription...");
-    const response = await fetch("http://localhost:3000/api/auth/register", {
+          const response = await fetch(`${CONFIG.API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -258,7 +258,7 @@ async function handleForgotPassword(button) {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/forgot-password",
+              `${CONFIG.API_BASE_URL}/auth/forgot-password`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -368,7 +368,7 @@ async function verifyCode() {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/verify-reset-code",
+              `${CONFIG.API_BASE_URL}/auth/verify-reset-code`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -432,7 +432,7 @@ async function resetPassword() {
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/auth/reset-password",
+              `${CONFIG.API_BASE_URL}/auth/reset-password`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

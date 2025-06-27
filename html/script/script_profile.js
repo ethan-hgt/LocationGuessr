@@ -1,5 +1,5 @@
 // Configuration de l'API et variables globales
-const API_URL = CONFIG ? CONFIG.API_BASE_URL : "http://localhost:3000/api";
+const API_URL = window.CONFIG ? window.CONFIG.API_BASE_URL : "http://localhost:3000/api";
 let userStats = null;
 let notificationTimeout;
 let isRequestInProgress = false;

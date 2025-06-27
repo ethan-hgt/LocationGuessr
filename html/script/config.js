@@ -2,14 +2,15 @@ const CONFIG = {
   // Détection de l'environnement
   getApiUrl() {
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
     
     // Si on est en local
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:3000';
     }
     
-    // Si on est en production, utiliser le même domaine
-    return window.location.origin;
+    // En production : utiliser le même domaine que le front
+    return `${protocol}//${hostname}`;
   },
 
   // URL de base de l'API

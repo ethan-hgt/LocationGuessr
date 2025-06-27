@@ -62,11 +62,24 @@ const authLimiter = rateLimit({
 // Sanitisation des données MongoDB (protection injection NoSQL)
 app.use(mongoSanitize());
 
-// CORS configuré pour le développement local
+// CORS configuré pour la production et le développement
+const corsOrigins = process.env.NODE_ENV === 'production' 
+  ? [
+      'https://locationguessr.fr', 
+      'https://www.locationguessr.fr',
+      'http://locationguessr.fr',
+      'http://www.locationguessr.fr'
+    ] 
+  : [
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000', 
+      'http://localhost:5500',
+      'http://localhost:8080',
+      'http://127.0.0.1:5500'
+    ];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://locationguessr.fr', 'https://www.locationguessr.fr'] 
-    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -74,6 +87,8 @@ app.use(cors({
 
 // Middleware standard
 app.use(express.json({ limit: '10mb' }));
+
+// Servir les fichiers statiques depuis la racine du projet
 app.use(express.static(path.join(__dirname, "..")));
 
 // Routes statiques et API
@@ -122,10 +137,39 @@ app.get("/api/modes", (req, res) => {
   res.json(modes);
 });
 
-// Route pour servir l'application frontend
+// Route pour servir l'application frontend - CORRIGÉ pour la production
 app.get("/", (req, res) => {
-  res.redirect("/html/accueil.html");
+  if (process.env.NODE_ENV === 'production') {
+    // En production, servir directement accueil.html depuis la racine
+    res.sendFile(path.join(__dirname, "../html/accueil.html"));
+  } else {
+    // En développement, garder la redirection
+    res.redirect("/html/accueil.html");
+  }
 });
+
+// Routes de fallback pour les pages principales en production
+if (process.env.NODE_ENV === 'production') {
+  app.get("/accueil", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/accueil.html"));
+  });
+  
+  app.get("/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/Login.html"));
+  });
+  
+  app.get("/play", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/play.html"));
+  });
+  
+  app.get("/leaderboard", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/Leaderboard.html"));
+  });
+  
+  app.get("/profile", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/profile.html"));
+  });
+}
 
 // Connexion MongoDB avec configs optimisées
 mongoose
@@ -185,7 +229,12 @@ app.use((err, req, res, next) => {
 // Route 404
 app.use((req, res) => {
   console.log("[404] Route non trouvée:", req.url);
-  res.status(404).json({ message: "Route non trouvée" });
+  if (process.env.NODE_ENV === 'production') {
+    // En production, rediriger vers la page d'accueil pour les routes inconnues
+    res.redirect("/");
+  } else {
+    res.status(404).json({ message: "Route non trouvée" });
+  }
 });
 
 // Gestion de la fermeture
@@ -198,19 +247,20 @@ process.on("SIGTERM", () => {
       process.exit(0);
     })
     .catch((err) => {
-      console.error("[MongoDB] Erreur lors de la fermeture:", err);
+      console.error("[MongoDB] Erreur fermeture:", err);
       process.exit(1);
     });
 });
 
-// Exporter l'app pour les tests
-module.exports = app;
+// Démarrage du serveur
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`[Server] Serveur démarré sur le port ${port}`);
+  console.log(`[Server] Mode: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`[Server] CORS autorisé pour:`, corsOrigins);
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`[Server] ✅ Production ready - API accessible sur https://locationguessr.fr/api`);
+  }
+});
 
-// Démarrer le serveur seulement si ce fichier est exécuté directement
-if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`[Server] Démarré sur le port ${port}`);
-    console.log("[Server] Chemins statiques configurés:");
-    console.log("  - Images:", path.join(__dirname, "../img"));
-  });
-}
+// Export pour les tests
+module.exports = app;

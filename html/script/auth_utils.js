@@ -1,7 +1,7 @@
 // Classe utilitaire simplifiée pour gérer l'authentification
 // Gestion simple des tokens JWT avec sessionStorage uniquement
 class AuthUtils {
-  static get API_BASE_URL() {
+  static getApiUrl() {
     return window.CONFIG ? window.CONFIG.API_BASE_URL : "http://localhost:3000/api";
   }
 
@@ -47,7 +47,7 @@ class AuthUtils {
     if (!token) return false;
 
     try {
-      const response = await fetch(`${this.API_BASE_URL}/user/profile`, {
+      const response = await fetch(`${this.getApiUrl()}/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

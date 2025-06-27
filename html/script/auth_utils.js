@@ -101,5 +101,5 @@ const clearAuth = () => AuthUtils.clearAuth();
 // Fonction de déconnexion simple
 function logout() {
   AuthUtils.clearAuth();
-  window.location.href = "/html/accueil.html";
+  window.location.href = "/html//";
 }

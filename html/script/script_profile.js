@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = AuthUtils.getAuthToken();
     if (!token) {
       console.log("Pas de token, redirection vers login");
-      window.location.href = "login.html";
+      window.location.href = "/login";
       return;
     }
 
@@ -257,7 +257,7 @@ async function verifyCode() {
     if (currentAction === "delete-account") {
       AuthUtils.clearAuth();
       showNotification("Compte supprimé avec succès", "success");
-      setTimeout(() => (window.location.href = "login.html"), 2000);
+      setTimeout(() => (window.location.href = "/login"), 2000);
     } else {
       await loadUserStats();
       showNotification("Statistiques réinitialisées avec succès", "success");
@@ -339,7 +339,7 @@ async function verifyChangePasswordCode() {
 
 function logout() {
   AuthUtils.clearAuth();
-  window.location.href = "login.html";
+  window.location.href = "/login";
 }
 
 // Navigation entre les onglets

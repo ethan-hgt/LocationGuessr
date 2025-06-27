@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Ajoute un écouteur d'événement au clic sur le bouton de connexion
     loginBtn.addEventListener("click", function () {
-        window.location.href = "login.html";
+        window.location.href = "/login";
     });
 
     // Crée un observateur d'intersection

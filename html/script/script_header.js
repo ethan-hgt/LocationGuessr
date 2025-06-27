@@ -54,7 +54,7 @@ async function updateHeaderDisplay() {
       sessionStorage.removeItem("userId");
     }
     
-    rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
+    rightHeader.innerHTML = `<a href="/login" class="header-link">Connexion</a>`;
   }
 }
 
@@ -95,7 +95,7 @@ function logout() {
   updateHeaderDisplay();
   
   // Rediriger vers l'accueil
-  window.location.href = "accueil.html";
+  window.location.href = "/";
 }
 
 // Exposer les fonctions globalement

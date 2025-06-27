@@ -41,7 +41,7 @@ function normalizeGameMode(mode) {
 async function saveScore(finalScore) {
   const token = AuthUtils.getAuthToken();
   if (!token) {
-    window.location.href = "login.html";
+    window.location.href = "/login";
     return;
   }
 
@@ -90,7 +90,7 @@ async function initialize() {
   console.log("Token trouvé:", token ? "oui" : "non");
 
   if (!token) {
-    window.location.href = "login.html";
+    window.location.href = "/login";
     return;
   }
 
@@ -122,7 +122,7 @@ async function initialize() {
   } catch (error) {
     console.error("Erreur d'authentification:", error);
     AuthUtils.clearAuth(); // nettoyer les tokens invalides
-    window.location.href = "login.html";
+    window.location.href = "/login";
   }
 }
 
@@ -646,7 +646,7 @@ async function endGame() {
   const accueilButton = document.createElement("button");
   accueilButton.textContent = "Accueil";
   accueilButton.classList.add("button-return");
-  accueilButton.onclick = () => (window.location.href = "accueil.html");
+  accueilButton.onclick = () => (window.location.href = "/");
 
   const restartIcon = document.createElement("i");
   restartIcon.classList.add("bx", "bx-refresh", "restart-icon");
@@ -782,7 +782,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("userProgress");
     localStorage.removeItem("currentRound");
     localStorage.removeItem("totalScore");
-    window.location.href = "accueil.html";
+    window.location.href = "/";
   });
 
   document.getElementById("confirmNo").addEventListener("click", () => {

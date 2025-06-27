@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("Initialisation de la page de login");
   updateHeader();
 
-  if (window.location.pathname.includes("login.html")) {
+  if (window.location.pathname.includes("/login")) {
     const inscriptionForm = document.getElementById("inscriptionForm");
     const connexionForm = document.getElementById("connexionForm");
     const forgotPasswordLink = document.querySelector(".forgot-password");
@@ -106,7 +106,7 @@ function showPopup(title, message, type = "success", redirect = false) {
   setTimeout(() => {
     closePopup();
     if (redirect && type === "success") {
-      window.location.href = "accueil.html";
+      window.location.href = "/";
     }
   }, timeout);
 }
@@ -162,7 +162,7 @@ async function handleConnexionSubmit(event) {
     showPopup("Bienvenue !", `Content de vous revoir, ${data.user.username} !`, "success", true);
 
     setTimeout(() => {
-      window.location.href = "accueil.html";
+      window.location.href = "/";
     }, 2000);
   } catch (err) {
     console.error("Erreur connexion:", err);
@@ -231,7 +231,7 @@ async function handleInscriptionSubmit(event) {
     showPopup("Bienvenue !", "Inscription réussie !", "success", true);
 
     setTimeout(() => {
-      window.location.href = "accueil.html";
+      window.location.href = "/";
     }, 2000);
   } catch (err) {
     console.error("Erreur inscription:", err);
@@ -522,7 +522,7 @@ async function updateHeader() {
         </div>
       `;
     } else {
-      rightHeader.innerHTML = `<a href="login.html" class="header-link">Connexion</a>`;
+      rightHeader.innerHTML = `<a href="/login" class="header-link">Connexion</a>`;
     }
   } catch (error) {
     console.error("Erreur dans updateHeader:", error);

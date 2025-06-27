@@ -1,0 +1,24 @@
+{
+  "name": "locationguessr",
+  "version": "1.0.0",
+  "description": "Jeu de géolocalisation - LocationGuessr",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm install && node server.js",
+    "dev": "cd backend && npm run dev",
+    "build": "cd backend && npm install",
+    "install-backend": "cd backend && npm install",
+    "heroku-postbuild": "cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": ["geolocation", "game", "geography"],
+  "author": "ethan-hgt",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethan-hgt/LocationGuessr.git"
+  }
+} 

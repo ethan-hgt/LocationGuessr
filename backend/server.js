@@ -158,6 +158,14 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, "../html/Login.html"));
   });
   
+  app.get("/login.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/Login.html"));
+  });
+  
+  app.get("/connexion", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/Login.html"));
+  });
+  
   app.get("/play", (req, res) => {
     res.sendFile(path.join(__dirname, "../html/play.html"));
   });
@@ -168,6 +176,28 @@ if (process.env.NODE_ENV === 'production') {
   
   app.get("/profile", (req, res) => {
     res.sendFile(path.join(__dirname, "../html/profile.html"));
+  });
+
+  // Routes avec .html pour compatibilité
+  app.get("/accueil.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/accueil.html"));
+  });
+  
+  app.get("/play.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/play.html"));
+  });
+  
+  app.get("/leaderboard.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/Leaderboard.html"));
+  });
+  
+  app.get("/profile.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/profile.html"));
+  });
+
+  // Route pour About Us
+  app.get("/about", (req, res) => {
+    res.sendFile(path.join(__dirname, "../html/aboutUs.html"));
   });
 }
 

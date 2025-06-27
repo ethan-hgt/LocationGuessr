@@ -102,10 +102,10 @@ if (boutonAppelAction) {
 function redirectBasedOnAuth() {
   const token = AuthUtils.getAuthToken(); // Récupère le token, s'il existe
   if (token) {
-    // L'utilisateur est connecté : redirige vers accueil.html
-    window.location.href = "accueil.html";
+    // L'utilisateur est connecté : redirige vers /
+    window.location.href = "/";
   } else {
-    // L'utilisateur n'est pas connecté : redirige vers login.html
-    window.location.href = "login.html";
+    // L'utilisateur n'est pas connecté : redirige vers /login
+    window.location.href = "/login";
   }
 }

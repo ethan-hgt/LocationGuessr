@@ -14,6 +14,9 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Configuration trust proxy pour Infomaniak
+app.set('trust proxy', true);
+
 // Middleware de compression pour optimiser les performances
 app.use(compression());
 
@@ -137,19 +140,14 @@ app.get("/api/modes", (req, res) => {
   res.json(modes);
 });
 
-// Route pour servir l'application frontend - CORRIGÉ pour la production
+// Route pour servir l'application frontend
 app.get("/", (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    // En production, servir directement accueil.html depuis la racine
-    res.sendFile(path.join(__dirname, "../html/accueil.html"));
-  } else {
-    // En développement, garder la redirection
-    res.redirect("/html/accueil.html");
-  }
+  // Toujours servir directement accueil.html (plus de redirection vers /html/)
+  res.sendFile(path.join(__dirname, "../html/accueil.html"));
 });
 
-// Routes de fallback pour les pages principales en production
-if (process.env.NODE_ENV === 'production') {
+// Routes de fallback pour les pages principales (toujours actives)
+// Retiré la condition NODE_ENV pour que ça marche aussi sur Infomaniak
   app.get("/accueil", (req, res) => {
     res.sendFile(path.join(__dirname, "../html/accueil.html"));
   });
@@ -199,7 +197,6 @@ if (process.env.NODE_ENV === 'production') {
   app.get("/about", (req, res) => {
     res.sendFile(path.join(__dirname, "../html/aboutUs.html"));
   });
-}
 
 // Connexion MongoDB avec configs optimisées
 mongoose
@@ -259,12 +256,8 @@ app.use((err, req, res, next) => {
 // Route 404
 app.use((req, res) => {
   console.log("[404] Route non trouvée:", req.url);
-  if (process.env.NODE_ENV === 'production') {
-    // En production, rediriger vers la page d'accueil pour les routes inconnues
-    res.redirect("/");
-  } else {
-    res.status(404).json({ message: "Route non trouvée" });
-  }
+  // Rediriger vers la page d'accueil pour les routes inconnues
+  res.redirect("/");
 });
 
 // Gestion de la fermeture

@@ -6,7 +6,21 @@
     <title>Jeu - LocationGuessr</title>
     <link rel="stylesheet" href="style/responsive.css" />
     <link rel="stylesheet" href="../html/style/style_jeu.css" />
-    <script src="script/config.js"></script>
+    <script>
+      const CONFIG = {
+        getApiUrl() {
+          const hostname = window.location.hostname;
+          if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:3000';
+          }
+          return window.location.origin;
+        },
+        get API_BASE_URL() {
+          return this.getApiUrl() + '/api';
+        }
+      };
+      window.CONFIG = CONFIG;
+    </script>
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
     <script src="script/script_login.js"></script>

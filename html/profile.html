@@ -8,7 +8,21 @@
     <link rel="stylesheet" href="style/responsive.css">
     <link rel="stylesheet" href="style/style_profile.css">
     <link rel="stylesheet" href="style/style_header.css">
-    <script src="script/config.js"></script>
+    <script>
+      const CONFIG = {
+        getApiUrl() {
+          const hostname = window.location.hostname;
+          if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:3000';
+          }
+          return window.location.origin;
+        },
+        get API_BASE_URL() {
+          return this.getApiUrl() + '/api';
+        }
+      };
+      window.CONFIG = CONFIG;
+    </script>
     <script src="script/auth_utils.js"></script>
     <script src="script/script_header.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">

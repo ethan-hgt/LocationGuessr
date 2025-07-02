@@ -1,12 +1,5 @@
 const winston = require('winston');
 const path = require('path');
-const fs = require('fs');
-
-// Créer le dossier logs s'il n'existe pas
-const logsDir = path.join(__dirname, '../logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
-}
 
 // Configuration des niveaux de log personnalisés
 const logLevels = {
@@ -66,18 +59,20 @@ const consoleFormat = winston.format.combine(
 // Configuration des transports
 const transports = [];
 
-// Transport console pour le développement ET la production
-transports.push(
-  new winston.transports.Console({
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-    format: consoleFormat,
-  })
-);
+// Transport console pour le développement
+if (process.env.NODE_ENV !== 'production') {
+  transports.push(
+    new winston.transports.Console({
+      level: 'debug',
+      format: consoleFormat,
+    })
+  );
+}
 
 // Transport fichier pour les erreurs
 transports.push(
   new winston.transports.File({
-    filename: path.join(logsDir, 'error.log'),
+    filename: path.join(__dirname, '../logs/error.log'),
     level: 'error',
     format: logFormat,
     maxsize: 5242880, // 5MB
@@ -88,7 +83,7 @@ transports.push(
 // Transport fichier pour tous les logs
 transports.push(
   new winston.transports.File({
-    filename: path.join(logsDir, 'combined.log'),
+    filename: path.join(__dirname, '../logs/combined.log'),
     format: logFormat,
     maxsize: 5242880, // 5MB
     maxFiles: 5,
@@ -98,7 +93,7 @@ transports.push(
 // Transport fichier pour les requêtes HTTP
 transports.push(
   new winston.transports.File({
-    filename: path.join(logsDir, 'http.log'),
+    filename: path.join(__dirname, '../logs/http.log'),
     level: 'http',
     format: logFormat,
     maxsize: 5242880, // 5MB
@@ -124,7 +119,7 @@ const metricsLogger = winston.createLogger({
   ),
   transports: [
     new winston.transports.File({
-      filename: path.join(logsDir, 'metrics.log'),
+      filename: path.join(__dirname, '../logs/metrics.log'),
       maxsize: 10485760, // 10MB
       maxFiles: 10,
     })
@@ -140,7 +135,7 @@ const performanceLogger = winston.createLogger({
   ),
   transports: [
     new winston.transports.File({
-      filename: path.join(logsDir, 'performance.log'),
+      filename: path.join(__dirname, '../logs/performance.log'),
       maxsize: 10485760, // 10MB
       maxFiles: 10,
     })
@@ -351,7 +346,12 @@ const httpLogger = (req, res, next) => {
 
 // Fonction pour nettoyer les anciens logs
 const cleanupLogs = () => {
+  const fs = require('fs');
+  const path = require('path');
+  const logsDir = path.join(__dirname, '../logs');
+  
   if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
     return;
   }
 

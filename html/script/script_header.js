@@ -102,3 +102,10 @@ function logout() {
 window.updateHeaderDisplay = updateHeaderDisplay;
 window.toggleProfileMenu = toggleProfileMenu;
 window.logout = logout;
+
+// S'assurer que les fonctions sont disponibles immédiatement
+if (typeof window !== 'undefined') {
+  window.updateHeaderDisplay = updateHeaderDisplay;
+  window.toggleProfileMenu = toggleProfileMenu;
+  window.logout = logout;
+}

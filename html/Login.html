@@ -60,14 +60,14 @@
             <button
               type="button"
               class="tab-button"
-              onclick="switchTab('connexion')"
+              id="connexionTab"
             >
               Connexion
             </button>
             <button
               type="button"
               class="tab-button"
-              onclick="switchTab('inscription')"
+              id="inscriptionTab"
             >
               Inscription
             </button>
@@ -96,7 +96,6 @@
                 id="toggleIconConnexion"
                 class="toggle-password"
                 color="white"
-                onclick="togglePassword()"
               ></box-icon>
             </div>
 
@@ -112,7 +111,7 @@
               <span class="register-text-content"
                 >Vous n'avez pas de compte ?</span
               >
-              <a href="#" onclick="switchTab('inscription'); return false;"
+              <a href="#" id="switchToInscription"
                 >S'inscrire</a
               >
             </div>
@@ -154,7 +153,6 @@
                 id="toggleIconInscription"
                 class="toggle-password"
                 color="white"
-                onclick="togglePasswordInscription()"
               ></box-icon>
             </div>
             <div class="input-container">
@@ -170,7 +168,6 @@
                 id="toggleConfirmIconInscription"
                 class="toggle-password"
                 color="white"
-                onclick="toggleConfirmPasswordInscription()"
               ></box-icon>
             </div>
             <button type="submit" class="submit-button">S'inscrire</button>

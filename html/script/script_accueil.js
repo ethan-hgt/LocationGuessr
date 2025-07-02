@@ -23,14 +23,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Ajoute un écouteur d'événement au clic sur le bouton "Jouer"
-    document.getElementById("playButton").addEventListener("click", function () {
-        // Utilise AuthUtils pour vérifier l'authentification
-        if (AuthUtils.isLoggedIn()) {
-            window.location.href = "play.html";
-        } else {
-            popup.classList.add("show");
-        }
-    });
+    const playButton = document.getElementById("playButton");
+    if (playButton) {
+        playButton.addEventListener("click", function () {
+            // Utilise AuthUtils pour vérifier l'authentification
+            if (AuthUtils.isLoggedIn()) {
+                window.location.href = "play.html";
+            } else {
+                popup.classList.add("show");
+            }
+        });
+    }
 
     // Ajoute un écouteur d'événement au clic sur le bouton de fermeture de la fenêtre contextuelle
     closePopup.addEventListener("click", function () {

@@ -7,6 +7,43 @@ document.addEventListener("DOMContentLoaded", function () {
     const inscriptionForm = document.getElementById("inscriptionForm");
     const connexionForm = document.getElementById("connexionForm");
     const forgotPasswordLink = document.querySelector(".forgot-password");
+    
+    // Ajout des event listeners pour les onglets
+    const connexionTab = document.getElementById("connexionTab");
+    const inscriptionTab = document.getElementById("inscriptionTab");
+    const switchToInscription = document.getElementById("switchToInscription");
+    
+    // Ajout des event listeners pour les toggles de mot de passe
+    const toggleIconConnexion = document.getElementById("toggleIconConnexion");
+    const toggleIconInscription = document.getElementById("toggleIconInscription");
+    const toggleConfirmIconInscription = document.getElementById("toggleConfirmIconInscription");
+
+    if (connexionTab) {
+      connexionTab.addEventListener("click", () => switchTab('connexion'));
+    }
+    
+    if (inscriptionTab) {
+      inscriptionTab.addEventListener("click", () => switchTab('inscription'));
+    }
+    
+    if (switchToInscription) {
+      switchToInscription.addEventListener("click", (e) => {
+        e.preventDefault();
+        switchTab('inscription');
+      });
+    }
+    
+    if (toggleIconConnexion) {
+      toggleIconConnexion.addEventListener("click", togglePassword);
+    }
+    
+    if (toggleIconInscription) {
+      toggleIconInscription.addEventListener("click", togglePasswordInscription);
+    }
+    
+    if (toggleConfirmIconInscription) {
+      toggleConfirmIconInscription.addEventListener("click", toggleConfirmPasswordInscription);
+    }
 
     if (forgotPasswordLink) {
       forgotPasswordLink.addEventListener("click", (e) => {

@@ -19,8 +19,8 @@ const { preloadCache } = require("./middlewares/cache");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuration trust proxy pour Infomaniak (plus sécurisé)
-app.set('trust proxy', 1); // Au lieu de true
+// Configuration trust proxy pour Infomaniak
+app.set('trust proxy', true);
 
 // Middleware de compression pour optimiser les performances
 app.use(compression());
@@ -47,7 +47,7 @@ app.use(helmet({
   crossOriginOpenerPolicy: false
 }));
 
-// Rate limiting adapté pour Infomaniak
+// Rate limiting adapté en local
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV === 'production' ? 100 : 1000, // 1000 requêtes en dev, 100 en prod
@@ -57,15 +57,6 @@ const limiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Configuration spécifique pour Infomaniak
-  keyGenerator: (req) => {
-    // Utiliser l'IP réelle même derrière un proxy
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  },
-  skip: (req) => {
-    // Ignorer les health checks et certaines requêtes
-    return req.path === '/test' || req.path === '/health';
-  }
 });
 app.use(limiter);
 
@@ -77,9 +68,6 @@ const authLimiter = rateLimit({
     error: "Trop de tentatives de connexion, veuillez réessayer plus tard."
   },
   skipSuccessfulRequests: true,
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
 });
 
 // Sanitisation des données MongoDB (protection injection NoSQL)
@@ -128,15 +116,6 @@ app.use("/api/monitoring", require("./routes/monitoring"));
 // Route de test
 app.get("/test", (req, res) => {
   res.json({ message: "Le serveur fonctionne correctement !" });
-});
-
-// Route health check
-app.get("/health", (req, res) => {
-  res.json({ 
-    status: "ok", 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
 });
 
 // Route pour les modes de jeu avec cache

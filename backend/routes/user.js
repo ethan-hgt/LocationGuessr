@@ -4,14 +4,6 @@ const auth = require("../middlewares/auth");
 const User = require("../models/User");
 const multer = require("multer");
 const { GAME_MODES } = require("./gameMode");
-const { monitoring, logger } = require("../config/logger");
-const { 
-  cacheUserProfile, 
-  cacheLeaderboard, 
-  invalidateUserCache,
-  invalidateLeaderboardCache,
-  invalidateCacheMiddleware 
-} = require("../middlewares/cache");
 
 // Fonction utilitaire pour normaliser les noms de modes
 // Ex: "parc" -> "disneylandMode"
@@ -109,53 +101,64 @@ router.post("/avatar", auth, upload.single("avatar"), async (req, res) => {
 
 // Récup du leaderboard
 // Trié par meilleur score, limité aux 10 meilleurs
-router.get("/leaderboard", cacheLeaderboard, async (req, res) => {
+router.get("/leaderboard", async (req, res) => {
   try {
-    const startTime = process.hrtime.bigint();
-    const { mode = "global", limit = 10 } = req.query;
+    const { mode } = req.query;
+    const modeKey = mode ? normalizeMode(mode) : null;
 
     let sortCriteria = {};
-    let matchCriteria = {};
+    let query = {};
 
-    if (mode === "global") {
-      sortCriteria = { "stats.bestScore": -1, "stats.gamesPlayed": -1 };
+    if (modeKey && mode !== "all") {
+      sortCriteria[`stats.${modeKey}.bestScore`] = -1;
+      query[`stats.${modeKey}.gamesPlayed`] = { $gt: 0 };
     } else {
-      const normalizedMode = normalizeMode(mode);
-      const modeKey = `${normalizedMode}Mode`;
-      sortCriteria = { [`stats.${modeKey}.bestScore`]: -1, [`stats.${modeKey}.gamesPlayed`]: -1 };
-      matchCriteria[`stats.${modeKey}.gamesPlayed`] = { $gt: 0 };
+      sortCriteria["stats.bestScore"] = -1;
+      query["stats.gamesPlayed"] = { $gt: 0 };
     }
 
-    const users = await User.find(matchCriteria)
+    const topPlayers = await User.find(query)
+      .select("username avatarData stats")
       .sort(sortCriteria)
-      .limit(parseInt(limit))
-      .select("username stats avatarUrl");
+      .limit(10);
 
-    const duration = Number(process.hrtime.bigint() - startTime) / 1000000;
-    monitoring.logDatabaseEvent('find', 'users', duration, true);
-    monitoring.logMetric('leaderboard_request', 1, { mode, limit });
+    const formattedLeaderboard = topPlayers.map((player) => {
+      const stats =
+        modeKey && mode !== "all" ? player.stats[modeKey] : player.stats;
+      return {
+        _id: player._id,
+        username: player.username,
+        avatarData: player.avatarData,
+        stats: {
+          bestScore: stats ? stats.bestScore || 0 : 0,
+          averageScore: stats
+            ? Math.round((stats.averageScore || 0) * 10) / 10
+            : 0,
+          gamesPlayed: stats ? stats.gamesPlayed || 0 : 0,
+          lastPlayed: player.stats.lastPlayedDate,
+        },
+      };
+    });
 
-    res.json(users);
-  } catch (error) {
-    logger.error("Erreur récupération leaderboard:", error);
-    monitoring.logError(error, { action: 'get_leaderboard', mode: req.query.mode });
+    const totalPlayers = await User.countDocuments(query);
+
+    res.json({
+      totalPlayers,
+      leaderboard: formattedLeaderboard,
+    });
+  } catch (err) {
+    console.error("Erreur leaderboard:", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
 // Route pour obtenir le profil
-router.get("/profile", cacheUserProfile, async (req, res) => {
+router.get("/profile", auth, async (req, res) => {
   try {
-    const startTime = process.hrtime.bigint();
-    
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-
-    const duration = Number(process.hrtime.bigint() - startTime) / 1000000;
-    monitoring.logDatabaseEvent('find', 'users', duration, true);
-    monitoring.logAuthEvent('profile_view', user.id, true);
 
     res.json({
       _id: user._id,
@@ -165,17 +168,15 @@ router.get("/profile", cacheUserProfile, async (req, res) => {
       createdAt: user.createdAt,
       avatarUrl: user.avatarData || "/img/default-avatar.webp",
     });
-  } catch (error) {
-    logger.error("Erreur récupération profil:", error);
-    monitoring.logError(error, { userId: req.userId, action: 'get_profile' });
+  } catch (err) {
+    console.error("Erreur profile:", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
 // Route pour mettre à jour le profil
-router.put("/profile", auth, invalidateCacheMiddleware(['user:profile']), async (req, res) => {
+router.put("/profile", auth, async (req, res) => {
   try {
-    const startTime = process.hrtime.bigint();
     const updates = req.body;
     const allowedUpdates = ["username", "email"];
 
@@ -212,26 +213,17 @@ router.put("/profile", auth, invalidateCacheMiddleware(['user:profile']), async 
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    const duration = Number(process.hrtime.bigint() - startTime) / 1000000;
-    monitoring.logDatabaseEvent('update', 'users', duration, true);
-    monitoring.logAuthEvent('profile_update', user.id, true, { fields: Object.keys(filteredUpdates) });
-
-    // Invalider le cache utilisateur
-    await invalidateUserCache(user.id);
-
     res.json(user);
-  } catch (error) {
-    logger.error("Erreur mise à jour profil:", error);
-    monitoring.logError(error, { userId: req.userId, action: 'update_profile' });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
 // Route pour mettre à jour les stats
-router.post("/stats", auth, invalidateCacheMiddleware(['user:profile', 'leaderboard']), async (req, res) => {
+router.post("/stats", auth, async (req, res) => {
   try {
-    const startTime = process.hrtime.bigint();
-    let { score, mode, gameDetails } = req.body;
+    let { score, mode } = req.body;
     console.log("Mode original reçu:", mode);
 
     const modeInfo = getModeInfo(mode);
@@ -290,17 +282,6 @@ router.post("/stats", auth, invalidateCacheMiddleware(['user:profile', 'leaderbo
 
     await user.save();
 
-    const duration = Number(process.hrtime.bigint() - startTime) / 1000000;
-    monitoring.logDatabaseEvent('update', 'users', duration, true);
-    monitoring.logGameEvent('score_saved', user.id, modeInfo.key, score, gameDetails);
-
-    // Invalider les caches
-    await Promise.all([
-      invalidateUserCache(user.id),
-      invalidateLeaderboardCache(modeInfo.key),
-      invalidateLeaderboardCache('global')
-    ]);
-
     res.json({
       message: "Statistiques mises à jour",
       stats: {
@@ -312,15 +293,13 @@ router.post("/stats", auth, invalidateCacheMiddleware(['user:profile', 'leaderbo
         },
       },
     });
-  } catch (error) {
-    logger.error("Erreur sauvegarde stats:", error);
-    monitoring.logError(error, { 
-      userId: req.userId, 
-      action: 'save_stats',
-      mode: req.body.mode,
-      score: req.body.score
-    });
-    res.status(500).json({ message: "Erreur serveur lors de la mise à jour des statistiques" });
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour des stats:", err);
+    res
+      .status(500)
+      .json({
+        message: "Erreur serveur lors de la mise à jour des statistiques",
+      });
   }
 });
 
@@ -499,88 +478,5 @@ router.post("/cleanup-recent-games", auth, async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
-
-// Récupérer les statistiques globales
-router.get("/global-stats", async (req, res) => {
-  try {
-    const startTime = process.hrtime.bigint();
-
-    const stats = await User.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalUsers: { $sum: 1 },
-          totalGames: { $sum: "$stats.gamesPlayed" },
-          totalScore: { $sum: "$stats.totalScore" },
-          avgScore: { $avg: "$stats.averageScore" },
-          bestScore: { $max: "$stats.bestScore" }
-        }
-      }
-    ]);
-
-    const duration = Number(process.hrtime.bigint() - startTime) / 1000000;
-    monitoring.logDatabaseEvent('aggregate', 'users', duration, true);
-    monitoring.logMetric('global_stats_request', 1);
-
-    const globalStats = stats[0] || {
-      totalUsers: 0,
-      totalGames: 0,
-      totalScore: 0,
-      avgScore: 0,
-      bestScore: 0
-    };
-
-    res.json({
-      totalUsers: globalStats.totalUsers,
-      totalGames: globalStats.totalGames,
-      totalScore: globalStats.totalScore,
-      averageScore: Math.round(globalStats.avgScore * 10) / 10,
-      bestScore: globalStats.bestScore,
-      lastUpdated: new Date().toISOString()
-    });
-  } catch (error) {
-    logger.error("Erreur récupération stats globales:", error);
-    monitoring.logError(error, { action: 'get_global_stats' });
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-});
-
-// Fonctions utilitaires
-function normalizeGameMode(mode) {
-  const modeMapping = {
-    parc: "disneyland",
-    versailles: "versailles",
-    versaille: "versailles",
-    nevers: "nevers",
-    france: "france",
-    mondial: "mondial",
-    dark: "dark",
-  };
-  return modeMapping[mode] || mode;
-}
-
-function getModeIcon(mode) {
-  const icons = {
-    france: "/img/France.png",
-    mondial: "/img/Mondial.png",
-    disneyland: "/img/disney.png",
-    nevers: "/img/nevers.png",
-    versaille: "/img/versaille.png",
-    dark: "/img/lampe.png",
-  };
-  return icons[mode] || "/img/Mondial.png";
-}
-
-function getModeEmoji(mode) {
-  const emojis = {
-    france: "🇫🇷",
-    mondial: "🌍",
-    disneyland: "🏰",
-    nevers: "🏛️",
-    versaille: "👑",
-    dark: "🔦",
-  };
-  return emojis[mode] || "🌍";
-}
 
 module.exports = router;

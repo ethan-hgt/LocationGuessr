@@ -19,9 +19,6 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuration trust proxy pour Infomaniak (plus sécurisé)
-app.set('trust proxy', 'loopback, 127.0.0.1, ::1'); // Plus sécurisé que true
-
 // Middleware de compression pour optimiser les performances
 app.use(compression());
 
@@ -144,7 +141,7 @@ app.use("/js", express.static(path.join(__dirname, "../html/script")));
 // Routes avec protection spécifique
 app.use("/api/auth", authLimiter, require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
-app.use("/api/monitoring", require("./routes/monitoring"));
+// app.use("/api/monitoring", require("./routes/monitoring")); // SUPPRIMÉ car le module n'existe pas
 
 // Route de test
 app.get("/test", (req, res) => {
@@ -259,7 +256,6 @@ const connectMongoDB = async () => {
       family: 4,
     });
     logger.info("[MongoDB] Connexion établie");
-    monitoring.logMetric('database_connection', 1, { status: 'success' });
     
     // Créer les index après la connexion
     try {
@@ -274,7 +270,6 @@ const connectMongoDB = async () => {
     return true;
   } catch (err) {
     logger.error("[MongoDB] Erreur de connexion:", err);
-    monitoring.logMetric('database_connection', 1, { status: 'error', error: err.message });
     
     if (process.env.NODE_ENV === 'development') {
       logger.warn("[MongoDB] Mode développement - continuer sans base de données");
@@ -295,13 +290,11 @@ const initializeRedis = async () => {
     if (redisConnected) {
       // Précharger le cache
       await preloadCache();
-      monitoring.logMetric('redis_connection', 1, { status: 'success' });
     } else {
-      monitoring.logMetric('redis_connection', 1, { status: 'failed' });
+      logger.info('⚠️ Redis désactivé - initialisation ignorée');
     }
   } catch (error) {
     logger.error('Erreur initialisation Redis:', error);
-    monitoring.logMetric('redis_connection', 1, { status: 'error', error: error.message });
   }
 };
 
@@ -325,14 +318,6 @@ app.use((err, req, res, next) => {
   logger.error("[Error] Type:", err.name);
   logger.error("[Error] Message:", err.message);
   logger.error("[Error] Path:", req.path);
-
-  // Logger l'erreur avec le monitoring
-  monitoring.logError(err, {
-    path: req.path,
-    method: req.method,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip
-  });
 
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
@@ -393,13 +378,11 @@ process.on("SIGTERM", async () => {
 // Gestion des erreurs non capturées
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', error);
-  monitoring.logSystemError(error, 'uncaught_exception');
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  monitoring.logSystemError(new Error(reason), 'unhandled_rejection');
   process.exit(1);
 });
 

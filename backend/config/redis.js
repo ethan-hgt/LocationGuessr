@@ -1,9 +1,6 @@
 const redis = require('redis');
 const winston = require('winston');
 
-// Vérifier si Redis est activé
-const REDIS_ENABLED = process.env.REDIS_ENABLED !== 'false';
-
 // Config 
 const redisConfig = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -31,49 +28,33 @@ const redisConfig = {
 };
 
 // Créer le client 
-let client = null;
+const client = redis.createClient(redisConfig);
 
-if (REDIS_ENABLED) {
-  try {
-    client = redis.createClient(redisConfig);
-    
-    // Gestion des événements
-    client.on('connect', () => {
-      winston.info('✅ Redis connecté avec succès');
-    });
+// Gestion des événements
+client.on('connect', () => {
+  winston.info('✅ Redis connecté avec succès');
+});
 
-    client.on('ready', () => {
-      winston.info('🚀 Redis prêt à recevoir des commandes');
-    });
+client.on('ready', () => {
+  winston.info('🚀 Redis prêt à recevoir des commandes');
+});
 
-    client.on('error', (err) => {
-      winston.error('❌ Erreur Redis:', err.message);
-    });
+client.on('error', (err) => {
+  winston.error('❌ Erreur Redis:', err.message);
+});
 
-    client.on('reconnecting', () => {
-      winston.warn('🔄 Reconnexion Redis en cours...');
-    });
+client.on('reconnecting', () => {
+  winston.warn('🔄 Reconnexion Redis en cours...');
+});
 
-    client.on('end', () => {
-      winston.warn('🔌 Connexion Redis fermée');
-    });
-  } catch (error) {
-    winston.error('❌ Impossible de créer le client Redis:', error.message);
-    client = null;
-  }
-} else {
-  winston.info('⚠️ Redis désactivé - mode sans cache');
-}
+client.on('end', () => {
+  winston.warn('🔌 Connexion Redis fermée');
+});
 
 // Fonctions utilitaires 
 const cacheUtils = {
   // Mettre en cache avec TTL
   async set(key, value, ttl = 3600) {
-    if (!REDIS_ENABLED || !client) {
-      winston.debug(`Cache désactivé - SET ignoré: ${key}`);
-      return true;
-    }
-    
     try {
       const serializedValue = typeof value === 'object' ? JSON.stringify(value) : value;
       await client.setEx(key, ttl, serializedValue);
@@ -87,11 +68,6 @@ const cacheUtils = {
 
   // Récupérer du cache
   async get(key) {
-    if (!REDIS_ENABLED || !client) {
-      winston.debug(`Cache désactivé - GET ignoré: ${key}`);
-      return null;
-    }
-    
     try {
       const value = await client.get(key);
       if (value) {
@@ -112,11 +88,6 @@ const cacheUtils = {
 
   // Supprimer du cache
   async del(key) {
-    if (!REDIS_ENABLED || !client) {
-      winston.debug(`Cache désactivé - DEL ignoré: ${key}`);
-      return true;
-    }
-    
     try {
       await client.del(key);
       winston.debug(`Cache DEL: ${key}`);
@@ -129,10 +100,6 @@ const cacheUtils = {
 
   // Vérifier si une clé existe
   async exists(key) {
-    if (!REDIS_ENABLED || !client) {
-      return false;
-    }
-    
     try {
       const result = await client.exists(key);
       return result === 1;
@@ -144,10 +111,6 @@ const cacheUtils = {
 
   // Incrémenter une valeur
   async incr(key) {
-    if (!REDIS_ENABLED || !client) {
-      return null;
-    }
-    
     try {
       return await client.incr(key);
     } catch (error) {
@@ -176,11 +139,6 @@ const cacheUtils = {
 
   // Nettoyer le cache par pattern
   async clearPattern(pattern) {
-    if (!REDIS_ENABLED || !client) {
-      winston.debug(`Cache désactivé - clearPattern ignoré: ${pattern}`);
-      return 0;
-    }
-    
     try {
       const keys = await client.keys(`${pattern}:*`);
       if (keys.length > 0) {
@@ -196,14 +154,6 @@ const cacheUtils = {
 
   // Statistiques du cache
   async getStats() {
-    if (!REDIS_ENABLED || !client) {
-      return {
-        keys: 0,
-        info: { used_memory_human: 'N/A' },
-        timestamp: new Date().toISOString()
-      };
-    }
-    
     try {
       const info = await client.info('memory');
       const keys = await client.dbSize();
@@ -213,32 +163,17 @@ const cacheUtils = {
           const [key, value] = line.split(':');
           if (key && value) acc[key] = value;
           return acc;
-        }, {}),
-        timestamp: new Date().toISOString()
+        }, {})
       };
     } catch (error) {
       winston.error('Erreur récupération stats Redis:', error.message);
-      return {
-        keys: 0,
-        info: { used_memory_human: 'N/A' },
-        timestamp: new Date().toISOString()
-      };
+      return null;
     }
   }
 };
 
 // Connexion initiale
 const connectRedis = async () => {
-  if (!REDIS_ENABLED) {
-    winston.info('⚠️ Redis désactivé - connexion ignorée');
-    return false;
-  }
-  
-  if (!client) {
-    winston.error('❌ Client Redis non disponible');
-    return false;
-  }
-  
   try {
     await client.connect();
     winston.info('🔗 Connexion Redis établie');
@@ -251,10 +186,6 @@ const connectRedis = async () => {
 
 // Fermeture propre
 const disconnectRedis = async () => {
-  if (!REDIS_ENABLED || !client) {
-    return;
-  }
-  
   try {
     await client.quit();
     winston.info('🔌 Connexion Redis fermée proprement');
@@ -267,6 +198,5 @@ module.exports = {
   client,
   cacheUtils,
   connectRedis,
-  disconnectRedis,
-  REDIS_ENABLED
+  disconnectRedis
 }; 

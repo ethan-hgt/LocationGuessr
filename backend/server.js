@@ -255,7 +255,7 @@ const connectMongoDB = async () => {
       socketTimeoutMS: 45000,
       family: 4,
     });
-    logger.info("[MongoDB] Connexion établie");
+    console.log("[MongoDB] Connexion établie");
     
     // Créer les index après la connexion
     try {
@@ -264,15 +264,15 @@ const connectMongoDB = async () => {
         User.createIndexes();
       }
     } catch (error) {
-      logger.warn('[MongoDB] Erreur création index:', error.message);
+      console.warn('[MongoDB] Erreur création index:', error.message);
     }
     
     return true;
   } catch (err) {
-    logger.error("[MongoDB] Erreur de connexion:", err);
+    console.error("[MongoDB] Erreur de connexion:", err);
     
     if (process.env.NODE_ENV === 'development') {
-      logger.warn("[MongoDB] Mode développement - continuer sans base de données");
+      console.warn("[MongoDB] Mode développement - continuer sans base de données");
       return false;
     } else {
       throw err; // En production, on arrête le serveur
@@ -283,18 +283,12 @@ const connectMongoDB = async () => {
 // Connexion MongoDB
 connectMongoDB();
 
-// Connexion Redis
+// Connexion Redis (désactivée pour l'instant)
 const initializeRedis = async () => {
   try {
-    const redisConnected = await connectRedis();
-    if (redisConnected) {
-      // Précharger le cache
-      await preloadCache();
-    } else {
-      logger.info('⚠️ Redis désactivé - initialisation ignorée');
-    }
+    console.log('⚠️ Redis désactivé - initialisation ignorée');
   } catch (error) {
-    logger.error('Erreur initialisation Redis:', error);
+    console.error('Erreur initialisation Redis:', error);
   }
 };
 
@@ -302,22 +296,22 @@ const initializeRedis = async () => {
 if (process.env.REDIS_ENABLED !== 'false') {
   initializeRedis();
 } else {
-  logger.info('⚠️ Redis désactivé - initialisation ignorée');
+  console.log('⚠️ Redis désactivé - initialisation ignorée');
 }
 
 // Middleware de logging en développement
 if (process.env.NODE_ENV !== "production") {
   app.use((req, res, next) => {
-    logger.debug(`[Request] ${req.method} ${req.url}`);
+    console.log(`[Request] ${req.method} ${req.url}`);
     next();
   });
 }
 
 // Gestion centralisée des erreurs
 app.use((err, req, res, next) => {
-  logger.error("[Error] Type:", err.name);
-  logger.error("[Error] Message:", err.message);
-  logger.error("[Error] Path:", req.path);
+  console.error("[Error] Type:", err.name);
+  console.error("[Error] Message:", err.message);
+  console.error("[Error] Path:", req.path);
 
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
@@ -351,62 +345,47 @@ app.use((err, req, res, next) => {
 
 // Route 404
 app.use((req, res) => {
-  logger.warn("[404] Route non trouvée:", req.url);
+  console.warn("[404] Route non trouvée:", req.url);
   // Rediriger vers la page d'accueil pour les routes inconnues
   res.redirect("/");
 });
 
 // Gestion de la fermeture
 process.on("SIGTERM", async () => {
-  logger.info("[Server] SIGTERM reçu. Fermeture propre...");
+  console.log("[Server] SIGTERM reçu. Fermeture propre...");
   
   try {
-    // Fermer Redis
-    await disconnectRedis();
-    
     // Fermer MongoDB
     await mongoose.connection.close();
-    logger.info("[MongoDB] Déconnexion réussie");
+    console.log("[MongoDB] Déconnexion réussie");
     
     process.exit(0);
   } catch (err) {
-    logger.error("[Server] Erreur fermeture:", err);
+    console.error("[Server] Erreur fermeture:", err);
     process.exit(1);
   }
 });
 
 // Gestion des erreurs non capturées
 process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', error);
+  console.error('Uncaught Exception:', error);
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
 
-// Monitoring périodique
-setInterval(() => {
-  monitoring.logMemoryUsage();
-}, 5 * 60 * 1000); // Toutes les 5 minutes
-
 // Démarrage du serveur
 const server = app.listen(port, '0.0.0.0', () => {
-  logger.info(`[Server] Serveur démarré sur le port ${port}`);
-  logger.info(`[Server] Mode: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`[Server] CORS autorisé pour:`, corsOrigins);
+  console.log(`[Server] Serveur démarré sur le port ${port}`);
+  console.log(`[Server] Mode: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`[Server] CORS autorisé pour:`, corsOrigins);
   
   if (process.env.NODE_ENV === 'production') {
-    logger.info(`[Server] ✅ Production ready - API accessible sur https://locationguessr.fr/api`);
+    console.log(`[Server] ✅ Production ready - API accessible sur https://locationguessr.fr/api`);
   }
-  
-  // Logger les métriques de démarrage
-  monitoring.logMetric('server_start', 1, {
-    port,
-    mode: process.env.NODE_ENV || 'development',
-    nodeVersion: process.version
-  });
 });
 
 // Export pour les tests
